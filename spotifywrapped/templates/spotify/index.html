@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    {% load static %}
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+
+    <!-- Please DO NOT remove this line, all link and script tags will be merged to here -->
+
+    <link rel="stylesheet" type="text/css" href="/css/common.css" />
+
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
+
+    <link rel="stylesheet" type="text/css" href="/css/UntitledPage.css" />
+
+    <link rel="stylesheet" type="text/css" href="{% static 'restaurants/userauth.css' %}" />
+
+  </head>
+
+  <body class="flex-column">
+
+    <section class="launch userActionSection">
+      <div class="flex_col">
+        </a>
+        <a href="{% url 'login' %}">
+        <button class="logInButton">
+          <!-- Button for user log in -->
+          log in
+        </button>
+        </a>
+      </div>
+    </section>
+
+
+  </body>
+
+</html>
