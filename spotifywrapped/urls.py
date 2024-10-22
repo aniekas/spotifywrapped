@@ -1,5 +1,9 @@
 from django.urls import path, include
 from . import views
+from django.urls import path
+from .views import contact_developers
+
+
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -12,4 +16,5 @@ urlpatterns = [
     path('delete-account/', views.confirm_delete_account, name='confirm_delete_account'),
     path('delete-account/confirm/', views.delete_account, name='delete_account'),
     path('callback/', views.spotify_callback, name='spotify_callback'),
+    path('contact/', contact_developers, name='contact_developers'),
 ]
