@@ -1,6 +1,9 @@
 import requests
 import secrets
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -37,6 +40,26 @@ def login_view(request):
                     f'state={state_value}&'
                     f'response_type=code&'
                     f'scope=user-top-read+playlist-read-private+user-library-read')
+def password_reset_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match')
+            return redirect('password_reset')
+        try:
+            user = User.objects.get(username=username)
+            user.set_password(new_password)
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password has been reset.')
+            return redirect('login')
+        except User.DoesNotExist:
+            messages.error(request, 'User not found')
+            return redirect('password_reset')
+    return render(request, 'accounts/password_reset.html')
 
 def spotify_callback(request):
     code = request.GET.get('code')
@@ -185,4 +208,4 @@ def delete_account(request):
     return redirect('index')  # Redirect to a landing page or confirmation page
 
 def contact_developers(request):
-    return render(request, 'spotify/contBct.html')
+    return render(request, 'spotify/contact.html')
