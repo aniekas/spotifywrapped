@@ -13,13 +13,7 @@
 
     <!-- Please DO NOT remove this line, all link and script tags will be merged to here -->
 
-    <link rel="stylesheet" type="text/css" href="/css/common.css" />
-
-    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
-
-    <link rel="stylesheet" type="text/css" href="/css/UntitledPage.css" />
-
-    <link rel="stylesheet" type="text/css" href="{% static 'restaurants/userauth.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/userauth.css' %}" /> 
 
   </head>
 
@@ -27,18 +21,13 @@
 
     <section class="launch userActionSection">
       <div class="flex_col">
-        </a>
+        <img class="userImage" src="{% static 'css/logo.png' %}" alt="alt text" />
+        <!-- User profile image --> 
         <a href="{% url 'login' %}">
         <button class="logInButton">
-          <!-- Button for user log in -->
+          <!-- Button for user log in --> 
           log in
         </button>
-        </a>
-
-        <a href="{% url 'contact_developers' %}">
-          <button class="contactButton">
-            Contact the Developers
-          </button>
         </a>
       </div>
     </section>

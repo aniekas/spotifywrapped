@@ -20,8 +20,7 @@ a {
     }
 
     .userImage {
-      width: 80%;
-      object-fit: cover;
+      width: 50%;
     }
 
     .logInButton, .signUpButton {
@@ -35,14 +34,14 @@ a {
       text-align: center;
       border-radius: 38.5px;
       padding: 14.5px 8px;
-      outline: 5px solid rgb(156 82 116);  /* Stroke color */
+      outline: 5px solid rgb(49, 232, 110);  /* Stroke color */
       outline-offset: -5px;
       background-color: transparent;  /* Transparent background initially */
       transition: all 0.3s ease;  /* Smooth hover transition */
     }
 
     .logInButton:hover, .signUpButton:hover {
-      background-color: rgb(156 82 116);  /* Fill stroke color on hover */
+      background-color: rgb(49, 232, 110);  /* Fill stroke color on hover */
       color: #fff;  /* Text changes to white */
     }
 

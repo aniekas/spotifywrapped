@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from spotifywrapped import views
 
+app_name = 'spotifywrapped'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('spotifywrapped.urls')),  # Your app's URLs
