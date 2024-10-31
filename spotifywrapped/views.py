@@ -1,13 +1,16 @@
 import requests
 import secrets
+import logging
+import os  # Make sure to import os for os.urandom
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from .models import SpotifyWrap
+from .models import SpotifyWrap, SpotifyUserProfile
 from social_core.exceptions import AuthCanceled
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+import base64
 
 def index(request):
     return render(request, 'spotify/index.html')
@@ -21,33 +24,51 @@ def register_view(request):
         return redirect('profile')
     return render(request, 'accounts/register.html')
 
+
+# Set up logging
+logger = logging.getLogger(__name__)
+
+
 def login_view(request):
+
     # Generate a random state value
-    state_value = secrets.token_urlsafe(16)
+    state_value = base64.urlsafe_b64encode(os.urandom(30)).decode('utf-8')
+    print(state_value + "state value")
     request.session['oauth_state'] = state_value
+    request.session.save()
+    logger.info("Generated state parameter in login view: %s", state_value)
 
     # Redirect to Spotify authorization URL
-    return redirect(f'https://accounts.spotify.com/authorize?'
-                    f'client_id={settings.SPOTIFY_CLIENT_ID}&'
-                    f'redirect_uri={settings.SOCIAL_AUTH_SPOTIFY_REDIRECT_URI}&'
-                    f'state={state_value}&'
-                    f'response_type=code&'
-                    f'scope=user-top-read+playlist-read-private+user-library-read')
+    auth_url = (
+        f'https://accounts.spotify.com/authorize?'
+        f'client_id={settings.SPOTIFY_CLIENT_ID}&'
+        f'redirect_uri={settings.SPOTIFY_REDIRECT_URI}&'
+        f'state={state_value}&'
+        f'response_type=code&'
+        f'scope=user-top-read+playlist-read-private+user-library-read'
+    )
+
+    return redirect(auth_url)
+
 
 def spotify_callback(request):
     code = request.GET.get('code')
     state = request.GET.get('state')
+    logger.info("Received state parameter in callback: %s", state)
 
     # Check if the state matches
-    if state != request.session.get('oauth_state'):
-        return HttpResponse("Invalid state parameter.", status=400)
+    expected_state = request.session.get('oauth_state')
+    print(expected_state)
+    if state != expected_state:
+        logger.error("Invalid state parameter: expected %s, got %s", request.session.get('oauth_state'), state)
+        return HttpResponse(f"Invalid state parameter: expected {request.session.get('oauth_state')}, got {state}")
 
     # Exchange the code for an access token
     token_url = 'https://accounts.spotify.com/api/token'
     data = {
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': settings.SOCIAL_AUTH_SPOTIFY_REDIRECT_URI,
+        'redirect_uri': settings.SPOTIFY_REDIRECT_URI,
         'client_id': settings.SPOTIFY_CLIENT_ID,
         'client_secret': settings.SPOTIFY_CLIENT_SECRET,
     }
@@ -61,14 +82,14 @@ def spotify_callback(request):
         wrap_data = fetch_spotify_wrap_data(access_token)
 
         # Get the current user
-        user = request.user
-
+        spotify_user_profile = SpotifyUserProfile.objects.get(user=request.user)
         # Save the wrap data to the database
-        SpotifyWrap.objects.create(user=user, wrap_data=wrap_data)
+        SpotifyWrap.objects.create(user=spotify_user_profile, wrap_data=wrap_data)
 
         return redirect('profile')
     else:
-        raise AuthCanceled()  # Handle error case where token exchange fails
+        logger.error("Token exchange failed: %s", token_info)
+        raise AuthCanceled()  # Handle error case where token exchange failed
 
 def fetch_spotify_wrap_data(access_token):
     url = 'https://api.spotify.com/v1/me/top/tracks'

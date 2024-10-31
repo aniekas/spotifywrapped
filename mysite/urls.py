@@ -21,5 +21,5 @@ from spotifywrapped import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('spotifywrapped.urls')),  # Your app's URLs
-    path('spotify/', include('social_django.urls', namespace='social')),  # Include social auth urls
+    path('auth/', include('social_django.urls', namespace='social')),  # Include social auth urls
 ]

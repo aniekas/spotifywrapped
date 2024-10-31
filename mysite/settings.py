@@ -1,23 +1,26 @@
 from pathlib import Path
-import environ
+from dotenv import load_dotenv
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Initialize environment variables
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Secret key (from .env)
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # Spotify API Key (from .env)
-SPOTIFY_CLIENT_ID = env('SPOTIFY_CLIENT_ID')
-SPOTIFY_CLIENT_SECRET = env('SPOTIFY_CLIENT_SECRET')
+SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+SPOTIFY_REDIRECT_URI = os.getenv('SPOTIFY_REDIRECT_URI')
+SCOPE = os.getenv('SCOPE')
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -64,8 +67,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # OAuth credentials from Spotify
-SOCIAL_AUTH_SPOTIFY_KEY = env('SPOTIFY_CLIENT_ID')  # Spotify Client ID
-SOCIAL_AUTH_SPOTIFY_SECRET = env('SPOTIFY_CLIENT_SECRET')  # Spotify Client Secret
+SOCIAL_AUTH_SPOTIFY_KEY = os.getenv('SPOTIFY_CLIENT_ID')  # Spotify Client ID
+SOCIAL_AUTH_SPOTIFY_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')  # Spotify Client Secret
 SOCIAL_AUTH_SPOTIFY_SCOPE = ['user-top-read', 'playlist-read-private', 'user-library-read']
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
