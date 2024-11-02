@@ -1,123 +1,80 @@
+# spotifywrapped/views.py
+
 import requests
-import secrets
-import logging
-import os  # Make sure to import os for os.urandom
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from .models import SpotifyWrap, SpotifyUserProfile
-from social_core.exceptions import AuthCanceled
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
+from .models import SpotifyWrap
+from django.contrib.auth import login
 from django.contrib.auth.models import User
-import base64
-
-def index(request):
-    return render(request, 'spotify/index.html')
-
-def register_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = User.objects.create_user(username=username, password=password)
-        login(request, user)
-        return redirect('profile')
-    return render(request, 'accounts/register.html')
 
 
-# Set up logging
-logger = logging.getLogger(__name__)
-
-
-def login_view(request):
-
-    # Generate a random state value
-    state_value = base64.urlsafe_b64encode(os.urandom(30)).decode('utf-8')
-    print(state_value + "state value")
-    request.session['oauth_state'] = state_value
-    request.session.save()
-    logger.info("Generated state parameter in login view: %s", state_value)
-
-    # Redirect to Spotify authorization URL
+def authorize(request):
+    """Redirect to Spotify for user authorization."""
+    scope = "user-top-read user-read-recently-played"  # Define the necessary scopes
     auth_url = (
-        f'https://accounts.spotify.com/authorize?'
-        f'client_id={settings.SPOTIFY_CLIENT_ID}&'
-        f'redirect_uri={settings.SPOTIFY_REDIRECT_URI}&'
-        f'state={state_value}&'
-        f'response_type=code&'
-        f'scope=user-top-read+playlist-read-private+user-library-read'
+        "https://accounts.spotify.com/authorize?"
+        f"client_id={settings.SPOTIFY_CLIENT_ID}&response_type=code&"
+        f"redirect_uri={settings.SPOTIFY_REDIRECT_URI}&scope={scope}"
     )
-
     return redirect(auth_url)
 
 
-def spotify_callback(request):
-    code = request.GET.get('code')
-    state = request.GET.get('state')
-    logger.info("Received state parameter in callback: %s", state)
+def callback(request):
+    """Handle Spotify's callback after user authorization."""
+    code = request.GET.get("code")  # Get the authorization code
+    token_url = "https://accounts.spotify.com/api/token"
+    response = requests.post(
+        token_url,
+        data={
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": settings.SPOTIFY_REDIRECT_URI,
+            "client_id": settings.SPOTIFY_CLIENT_ID,
+            "client_secret": settings.SPOTIFY_CLIENT_SECRET,
+        },
+    )
 
-    # Check if the state matches
-    expected_state = request.session.get('oauth_state')
-    print(expected_state)
-    if state != expected_state:
-        logger.error("Invalid state parameter: expected %s, got %s", request.session.get('oauth_state'), state)
-        return HttpResponse(f"Invalid state parameter: expected {request.session.get('oauth_state')}, got {state}")
+    tokens = response.json()
+    access_token = tokens.get('access_token')
 
-    # Exchange the code for an access token
-    token_url = 'https://accounts.spotify.com/api/token'
-    data = {
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': settings.SPOTIFY_REDIRECT_URI,
-        'client_id': settings.SPOTIFY_CLIENT_ID,
-        'client_secret': settings.SPOTIFY_CLIENT_SECRET,
-    }
-    response = requests.post(token_url, data=data)
-    token_info = response.json()
+    # Here you could also obtain the refresh token and store it
+    if access_token:
+        user = request.user  # Assuming the user is authenticated
+        save_wrap(user, access_token)  # Call to save the user's Spotify data
 
-    if 'access_token' in token_info:
-        access_token = token_info['access_token']
+        # Use Spotify's user ID or email as username
+        user_info = requests.get('https://api.spotify.com/v1/me', headers={'Authorization': f'Bearer {access_token}'})
+        user_data = user_info.json()
 
-        # Fetch the user's top tracks
-        wrap_data = fetch_spotify_wrap_data(access_token)
+        spotify_user_id = user_data['id']  # Get Spotify user ID
+        username = user_data['display_name'] or spotify_user_id  # Fallback to Spotify ID if no display name
 
-        # Get the current user
-        spotify_user_profile = SpotifyUserProfile.objects.get(user=request.user)
-        # Save the wrap data to the database
-        SpotifyWrap.objects.create(user=spotify_user_profile, wrap_data=wrap_data)
+        # Check if user already exists in your Django app
+        user, created = User.objects.get_or_create(username=username, defaults={'first_name': username})
 
-        return redirect('profile')
-    else:
-        logger.error("Token exchange failed: %s", token_info)
-        raise AuthCanceled()  # Handle error case where token exchange failed
+        if created:
+            # Optionally save Spotify ID in a profile model or directly in User's extra fields
+            pass  # Handle additional user setup if necessary
 
-def fetch_spotify_wrap_data(access_token):
-    url = 'https://api.spotify.com/v1/me/top/tracks'
-    headers = {'Authorization': f'Bearer {access_token}'}
-    response = requests.get(url, headers=headers)
+        login(request, user)  # Log the user in
+        return redirect("wrap_list")  # Redirect to the user's wraps
+
+
+@login_required
+def wrap_list(request):
+    """Display the user's saved Spotify wraps."""
+    wraps = SpotifyWrap.objects.filter(user=request.user)
+    return render(request, "app/wrap_list.html", {"wraps": wraps})
+
+
+def save_wrap(user, token):
+    """Fetch user's top tracks and save the wrap."""
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get("https://api.spotify.com/v1/me/top/tracks", headers=headers)
 
     if response.status_code == 200:
-        return response.json()['items']
+        wrap_data = response.json()
+        SpotifyWrap.objects.create(user=user, data=wrap_data)  # Save wrap data to the database
     else:
-        return []  # Return an empty list if there's an error
-
-@login_required
-def get_top_tracks(request):
-    wraps = SpotifyWrap.objects.filter(user=request.user)
-    return render(request, 'spotify/top_tracks.html', {'wraps': wraps})
-
-def logout_view(request):
-    logout(request)
-    return redirect('index')
-
-@login_required
-def confirm_delete_account(request):
-    if request.method == 'POST':
-        return delete_account(request)
-    return render(request, 'accounts/confirm_delete_account.html')
-
-@login_required
-def delete_account(request):
-    user = request.user
-    user.delete()  # Delete the user account
-    return redirect('index')  # Redirect to a landing page or confirmation page
+        print("Error fetching data from Spotify:", response.json())
