@@ -5,8 +5,54 @@ from django.shortcuts import redirect, render
 from .models import SpotifyWrap, SpotifyUserProfile
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.utils import timezone
 import datetime
+from django.shortcuts import get_object_or_404
+from datetime import timedelta
 from django.http import HttpResponse
+
+def index(request):
+    if request.method == 'POST':
+        timeframe = request.POST.get('timeframe')
+        user_profile = SpotifyUserProfile.objects.get(user=request.user)
+
+        # Define endpoint URL based on timeframe
+        url_map = {
+            'long_term': 'https://api.spotify.com/v1/me/top/tracks?time_range=long_term',
+            'medium_term': 'https://api.spotify.com/v1/me/top/tracks?time_range=medium_term',
+            'short_term': 'https://api.spotify.com/v1/me/top/tracks?time_range=short_term'
+        }
+        url = url_map.get(timeframe)
+
+        headers = {"Authorization": f"Bearer {user_profile.access_token}"}
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            wrap_data = response.json()
+
+            # Create a title for the wrap based on timeframe
+            timeframe_titles = {
+                'long_term': 'All-time',
+                'medium_term': 'Last Year',
+                'short_term': 'Last Month'
+            }
+            title = timeframe_titles.get(timeframe)
+
+            # Save the wrap with the generated title
+            SpotifyWrap.objects.create(
+                user=user_profile,
+                year=timezone.now().year,
+                top_artists=wrap_data.get('items', []),
+                wrap_data=wrap_data,
+                title=f"{title} - {timezone.now().date()}"
+            )
+
+            return redirect('wrap_list')
+        else:
+            # Handle error with Spotify API request
+            return render(request, "accounts/error.html", {"message": "Failed to fetch data from Spotify"})
+
+    return render(request, 'spotify/index.html')
 
 
 def authorize(request):
@@ -103,44 +149,71 @@ def callback(request):
 
     # Log the user in and redirect to wrap list page
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-    return redirect("wrap_list")
+    return redirect("index")
+
 
 
 @login_required
 def wrap_list(request):
     """Display the user's saved Spotify wraps."""
     wraps = SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile)  # Access through the profile
-    return render(request, "spotify/top_tracks.html", {"wraps": wraps})
+    return render(request, "spotify/wrap_list.html", {"wraps": wraps})
 
 
-def save_wrap(user_profile, token):
-    """Fetch user's top artists and wrap data, then save as a wrap for the specified year."""
+def save_wrap(user_profile, token, time_range="medium_term"):
+    """Fetch user's top artists and tracks for a specific time range, then save as a wrap."""
     headers = {"Authorization": f"Bearer {token}"}
+    valid_ranges = {"short_term", "medium_term", "long_term"}
 
-    # Fetch top artists
-    top_artists_response = requests.get("https://api.spotify.com/v1/me/top/artists", headers=headers)
+    if time_range not in valid_ranges:
+        time_range = "medium_term"  # Default to medium term if invalid time range is passed
+
+    # Fetch top artists with specified time range
+    top_artists_response = requests.get(
+        f"https://api.spotify.com/v1/me/top/artists?time_range={time_range}",
+        headers=headers
+    )
     if top_artists_response.status_code != 200:
         print("Error fetching top artists from Spotify:", top_artists_response.json())
         return
 
-    # Fetch top tracks or wrap data
-    wrap_data_response = requests.get("https://api.spotify.com/v1/me/top/tracks", headers=headers)
+    # Fetch top tracks with specified time range
+    wrap_data_response = requests.get(
+        f"https://api.spotify.com/v1/me/top/tracks?time_range={time_range}",
+        headers=headers
+    )
     if wrap_data_response.status_code != 200:
         print("Error fetching wrap data from Spotify:", wrap_data_response.json())
         return
 
     # Parse the responses
-    top_artists = top_artists_response.json()  # This will store the JSON data for top artists
-    wrap_data = wrap_data_response.json()  # This will store the JSON data for top tracks/wrap
+    top_artists = top_artists_response.json()
+    wrap_data = wrap_data_response.json()
 
-    # Set the year for the wrap; modify as needed
-    year = datetime.datetime.now().year
- # or calculate dynamically based on the current date
+    # Set the wrap title based on the time range
+    if time_range == "short_term":
+        title = "Last Month"
+    elif time_range == "medium_term":
+        title = "Last 6 Months"
+    else:
+        title = "All Time"
+
+    # Optionally, retrieve a preview URL for the top track
+    top_track_preview_url = None
+    if wrap_data.get("items"):
+        top_track_preview_url = wrap_data["items"][0].get("preview_url")
 
     # Save the wrap data in the SpotifyWrap model
     SpotifyWrap.objects.create(
         user=user_profile,
-        year=year,
+        year=datetime.datetime.now().year,
+        title=title,
         top_artists=top_artists,
-        wrap_data=wrap_data
+        wrap_data=wrap_data,
+        top_track_preview_url=top_track_preview_url  # Add a field for preview URL in your model
     )
+
+def wrap_detail(request, wrap_id):
+    """Display detailed information for a specific Spotify wrap."""
+    wrap = get_object_or_404(SpotifyWrap, id=wrap_id)
+    return render(request, 'spotify/wrap_detail.html', {'wrap': wrap})

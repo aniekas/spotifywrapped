@@ -17,14 +17,16 @@ class SpotifyUserProfile(models.Model):
 class SpotifyWrap(models.Model):
     user = models.ForeignKey(SpotifyUserProfile, on_delete=models.CASCADE, related_name='wraps')
     year = models.IntegerField()
+    title = models.CharField(max_length=255, default="Spotify Wrap")
     top_artists = models.JSONField()  # Store as JSON data
     wrap_data = models.JSONField()    # Store as JSON data
+    top_track_preview_url = models.URLField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):
-        return f"Spotify Wrap for {self.user.user.username} - {self.year}"
+        return f"{self.title} for {self.user.user.username} - {self.year}"
 
 
 # Signal to create a SpotifyUserProfile automatically when a User is created
