@@ -8,4 +8,5 @@ urlpatterns = [
     path("index/", views.index, name="index"),
     path('wraps/<int:wrap_id>/', views.wrap_detail, name='wrap_detail'),
     path('auth/', include('social_django.urls', namespace='social')),
+    path('contact/', views.contact, name='contact'),
 ]

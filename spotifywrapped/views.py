@@ -217,3 +217,6 @@ def wrap_detail(request, wrap_id):
     """Display detailed information for a specific Spotify wrap."""
     wrap = get_object_or_404(SpotifyWrap, id=wrap_id)
     return render(request, 'spotify/wrap_detail.html', {'wrap': wrap})
+
+def contact(request):
+    return render(request, 'spotify/contact.html')
