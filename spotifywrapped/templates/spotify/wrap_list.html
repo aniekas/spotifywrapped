@@ -1,0 +1,14 @@
+
+{% block content %}
+    <h2>Your Spotify Wraps</h2>
+    <ul>
+        {% for wrap in wraps %}
+            <li>
+                <a href="{% url 'wrap_detail' wrap.id %}">{{ wrap.title }}</a>  <!-- Link to detail view -->
+                <p>Generated on: {{ wrap.created_at }}</p>
+            </li>
+        {% empty %}
+            <p>You have no saved wraps yet.</p>
+        {% endfor %}
+    </ul>
+{% endblock %}

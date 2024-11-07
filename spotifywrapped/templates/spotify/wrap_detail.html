@@ -1,0 +1,46 @@
+<!-- spotify/wrap_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ wrap.year }} Wrap</title>
+</head>
+<body>
+    <h2>{{ wrap.title }}</h2>
+    <p>Year: {{ wrap.year }}</p>
+    <h3>Top Artists:</h3>
+    <ul>
+        {% for artist in wrap.top_artists.items %}
+            <li>{{ artist.name }}</li>
+        {% endfor %}
+    </ul>
+    <h3>Top Tracks:</h3>
+    <ul>
+        {% for track in wrap.wrap_data.items %}
+            <li>{{ track.name }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'wrap_list' %}">Back to Wrap List</a>
+
+    {% if wrap.top_track_preview_url %}
+        <audio id="topTrackPreview" autoplay muted>
+    <source src="{{ wrap.top_track_preview_url }}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+
+<script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const audio = document.getElementById('topTrackPreview');
+        if (audio) {
+            audio.play().then(() => {
+                audio.muted = false;  // Unmute after starting to play
+            }).catch(error => console.error("Error playing audio:", error));
+        }
+    });
+</script>
+
+    {% else %}
+        <p>No preview available for the top track.</p>
+    {% endif %}
+</body>
+</html>
