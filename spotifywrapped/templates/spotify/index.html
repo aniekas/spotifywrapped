@@ -23,7 +23,7 @@
       <div class="flex_col">
         <img class="userImage" src="{% static 'css/logo.png' %}" alt="alt text" />
         <!-- User profile image --> 
-        <a href="{% url 'login' %}">
+        <a href="{% url 'social:begin' 'spotify' %}">
         <button class="logInButton">
           <!-- Button for user log in --> 
           log in with spotify

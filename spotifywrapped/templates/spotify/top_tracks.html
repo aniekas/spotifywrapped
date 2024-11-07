@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>User's Top Tracks</title>
+</head>
+<body>
+    <h1>User's Top Tracks</h1>
+    {% for wrap in wraps %}
+        <h2>Year: {{ wrap.year }}</h2>
+        <h3>Top Tracks:</h3>
+        <ul>
+            {% for track in wrap.wrap_data.items %}
+                <li>{{ track.name }} by {{ track.artists|join:", " }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</body>
+</html>
