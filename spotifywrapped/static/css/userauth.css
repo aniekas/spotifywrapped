@@ -1,0 +1,363 @@
+
+a {
+    text-decoration: none !important;
+  }
+  .launch {
+    &.userActionSection {
+      display: flex;
+      flex-direction: column;
+      background-color: rgb(255 255 255);
+      overflow: hidden;
+    }
+
+    .flex_col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 205px auto 235px;
+      width: 658px;
+      max-width: 85%;
+    }
+
+    .userImage {
+      width: 80%;
+      object-fit: cover;
+    }
+
+    .logInButton, .signUpButton {
+      display: flex;
+      justify-content: center;
+      margin: 33px auto 0;
+      width: 374px;
+      max-width: 100%;
+      font: 400 35px/1.2 Georama, Helvetica, Arial, serif;
+      color: rgb(0 0 0);  /* Initial text color */
+      text-align: center;
+      border-radius: 38.5px;
+      padding: 14.5px 8px;
+      outline: 5px solid rgb(156 82 116);  /* Stroke color */
+      outline-offset: -5px;
+      background-color: transparent;  /* Transparent background initially */
+      transition: all 0.3s ease;  /* Smooth hover transition */
+    }
+
+    .logInButton:hover, .signUpButton:hover {
+      background-color: rgb(156 82 116);  /* Fill stroke color on hover */
+      color: #fff;  /* Text changes to white */
+    }
+
+
+
+
+    .forgotPasswordText {
+      display: flex;
+      justify-content: flex-end;
+      margin: 14px 0 0;
+      width: 318.0089416503906px;
+      max-width: 85%;
+      font: 400 16px/1.18 Georama, Helvetica, Arial, serif;
+      color: rgb(0 0 0);
+      text-align: right;
+      text-decoration: underline;
+    }
+  }
+
+  .signup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: rgb(255 255 255);
+      height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    .flex_col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 50px auto;
+      width: 468.0000305175781px;
+      max-width: 85%;
+    }
+
+    .image {
+      width: 80%;
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+
+    .title {
+      margin: 34px 7px 0;
+      font: 400 28px/1.17 Georama, Helvetica, Arial, serif;
+      color: rgb(0 0 0);
+      text-align: center;
+    }
+
+    .group {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .flex_row {
+      display: flex;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    .input_wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    .highlight {
+      position: absolute;
+      top: 5px;
+      left: 7px;
+      width: 73px;
+      height: 20px;
+      font: 400 16px/1.25 "Gothic A1", Helvetica, Arial, serif;
+      color: rgb(126 126 126);
+    }
+
+
+    .highlight6 {
+      position: absolute;
+      color: rgb(126, 126, 126);
+      text-align: center;
+      font-size: 14px;
+      bottom: 10px; /* Adjust as needed to position the label */
+      left: 50%;
+      transform: translateX(-50%);
+  }
+
+    .btn {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0 0;
+      width: 236px;
+      max-width: 100%;
+      font: 400 20px/1.25 "Gothic A1", Helvetica, Arial, serif;
+      color: rgb(0, 0, 0); /* Text color should be black */
+      text-align: center;
+      border-radius: 30.51px;
+      padding: 18px 34px;
+      outline: 5px solid rgb(156, 82, 116);
+      outline-offset: -5px;
+      background-color: transparent; /* Ensure background is transparent initially */
+      transition: all 0.3s ease; /* Smooth transition for hover effects */
+    }
+
+    .btn:hover {
+      background-color: rgb(156, 82, 116); /* Background color on hover */
+      color: #fff; /* Text color changes to white on hover */
+    }
+
+    .loginPromptDiv {
+      margin: 10px 33px 0;
+      font: 400 13px/1.23 Georama, Helvetica, Arial, serif;
+      color: rgb(0 0 0);
+      text-decoration: underline;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    /* General form styling */
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    h1 {
+      font-family: "Gothic A1", sans-serif;
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333;
+      text-align: center;
+    }
+
+    label {
+      font-size: 14px;
+      color: rgb(126, 126, 126);
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 50px;
+      box-sizing: border-box;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .profile_picture_wrapper {
+      width: 150px;
+      height: 150px;
+      background-color: #e0e0e0;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      cursor: pointer; /* Change cursor to pointer for user feedback */
+  }
+
+
+    .profile_picture_wrapper label {
+      display: block;
+      text-align: center;
+      font-size: 14px;
+      color: rgb(126, 126, 126);
+    }
+
+    .profile_picture {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover; /* Ensures the image covers the circle */
+  }
+
+    .login {
+      &.welcomeBackSection {
+        display: flex;
+        flex-direction: column;
+        background-color: rgb(255 255 255);
+        overflow: hidden;
+      }
+
+      .flex_col {
+        display: flex;
+        flex-direction: column;
+        margin: 199px auto 179px;
+        width: 468px;
+      }
+
+      .userImageFig {
+        width: 100%;
+      }
+
+      .welcomeMessageH1 {
+        margin: 46px 6px 0;
+        font: 400 28px/1.17 Georama, Helvetica, Arial, serif;
+        color: rgb(0 0 0);
+      }
+
+      .content_box {
+        display: flex;
+        flex-direction: column;
+        margin: 41px 0 0 2px;
+        width: 217px;
+        background-color: rgb(217 217 217);
+        border-radius: 16.24px;
+      }
+
+      .usernameHighlightP {
+        margin: 5px 0 7px 10px;
+        width: 72px;
+        font: 400 16px/1.25 "Gothic A1", Helvetica, Arial, serif;
+        color: rgb(126 126 126);
+      }
+      .content_box1 {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        margin: 29px 0 0 2px;
+        width: 217px;
+        background-color: rgb(217 217 217);
+        border-radius: 16.24px;
+      }
+
+      .passwordHighlightP {
+        position: relative;
+        margin: 4px 0 9px 9px;
+        width: 70px;
+        font: 400 16px/1.25 "Gothic A1", Helvetica, Arial, serif;
+        color: rgb(126 126 126);
+      }
+
+      .forgotPasswordTextDiv {
+        text-align: right; /* Align to the right if needed */
+        margin-top: 10px; /* Add some spacing above */
+        font-size: 14px; /* Adjust font size if needed */
+        color: rgb(0, 0, 0); /* Text color */
+        text-decoration: underline; /* Make it look like a link */
+    }
+
+
+      .wrapper2 {
+        display: flex;
+        flex-direction: column;
+        margin: 73px 0 0 2px;
+        width: 236px;
+        border-radius: 30.51px;
+        outline: 5px solid rgb(156 82 116);
+        outline-offset: -5px;
+      }
+
+      .loginSubtitleH3 {
+        display: flex;
+        justify-content: center;
+        margin: 18px auto;
+        font: 400 20px/1.25 "Gothic A1", Helvetica, Arial, serif;
+        color: rgb(0 0 0);
+        text-align: center;
+      }
+      .signUpPromptDiv {
+        margin: 10px 33px 0;
+        font: 400 13px/1.23 Georama, Helvetica, Arial, serif;
+        color: rgb(0 0 0);
+        text-decoration: underline;
+      }
+
+    .highlight {
+        position: absolute;
+        top: 5px;
+        left: 7px;
+        font: 400 16px/1.25 "Gothic A1", Helvetica, Arial, serif;
+        color: rgb(126, 126, 126);
+        transition: 0.2s; /* For smooth transition */
+    }
+
+    input:focus + .highlight,
+    input:not(:placeholder-shown) + .highlight {
+        top: -15px; /* Move label up */
+        left: 7px; /* Adjust label position */
+        font-size: 12px; /* Make label smaller */
+        color: rgb(0, 0, 0); /* Change color on focus */
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        background-color: #e0e0e0;
+        border: none;
+        border-radius: 50px;
+        box-sizing: border-box;
+        /* Hide text color when typing */
+        caret-color: black; /* Show caret color */
+    }
+
+    input:focus {
+        color: black; /* Show input text color when focused */
+    }
+
+    }
+
