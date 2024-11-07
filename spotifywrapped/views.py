@@ -1,7 +1,6 @@
 import requests
 import secrets
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -28,6 +27,10 @@ def register_view(request):
         return redirect('profile')
     return render(request, 'accounts/register.html')
 
+@login_required
+def generate_time_frame(request):
+    return render(request, 'spotify/generate_time_frame.html')
+
 def login_view(request):
     # Generate a random state value
     state_value = secrets.token_urlsafe(16)
@@ -40,6 +43,7 @@ def login_view(request):
                     f'state={state_value}&'
                     f'response_type=code&'
                     f'scope=user-top-read+playlist-read-private+user-library-read')
+@login_required
 def password_reset_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -60,6 +64,14 @@ def password_reset_view(request):
             messages.error(request, 'User not found')
             return redirect('password_reset')
     return render(request, 'accounts/password_reset.html')
+
+def confirm_delete_account(request):
+    if request.method == 'POST' and request.POST.get('confirm_delete') == 'true':
+        user = request.user
+        user.delete()
+        messages.success(request, "Your account has been deleted.")
+        return redirect('login')
+    return render(request, 'accounts/delete_account.html')
 
 def spotify_callback(request):
     code = request.GET.get('code')

@@ -12,6 +12,7 @@ urlpatterns = [
     path('password-reset/', views.password_reset_view, name='password_reset'),
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register_view, name='register'),
+    path('spotify/generate-time-frame/', views.generate_time_frame, name='generate_time_frame'),
     path('spotify/callback/', views.spotify_callback, name='spotify_callback'),
     path('spotify/top-tracks/', views.get_top_tracks, name='top_tracks'),
     path('delete-account/', views.confirm_delete_account, name='confirm_delete_account'),
