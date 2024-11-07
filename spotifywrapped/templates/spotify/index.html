@@ -1,42 +1,3 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-
-<html>
-
-  <head>
-    {% load static %}
-
-    <meta charset="utf-8" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
-
-    <!-- Please DO NOT remove this line, all link and script tags will be merged to here -->
-
-    <link rel="stylesheet" type="text/css" href="{% static 'css/userauth.css' %}" /> 
-
-  </head>
-
-  <body class="flex-column">
-
-    <section class="launch userActionSection">
-      <div class="flex_col">
-        <img class="userImage" src="{% static 'css/logo.png' %}" alt="alt text" />
-        <!-- User profile image --> 
-        <a href="{% url 'social:begin' 'spotify' %}">
-        <button class="logInButton">
-          <!-- Button for user log in --> 
-          log in with spotify
-        </button>
-        </a>
-      </div>
-    </section>
-
-
-  </body>
-
-=======
 <html>
 <title>Spotify Wrapped Home</title>
 {% load static %}
@@ -52,5 +13,4 @@
     </select>
     <button type="submit">Generate Wrap</button>
 </form>
->>>>>>> 71ce4bf556b446dbadbaa40b3e64eb00722afb34
 </html>

@@ -7,4 +7,5 @@ urlpatterns = [
     path("wraps/", views.wrap_list, name="wrap_list"),
     path("index/", views.index, name="index"),
     path('wraps/<int:wrap_id>/', views.wrap_detail, name='wrap_detail'),
+    path('auth/', include('social_django.urls', namespace='social')),
 ]
