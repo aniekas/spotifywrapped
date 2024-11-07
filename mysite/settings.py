@@ -1,23 +1,26 @@
 from pathlib import Path
-import environ
+from dotenv import load_dotenv
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Initialize environment variables
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Secret key (from .env)
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-# Spotify API Key (from .env)
-SPOTIFY_CLIENT_ID = env('SPOTIFY_CLIENT_ID')
-SPOTIFY_CLIENT_SECRET = env('SPOTIFY_CLIENT_SECRET')
+# Spotify API credentials (from .env)
+SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+SPOTIFY_REDIRECT_URI = os.getenv('SPOTIFY_REDIRECT_URI', 'http://localhost:2340/spotify/callback')  # Default if not in .env
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# Session engine configuration
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -28,6 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'spotifywrapped.apps.SpotifywrappedConfig',
     'social_django',
+    'oauth2_provider',
+    'rest_framework_social_oauth2',
 ]
 
 MIDDLEWARE = [
@@ -63,16 +68,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
-# OAuth credentials from Spotify
-SOCIAL_AUTH_SPOTIFY_KEY = env('SPOTIFY_CLIENT_ID')  # Spotify Client ID
-SOCIAL_AUTH_SPOTIFY_SECRET = env('SPOTIFY_CLIENT_SECRET')  # Spotify Client Secret
+# OAuth credentials and redirect settings
+SOCIAL_AUTH_SPOTIFY_KEY = SPOTIFY_CLIENT_ID
+SOCIAL_AUTH_SPOTIFY_SECRET = SPOTIFY_CLIENT_SECRET
 SOCIAL_AUTH_SPOTIFY_SCOPE = ['user-top-read', 'playlist-read-private', 'user-library-read']
-
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
-SOCIAL_AUTH_SPOTIFY_REDIRECT_URI = 'http://localhost:2340/spotify/callback'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
 
-# Database (Use SQLite for development)
+# Database configuration (SQLite for development)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -80,6 +83,15 @@ DATABASES = {
     }
 }
 
+# REST framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # For django-oauth-toolkit >= 1.0.0
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    ),
+}
+
+# Authentication backends configuration
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.spotify.SpotifyOAuth2',
     'django.contrib.auth.backends.ModelBackend',
@@ -101,12 +113,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Internationalization and timezone
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+# Static files configuration
+STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

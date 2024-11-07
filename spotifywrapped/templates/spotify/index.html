@@ -1,49 +1,17 @@
 <!DOCTYPE html>
-
-<html>
-
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to Your Spotify Account</title>
     {% load static %}
-
-    <meta charset="utf-8" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
-
-    <!-- Please DO NOT remove this line, all link and script tags will be merged to here -->
-
-    <link rel="stylesheet" type="text/css" href="/css/common.css" />
-
-    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
-
-    <link rel="stylesheet" type="text/css" href="/css/UntitledPage.css" />
-
-    <link rel="stylesheet" type="text/css" href="{% static 'restaurants/userauth.css' %}" />
-
-  </head>
-
-  <body class="flex-column">
-
-    <section class="launch userActionSection">
-      <div class="flex_col">
-        </a>
-        <a href="{% url 'login' %}">
-        <button class="logInButton">
-          <!-- Button for user log in -->
-          log in
-        </button>
-        </a>
-
-        <a href="{% url 'contact_developers' %}">
-          <button class="contactButton">
-            Contact the Developers
-          </button>
-        </a>
-      </div>
-    </section>
-
-
-  </body>
-
+    <link rel="stylesheet" href="{% static 'css/userauth.css' %}"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <div class="container">
+        <h1>Login with Spotify</h1>
+        <a href="{% url 'social:begin' 'spotify' %}" class="btn">Login with Spotify</a>
+        <!-- Add any additional information or links if necessary -->
+    </div>
+</body>
 </html>

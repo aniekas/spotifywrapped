@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from spotifywrapped import views
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('spotifywrapped.urls')),  # Your app's URLs
-    path('spotify/', include('social_django.urls', namespace='social')),  # Include social auth urls
+    path("app/", include("spotifywrapped.urls")),  # Include the app's URLs under a base path
+    path("", RedirectView.as_view(url='/app/login/', permanent=False)),  # Redirect root URL to login
+    path('spotify/callback/', views.callback, name='callback'),
 ]
