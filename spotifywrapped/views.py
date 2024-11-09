@@ -1,4 +1,10 @@
 import requests
+import secrets
+from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
@@ -11,6 +17,10 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from datetime import timedelta
 from django.http import HttpResponse
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 def index(request):
     if request.method == 'POST':
@@ -239,3 +249,5 @@ def delete_wrap(request, wrap_id):
     # Delete the wrap and redirect
     wrap.delete()
     return redirect("wrap_list")
+def contact_developers(request):
+    return render(request, 'spotify/contact.html')
