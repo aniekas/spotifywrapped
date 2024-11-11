@@ -1,0 +1,381 @@
+Index: spotifywrapped/views.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import requests\nimport secrets\nfrom django.shortcuts import render, redirect\nfrom django.contrib.auth.models import User\nfrom django.contrib.auth import update_session_auth_hash\nfrom django.contrib import messages\nfrom django.contrib.auth import login, logout\nfrom django.contrib.auth.decorators import login_required\nfrom django.conf import settings\nfrom .models import SpotifyWrap\nfrom social_core.exceptions import AuthCanceled\nfrom django.http import HttpResponse\nfrom django.contrib.auth.models import User\nfrom django.shortcuts import render\nfrom django.core.mail import send_mail\nfrom django.conf import settings\n\n\ndef index(request):\n    return render(request, 'spotify/index.html')\n\ndef register_view(request):\n    if request.method == 'POST':\n        username = request.POST['username']\n        password = request.POST['password']\n        user = User.objects.create_user(username=username, password=password)\n        login(request, user)\n        return redirect('profile')\n    return render(request, 'accounts/register.html')\n\ndef login_view(request):\n    # Generate a random state value\n    state_value = secrets.token_urlsafe(16)\n    request.session['oauth_state'] = state_value\n\n    # Redirect to Spotify authorization URL\n    return redirect(f'https://accounts.spotify.com/authorize?'\n                    f'client_id={settings.SPOTIFY_CLIENT_ID}&'\n                    f'redirect_uri={settings.SOCIAL_AUTH_SPOTIFY_REDIRECT_URI}&'\n                    f'state={state_value}&'\n                    f'response_type=code&'\n                    f'scope=user-top-read+playlist-read-private+user-library-read')\ndef password_reset_view(request):\n    if request.method == 'POST':\n        username = request.POST.get('username')\n        new_password = request.POST.get('new_password')\n        confirm_password = request.POST.get('confirm_password')\n\n        if new_password != confirm_password:\n            messages.error(request, 'Passwords do not match')\n            return redirect('password_reset')\n        try:\n            user = User.objects.get(username=username)\n            user.set_password(new_password)\n            user.save()\n            update_session_auth_hash(request, user)\n            messages.success(request, 'Your password has been reset.')\n            return redirect('login')\n        except User.DoesNotExist:\n            messages.error(request, 'User not found')\n            return redirect('password_reset')\n    return render(request, 'accounts/password_reset.html')\n\ndef spotify_callback(request):\n    code = request.GET.get('code')\n    state = request.GET.get('state')\n\n    # Check if the state matches\n    if state != request.session.get('oauth_state'):\n        return HttpResponse(\"Invalid state parameter.\", status=400)\n\n    # Exchange the code for an access token\n    token_url = 'https://accounts.spotify.com/api/token'\n    data = {\n        'grant_type': 'authorization_code',\n        'code': code,\n        'redirect_uri': settings.SOCIAL_AUTH_SPOTIFY_REDIRECT_URI,\n        'client_id': settings.SPOTIFY_CLIENT_ID,\n        'client_secret': settings.SPOTIFY_CLIENT_SECRET,\n    }\n    response = requests.post(token_url, data=data)\n    token_info = response.json()\n\n    if 'access_token' in token_info:\n        access_token = token_info['access_token']\n\n        # Fetch the user's top tracks\n        wrap_data = fetch_spotify_wrap_data(access_token)\n\n        # Get the current user\n        user = request.user\n\n        # Save the wrap data to the database\n        SpotifyWrap.objects.create(user=user, wrap_data=wrap_data)\n\n        return redirect('profile')\n    else:\n        raise AuthCanceled()  # Handle error case where token exchange fails\n\ndef fetch_spotify_wrap_data(access_token):\n    url = 'https://api.spotify.com/v1/me/top/tracks'\n    headers = {'Authorization': f'Bearer {access_token}'}\n    response = requests.get(url, headers=headers)\n\n    if response.status_code == 200:\n        return response.json()['items']\n    else:\n        return []  # Return an empty list if there's an error\n\ndef fetch_spotify_wrapped_metrics(access_token):\n    headers = {'Authorization': f'Bearer {access_token}'}\n\n    # 1. Top 5 Genres\n    top_tracks_url = 'https://api.spotify.com/v1/me/top/tracks'\n    top_tracks_response = requests.get(top_tracks_url, headers=headers)\n    top_tracks = top_tracks_response.json()['items'] if top_tracks_response.status_code == 200 else []\n\n    # Extract artist IDs from top tracks to gather genres\n    artist_ids = {artist['id'] for track in top_tracks for artist in track['artists']}\n    genre_count = {}\n    for artist_id in artist_ids:\n        artist_url = f'https://api.spotify.com/v1/artists/{artist_id}'\n        artist_response = requests.get(artist_url, headers=headers)\n        if artist_response.status_code == 200:\n            genres = artist_response.json().get('genres', [])\n            for genre in genres:\n                genre_count[genre] = genre_count.get(genre, 0) + 1\n    top_5_genres = sorted(genre_count.items(), key=lambda x: x[1], reverse=True)[:5]\n\n    # 2. Total Minutes Listened\n    recently_played_url = 'https://api.spotify.com/v1/me/player/recently-played'\n    recent_tracks_response = requests.get(recently_played_url, headers=headers)\n    recent_tracks = recent_tracks_response.json().get('items', [])\n    total_minutes_listened = sum(track['track']['duration_ms'] / 60000 for track in recent_tracks)\n\n    # 3. Top 5 Artists\n    top_artists_url = 'https://api.spotify.com/v1/me/top/artists'\n    top_artists_response = requests.get(top_artists_url, headers=headers)\n    top_artists = top_artists_response.json()['items'][:5] if top_artists_response.status_code == 200 else []\n\n    # 4. Number of Minutes Listened to Top Artist\n    minutes_listened_to_top_artist = 0\n    if top_artists:\n        top_artist_id = top_artists[0]['id']\n        minutes_listened_to_top_artist = sum(track['duration_ms'] / 60000 for track in top_tracks if top_artist_id in [artist['id'] for artist in track['artists']])\n\n    # 5. Total Number of Artists Listened To\n    total_artists_listened_to = len(artist_ids)\n\n    # 6. Top 5 Albums\n    album_count = {}\n    for track in top_tracks:\n        album = track['album']\n        album_count[album['id']] = album_count.get(album['id'], 0) + 1\n    top_5_albums = sorted(album_count.items(), key=lambda x: x[1], reverse=True)[:5]\n\n    # 7. Total Number of Albums Listened To\n    total_albums_listened_to = len(album_count)\n\n    # 8. Number of Times Top Album Was Played\n    top_album_id = top_5_albums[0][0] if top_5_albums else None\n    times_top_album_played = 0\n    if top_album_id:\n        times_top_album_played = sum(1 for track in top_tracks if track['album']['id'] == top_album_id)\n\n    # 9. Top 10 Songs\n    top_10_songs = top_tracks[:10]\n\n    # 10. Number of Times Listened to Top Song\n    top_song_id = top_tracks[0]['id'] if top_tracks else None\n    times_listened_to_top_song = 0\n    if top_song_id:\n        times_listened_to_top_song = sum(1 for track in recent_tracks if track['track']['id'] == top_song_id)\n\n    # Return all the metrics\n    return {\n        'top_5_genres': top_5_genres,\n        'total_minutes_listened': total_minutes_listened,\n        'top_5_artists': top_artists,\n        'minutes_listened_to_top_artist': minutes_listened_to_top_artist,\n        'total_artists_listened_to': total_artists_listened_to,\n        'top_5_albums': top_5_albums,\n        'total_albums_listened_to': total_albums_listened_to,\n        'times_top_album_played': times_top_album_played,\n        'top_10_songs': top_10_songs,\n        'times_listened_to_top_song': times_listened_to_top_song\n    }\n\n@login_required\ndef get_top_tracks(request):\n    wraps = SpotifyWrap.objects.filter(user=request.user)\n    return render(request, 'spotify/top_tracks.html', {'wraps': wraps})\n\ndef logout_view(request):\n    logout(request)\n    return redirect('index')\n\n@login_required\ndef confirm_delete_account(request):\n    if request.method == 'POST':\n        return delete_account(request)\n    return render(request, 'accounts/confirm_delete_account.html')\n\n@login_required\ndef delete_account(request):\n    user = request.user\n    user.delete()  # Delete the user account\n    return redirect('index')  # Redirect to a landing page or confirmation page\n\ndef contact_developers(request):\n    return render(request, 'spotify/contact.html')
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spotifywrapped/views.py b/spotifywrapped/views.py
+--- a/spotifywrapped/views.py	(revision bb43184073125b2ab988c384e5b6e440991566de)
++++ b/spotifywrapped/views.py	(date 1730228203215)
+@@ -1,7 +1,6 @@
+ import requests
+ import secrets
+ from django.shortcuts import render, redirect
+-from django.contrib.auth.models import User
+ from django.contrib.auth import update_session_auth_hash
+ from django.contrib import messages
+ from django.contrib.auth import login, logout
+@@ -28,6 +27,9 @@
+         return redirect('profile')
+     return render(request, 'accounts/register.html')
+ 
++def generate_time_frame(request):
++    return render(request, 'spotify/generate_time_frame.html')
++
+ def login_view(request):
+     # Generate a random state value
+     state_value = secrets.token_urlsafe(16)
+@@ -61,6 +63,14 @@
+             return redirect('password_reset')
+     return render(request, 'accounts/password_reset.html')
+ 
++def confirm_delete_account(request):
++    if request.method == 'POST' and request.POST.get('confirm_delete') == 'true':
++        user = request.user
++        user.delete()
++        messages.success(request, "Your account has been deleted.")
++        return redirect('login')
++    return render(request, 'accounts/delete_account.html')
++
+ def spotify_callback(request):
+     code = request.GET.get('code')
+     state = request.GET.get('state')
+Index: spotifywrapped/templates/accounts/confirm_delete_account.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spotifywrapped/templates/accounts/confirm_delete_account.html b/spotifywrapped/templates/accounts/confirm_delete_account.html
+--- a/spotifywrapped/templates/accounts/confirm_delete_account.html	(revision bb43184073125b2ab988c384e5b6e440991566de)
++++ b/spotifywrapped/templates/accounts/confirm_delete_account.html	(date 1730227030030)
+@@ -1,0 +1,13 @@
++{% extends "base.html" %}
++
++{% block content %}
++  <h2>Confirm Account Deletion</h2>
++  <p>Are you sure you want to delete your account? This action cannot be undone.</p>
++
++  <form method="POST">
++    {% csrf_token %}
++    <input type="hidden" name="confirm_delete" value="true">
++    <button type="submit">Confirm Delete</button>
++    <a href="{% url 'profile' %}">Cancel</a>  <!-- Link to go back to profile or another page -->
++  </form>
++{% endblock %}
+Index: mysite/settings.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from pathlib import Path\nimport environ\nimport os\n\nBASE_DIR = Path(__file__).resolve().parent.parent\n\n# Initialize environment variables\nenv = environ.Env()\nenviron.Env.read_env(os.path.join(BASE_DIR, '.env'))\n\n# Secret key (from .env)\nSECRET_KEY = env('SECRET_KEY')\n\n# Spotify API Key (from .env)\nSPOTIFY_CLIENT_ID = env('SPOTIFY_CLIENT_ID')\nSPOTIFY_CLIENT_SECRET = env('SPOTIFY_CLIENT_SECRET')\n\nDEBUG = True\n\nALLOWED_HOSTS = []\n\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'spotifywrapped.apps.SpotifywrappedConfig',\n    'social_django',\n]\n\nMIDDLEWARE = [\n    'django.middleware.security.SecurityMiddleware',\n    'django.contrib.sessions.middleware.SessionMiddleware',\n    'django.middleware.common.CommonMiddleware',\n    'django.middleware.csrf.CsrfViewMiddleware',\n    'django.contrib.auth.middleware.AuthenticationMiddleware',\n    'django.contrib.messages.middleware.MessageMiddleware',\n    'django.middleware.clickjacking.XFrameOptionsMiddleware',\n    'social_django.middleware.SocialAuthExceptionMiddleware',\n]\n\nROOT_URLCONF = 'mysite.urls'\n\nTEMPLATES = [\n    {\n        'BACKEND': 'django.template.backends.django.DjangoTemplates',\n        'DIRS': [os.path.join(BASE_DIR, 'spotifywrapped', 'templates')],\n        'APP_DIRS': True,\n        'OPTIONS': {\n            'context_processors': [\n                'django.template.context_processors.debug',\n                'django.template.context_processors.request',\n                'django.contrib.auth.context_processors.auth',\n                'django.contrib.messages.context_processors.messages',\n                'social_django.context_processors.backends',\n                'social_django.context_processors.login_redirect',\n            ],\n        },\n    },\n]\n\nWSGI_APPLICATION = 'mysite.wsgi.application'\n\n# OAuth credentials from Spotify\nSOCIAL_AUTH_SPOTIFY_KEY = env('SPOTIFY_CLIENT_ID')  # Spotify Client ID\nSOCIAL_AUTH_SPOTIFY_SECRET = env('SPOTIFY_CLIENT_SECRET')  # Spotify Client Secret\nSOCIAL_AUTH_SPOTIFY_SCOPE = ['user-top-read', 'playlist-read-private', 'user-library-read']\n\nSOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'\nSOCIAL_AUTH_SPOTIFY_REDIRECT_URI = 'http://localhost:2340/spotify/callback'\nSOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'\n\n# Database (Use SQLite for development)\nDATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.sqlite3',\n        'NAME': BASE_DIR / 'db.sqlite3',\n    }\n}\n\nAUTHENTICATION_BACKENDS = (\n    'social_core.backends.spotify.SpotifyOAuth2',\n    'django.contrib.auth.backends.ModelBackend',\n)\n\n# Password validation\nAUTH_PASSWORD_VALIDATORS = [\n    {\n        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',\n    },\n    {\n        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',\n    },\n    {\n        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',\n    },\n    {\n        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',\n    },\n]\n\nLANGUAGE_CODE = 'en-us'\nTIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\n\n# Static files (CSS, JavaScript, Images)\nSTATIC_URL = 'static/'\n\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/mysite/settings.py b/mysite/settings.py
+--- a/mysite/settings.py	(revision bb43184073125b2ab988c384e5b6e440991566de)
++++ b/mysite/settings.py	(date 1730228330659)
+@@ -110,3 +110,5 @@
+ STATIC_URL = 'static/'
+ 
+ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
++
++LOGIN_REDIRECT_URL = 'generate_time_frame'
+Index: spotifywrapped/templates/spotify/generate_time_frame.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>$Title$</title>\n</head>\n<body>\n$END$\n</body>\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spotifywrapped/templates/spotify/generate_time_frame.html b/spotifywrapped/templates/spotify/generate_time_frame.html
+--- a/spotifywrapped/templates/spotify/generate_time_frame.html	(revision bb43184073125b2ab988c384e5b6e440991566de)
++++ b/spotifywrapped/templates/spotify/generate_time_frame.html	(date 1730339403936)
+@@ -1,10 +1,60 @@
+ <!DOCTYPE html>
+-<html lang="en">
+-<head>
+-  <meta charset="UTF-8">
+-  <title>$Title$</title>
+-</head>
+-<body>
+-$END$
+-</body>
+-</html>
+\ No newline at end of file
++<html>
++  <head>
++    <meta charset="utf-8" />
++    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
++    <link
++      rel="stylesheet"
++      type="text/css"
++      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
++      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
++      crossorigin="anonymous"
++    />
++    <link rel="stylesheet" type="text/css" href="/css/common.css" />
++    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
++    <link rel="stylesheet" type="text/css" href="/css/spotify.css" />
++  </head>
++
++  <body class="flex-column">
++    <section class="timeframe mainContainer">
++      <div class="contentWrapper">
++        <!-- Main content area -->
++        <nav class="headerRow">
++          <img
++            class="logoImg"
++            src="/assets/7e1a0bd0f343a1b28ec6a7a45fa248b3.svg"
++            alt="alt text"
++          />
++          <a class="homeLink">home</a>
++          <a class="contact">contact the developers</a>
++          <div class="colorAccent"></div>
++        </nav>
++        <div class="heroContent">
++          <p class="welcomeMsg">welcome (user)!</p>
++          <div class="actionArea">
++            <div class="timeFrameSelector">
++              <div class="selectorRow">
++                <p class="selectorLabel">Select a time frame</p>
++                <img
++                  class="selectorIcon"
++                  src="/assets/98f8314f71281537a5104d06752a7099.svg"
++                  alt="alt text"
++                />
++              </div>
++
++              <!-- Dropdown for selecting time frame -->
++              <select id="timeframe" class="timeFrameDropdown">
++                <option value="short_term">Last 4 weeks</option>
++                <option value="medium_term">Last 6 months</option>
++                <option value="long_term">All time</option>
++              </select>
++            </div>
++            <button class="generateBtn">
++              <p class="generateBtnText">GENERATE WRAPPED</p>
++            </button>
++          </div>
++        </div>
++      </div>
++    </section>
++  </body>
++</html>
+Index: spotifywrapped/static/css/spotify.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spotifywrapped/static/css/spotify.css b/spotifywrapped/static/css/spotify.css
+--- a/spotifywrapped/static/css/spotify.css	(revision bb43184073125b2ab988c384e5b6e440991566de)
++++ b/spotifywrapped/static/css/spotify.css	(date 1730229011520)
+@@ -1,0 +1,104 @@
++.timeframe .mainContainer {
++    display: flex;
++    flex-direction: column;
++    background-color: white;
++    overflow: hidden;
++}
++.timeframe .contentWrapper {
++    display: flex;
++    flex-direction: column;
++    align-items: center;
++    gap: 110px 0;
++    margin: 13px 36px 191px 28px;
++}
++.timeframe .headerRow {
++    z-index: 1;
++    display: flex;
++    justify-content: space-between;
++    gap: 0 10px;
++    width: 100%;
++}
++.timeframe .logoImg {
++    margin: 12px 0 13px;
++    width: 87px;
++    min-width: 0;
++}
++.timeframe .homeLink {
++    z-index: 1;
++    margin: 34px 0 26px;
++    width: 130px;
++    min-width: 0;
++    font: 700 36px/1.19 Georama, Helvetica, Arial, serif;
++    color: black;
++}
++.timeframe .contactLink {
++    z-index: 1;
++    margin: 38px 0 27px;
++    min-width: 0;
++    font: 400 32px/1.18 Georama, Helvetica, Arial, serif;
++    color: black;
++}
++.timeframe .colorAccent {
++    width: 103px;
++    min-width: 0;
++    min-height: 103px;
++    background-color: #d9d9d9;
++    border-radius: 52px;
++}
++.timeframe .heroContent {
++    display: flex;
++    flex-direction: column;
++    align-items: center;
++    gap: 108px 0;
++    width: 54.03%;
++}
++.timeframe .welcomeMsg {
++    font: 400 96px/1.19 Georama, Helvetica, Arial, serif;
++    color: black;
++}
++.timeframe .actionArea {
++    display: flex;
++    flex-direction: column;
++    align-items: center;
++    gap: 28px 0;
++    width: 80.37%;
++}
++.timeframe .timeFrameSelector {
++    z-index: 1;
++    display: flex;
++    flex-direction: column;
++    width: 75%;
++    background-color: #d9d9d9;
++}
++.timeframe .selectorRow {
++    display: flex;
++    justify-content: space-between;
++    gap: 0 10px;
++    margin: 6px 8px 11px;
++    padding: 0 9px 0 0;
++}
++.timeframe .selectorLabel {
++    min-width: 0;
++    font: 400 32px/1.18 Georama, Helvetica, Arial, serif;
++    color: rgba(0, 0, 0, 0.537);
++}
++.timeframe .selectorIcon {
++    margin: 14px 0 7px;
++    width: 39px;
++    min-width: 0;
++}
++.timeframe .generateBtn {
++    display: flex;
++    flex-direction: column;
++    width: 100%;
++    background-color: #d9d9d9;
++    border-radius: 50px;
++}
++.timeframe .generateBtnText {
++    display: flex;
++    justify-content: center;
++    margin: 31px auto 30px;
++    font: 400 40px/1.2 Georama, Helvetica, Arial, serif;
++    color: rgba(0, 0, 0, 0.627);
++    text-align: center;
++}
+Index: spotifywrapped/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.urls import path, include\nfrom . import views\nfrom django.urls import path\nfrom .views import contact_developers\n\n\n\nurlpatterns = [\n    path('', views.index, name='index'),\n    path('auth/', include('social_django.urls', namespace='social')),\n    path('login/', views.login_view, name='login'),\n    path('password-reset/', views.password_reset_view, name='password_reset'),\n    path('logout/', views.logout_view, name='logout'),\n    path('register/', views.register_view, name='register'),\n    path('spotify/callback/', views.spotify_callback, name='spotify_callback'),\n    path('spotify/top-tracks/', views.get_top_tracks, name='top_tracks'),\n    path('delete-account/', views.confirm_delete_account, name='confirm_delete_account'),\n    path('delete-account/confirm/', views.delete_account, name='delete_account'),\n    path('callback/', views.spotify_callback, name='spotify_callback'),\n    path('contact/', contact_developers, name='contact_developers'),\n]\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spotifywrapped/urls.py b/spotifywrapped/urls.py
+--- a/spotifywrapped/urls.py	(revision bb43184073125b2ab988c384e5b6e440991566de)
++++ b/spotifywrapped/urls.py	(date 1730228330620)
+@@ -12,6 +12,7 @@
+     path('password-reset/', views.password_reset_view, name='password_reset'),
+     path('logout/', views.logout_view, name='logout'),
+     path('register/', views.register_view, name='register'),
++    path('spotify/generate-time-frame/', views.generate_time_frame, name='generate_time_frame'),
+     path('spotify/callback/', views.spotify_callback, name='spotify_callback'),
+     path('spotify/top-tracks/', views.get_top_tracks, name='top_tracks'),
+     path('delete-account/', views.confirm_delete_account, name='confirm_delete_account'),
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"fd32aa0f-08c1-4d25-ad8c-263f35a6f3b0\" name=\"Changes\" comment=\"\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/spotifywrapped.iml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/spotifywrapped.iml\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"DjangoConsoleOptions\" custom-start-script=\"import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)\">\n    <option name=\"myCustomStartScript\" value=\"import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 1\n}</component>\n  <component name=\"ProjectId\" id=\"2nnma4F7eJjzZcMYxGHX48mC3K9\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;master&quot;,\n    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lindsey/OneDrive - Georgia State University/2340/spotifywrapped&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RunManager\">\n    <configuration default=\"true\" type=\"DjangoTestsConfigurationType\">\n      <module name=\"djangoProject\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <envs>\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\n      </envs>\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\n      <option name=\"TARGET\" value=\"\" />\n      <option name=\"SETTINGS_FILE\" value=\"\" />\n      <option name=\"CUSTOM_SETTINGS\" value=\"false\" />\n      <option name=\"USE_OPTIONS\" value=\"false\" />\n      <option name=\"OPTIONS\" value=\"\" />\n      <method v=\"2\" />\n    </configuration>\n    <configuration default=\"true\" type=\"PyBehaveRunConfigurationType\" factoryName=\"Behave\">\n      <module name=\"djangoProject\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\n      <option name=\"ADDITIONAL_ARGS\" value=\"\" />\n      <method v=\"2\" />\n    </configuration>\n    <configuration default=\"true\" type=\"PythonConfigurationType\" factoryName=\"Python\">\n      <module name=\"djangoProject\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <envs>\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\n      </envs>\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\n      <option name=\"SCRIPT_NAME\" value=\"\" />\n      <option name=\"PARAMETERS\" value=\"\" />\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\n      <option name=\"MODULE_MODE\" value=\"false\" />\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\n      <option name=\"INPUT_FILE\" value=\"\" />\n      <method v=\"2\" />\n    </configuration>\n    <configuration default=\"true\" type=\"Python.FlaskServer\">\n      <module name=\"djangoProject\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\n      <option name=\"launchJavascriptDebuger\" value=\"false\" />\n      <method v=\"2\" />\n    </configuration>\n    <configuration default=\"true\" type=\"Tox\" factoryName=\"Tox\">\n      <module name=\"djangoProject\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\n      <method v=\"2\" />\n    </configuration>\n    <configuration default=\"true\" type=\"docs\" factoryName=\"Docutils task\">\n      <module name=\"djangoProject\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <option name=\"docutils_input_file\" value=\"\" />\n      <option name=\"docutils_output_file\" value=\"\" />\n      <option name=\"docutils_params\" value=\"\" />\n      <option name=\"docutils_task\" value=\"\" />\n      <option name=\"docutils_open_in_browser\" value=\"false\" />\n      <method v=\"2\" />\n    </configuration>\n    <configuration default=\"true\" type=\"docs\" factoryName=\"Sphinx task\">\n      <module name=\"djangoProject\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <option name=\"docutils_input_file\" value=\"\" />\n      <option name=\"docutils_output_file\" value=\"\" />\n      <option name=\"docutils_params\" value=\"\" />\n      <option name=\"docutils_task\" value=\"\" />\n      <option name=\"docutils_open_in_browser\" value=\"false\" />\n      <method v=\"2\" />\n    </configuration>\n    <configuration default=\"true\" type=\"tests\" factoryName=\"Doctests\">\n      <module name=\"djangoProject\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\n      <option name=\"SCRIPT_NAME\" value=\"\" />\n      <option name=\"CLASS_NAME\" value=\"\" />\n      <option name=\"METHOD_NAME\" value=\"\" />\n      <option name=\"FOLDER_NAME\" value=\"\" />\n      <option name=\"TEST_TYPE\" value=\"TEST_SCRIPT\" />\n      <option name=\"PATTERN\" value=\"\" />\n      <option name=\"USE_PATTERN\" value=\"false\" />\n      <method v=\"2\" />\n    </configuration>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-PY-242.21829.153\" />\n        <option value=\"bundled-python-sdk-464836ebc622-b74155a9e76b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.21829.153\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"fd32aa0f-08c1-4d25-ad8c-263f35a6f3b0\" name=\"Changes\" comment=\"\" />\n      <created>1729617274142</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1729617274142</updated>\n      <workItem from=\"1729617275222\" duration=\"423000\" />\n      <workItem from=\"1730145323572\" duration=\"553000\" />\n      <workItem from=\"1730146117860\" duration=\"7715000\" />\n      <workItem from=\"1730225232541\" duration=\"769000\" />\n    </task>\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision bb43184073125b2ab988c384e5b6e440991566de)
++++ b/.idea/workspace.xml	(date 1730673107508)
+@@ -5,8 +5,13 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="fd32aa0f-08c1-4d25-ad8c-263f35a6f3b0" name="Changes" comment="">
+-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/spotifywrapped.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/spotifywrapped.iml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/mysite/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/mysite/settings.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spotifywrapped/static/css/spotify.css" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/static/css/spotify.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/accounts/confirm_delete_account.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/accounts/confirm_delete_account.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/generate_time_frame.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/generate_time_frame.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spotifywrapped/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/urls.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spotifywrapped/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/views.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -15,6 +20,14 @@
+   </component>
+   <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+     <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
++  </component>
++  <component name="FileTemplateManagerImpl">
++    <option name="RECENT_TEMPLATES">
++      <list>
++        <option value="HTML File" />
++        <option value="CSS File" />
++      </list>
++    </option>
+   </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+@@ -27,21 +40,23 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lindsey/OneDrive - Georgia State University/2340/spotifywrapped&quot;,
+-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "DefaultHtmlFileTemplate": "HTML File",
++    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "git-widget-placeholder": "master",
++    "last_opened_file_path": "C:/Users/Lindsey/OneDrive - Georgia State University/2340/spotifywrapped",
++    "list.type.of.created.stylesheet": "CSS",
++    "node.js.detected.package.eslint": "true",
++    "node.js.detected.package.tslint": "true",
++    "node.js.selected.package.eslint": "(autodetect)",
++    "node.js.selected.package.tslint": "(autodetect)",
++    "nodejs_package_manager_path": "npm",
++    "settings.editor.selected.configurable": "preferences.lookFeel",
++    "vue.rearranger.settings.migration": "true"
+   }
+-}</component>
++}]]></component>
+   <component name="RunManager">
+     <configuration default="true" type="DjangoTestsConfigurationType">
+       <module name="djangoProject" />
+@@ -203,6 +218,8 @@
+       <workItem from="1730145323572" duration="553000" />
+       <workItem from="1730146117860" duration="7715000" />
+       <workItem from="1730225232541" duration="769000" />
++      <workItem from="1730226048290" duration="524000" />
++      <workItem from="1730226619461" duration="6800000" />
+     </task>
+     <servers />
+   </component>

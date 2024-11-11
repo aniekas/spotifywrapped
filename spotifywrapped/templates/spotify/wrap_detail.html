@@ -8,9 +8,10 @@
 <body>
     <h2>{{ wrap.title }}</h2>
     <p>Year: {{ wrap.year }}</p>
+
     <h3>Top Artists:</h3>
     <ul>
-        {% for artist in wrap.top_artists.items %}
+        {% for artist in wrap.top_artists %}
             <li>{{ artist.name }}</li>
         {% endfor %}
     </ul>
