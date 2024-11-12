@@ -122,5 +122,14 @@ USE_TZ = True
 # Static files configuration
 STATIC_URL = '/static/'
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.office365.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Retrieve from .env
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Retrieve from .env
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
 
