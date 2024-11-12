@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="de9b17bf-8c75-4e38-8dc2-1796b3eba13a" name="Changes" comment="" />
+    <list default="true" id="de9b17bf-8c75-4e38-8dc2-1796b3eba13a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/spotifywrapped.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/spotifywrapped.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/wrap_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/wrap_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/views.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,50 +34,46 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 1
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;aniekas&quot;
+  }
 }</component>
-  <component name="ProjectId" id="2nnma4F7eJjzZcMYxGHX48mC3K9" />
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "aniekas"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/aniekas/spotifywrapped.git&quot;,
+    &quot;accountId&quot;: &quot;b41863ff-ae1d-42e9-bba7-41f57debce7e&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/aniekas/spotifywrapped.git",
-    "accountId": "b41863ff-ae1d-42e9-bba7-41f57debce7e"
-  }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2nZkzhKakTsXmwoNxJmLQXBiX59" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug.generate_time_frame.html.executor": "Run",
-    "JavaScript Debug.login.html.executor": "Run",
-    "JavaScript Debug.top_tracks.html.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/Lindsey/OneDrive - Georgia State University/2340/spotifywrapped",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.general",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.generate_time_frame.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.login.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.top_tracks.html.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lindsey/OneDrive - Georgia State University/2340/spotifywrapped&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.general&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Lindsey\OneDrive - Georgia State University\2340\spotifywrapped\spotifywrapped\static" />
@@ -224,12 +233,11 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="fd32aa0f-08c1-4d25-ad8c-263f35a6f3b0" name="Changes" comment="" />
-      <created>1729617274142</created>
       <changelist id="de9b17bf-8c75-4e38-8dc2-1796b3eba13a" name="Changes" comment="" />
       <created>1729188250399</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1729617274142</updated>
+      <updated>1729188250399</updated>
       <workItem from="1729617275222" duration="423000" />
       <workItem from="1730145323572" duration="553000" />
       <workItem from="1730146117860" duration="7715000" />
@@ -238,7 +246,6 @@
       <workItem from="1730226619461" duration="6800000" />
       <workItem from="1730763953748" duration="11265000" />
       <workItem from="1731006834644" duration="1473000" />
-      <updated>1729188250399</updated>
       <workItem from="1729188251701" duration="45000" />
     </task>
     <servers />

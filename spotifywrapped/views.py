@@ -199,6 +199,18 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     # Parse the responses
     top_artists = top_artists_response.json().get('items', [])
     wrap_data = wrap_data_response.json()
+    top_albums_images = []
+    top_tracks_images = []
+
+    for track in wrap_data.get("items", [])[:5]:  # Top 5 tracks
+        # Get track image
+        album_images = track.get("album", {}).get("images", [])
+        if album_images:
+            top_tracks_images.append(album_images[0].get("url"))  # Usually the first image is the largest
+
+        # Get album image
+        if len(top_albums_images) < 5:  # Limit to top 5 albums
+            top_albums_images.append(album_images[0].get("url") if album_images else None)
 
     # Set the wrap title based on the time range
     if time_range == "short_term":
@@ -224,7 +236,9 @@ def save_wrap(user_profile, token, time_range="medium_term"):
         title=title,
         top_artists=top_artists,
         wrap_data=wrap_data,
-        top_track_preview_url=top_track_preview_url  # Add a field for preview URL in your model
+        top_track_preview_url=top_track_preview_url,  # Add a field for preview URL in your model
+        album_images = top_albums_images,
+        track_images = top_tracks_images
     )
 
 def wrap_detail(request, wrap_id):

@@ -23,6 +23,8 @@ class SpotifyWrap(models.Model):
     top_track_preview_url = models.URLField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    album_images = models.JSONField(default=list)
+    track_images = models.JSONField(default=list)
 
 
     def __str__(self):

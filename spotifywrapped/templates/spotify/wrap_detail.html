@@ -21,6 +21,13 @@
             <li>{{ track.name }}</li>
         {% endfor %}
     </ul>
+
+    <div>
+        {% for track_image in wrap.track_images %}
+            <img src="{{ track_image }}" alt="Track Image" width="100" height="100">
+        {% endfor %}
+    </div>
+
     <a href="{% url 'wrap_list' %}">Back to Wrap List</a>
 
     {% if wrap.top_track_preview_url %}
