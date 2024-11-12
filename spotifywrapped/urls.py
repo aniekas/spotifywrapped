@@ -8,5 +8,5 @@ urlpatterns = [
     path("index/", views.index, name="index"),
     path('wraps/<int:wrap_id>/', views.wrap_detail, name='wrap_detail'),
     path("wrap/delete/<int:wrap_id>/", views.delete_wrap, name="delete_wrap"),
-    path('contact/', contact_developers, name='contact_developers'),
+    path('contact/', views.contact_developers, name='contact_developers'),
 ]
