@@ -1,0 +1,83 @@
+/* contact.css */
+a {
+    color: black;
+    text-decoration: underline;
+}
+body {
+    font-family: Georama, Helvetica, Arial, serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  header {
+    text-align: center;
+    margin: 20px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    color: rgb(0, 0, 0);
+    margin-bottom: 0px;
+  }
+
+  .developer-info {
+    text-align: center;
+  }
+  
+  .developer-info, .contact-form {
+    width: 90%;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    
+  }
+  
+  .developer-info ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .developer-info li {
+    margin: 10px 0;
+  }
+  
+  .contact-form form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .contact-form label {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  .contact-form input, .contact-form textarea {
+    margin-top: 5px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .contact-form button {
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: rgb(30 215 96);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .contact-form button:hover {
+    background-color: rgb(30 215 96);
+  }
+  
