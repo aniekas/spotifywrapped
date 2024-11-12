@@ -250,3 +250,15 @@ def delete_wrap(request, wrap_id):
     return redirect("wrap_list")
 def contact(request):
     return render(request, 'spotify/contact.html')
+
+def send_message(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        subject=f"Message from {name} ({email})"
+        body = f"Message from {name} ({email}):\n\n{message}"
+        recipient_list = ['arhea9@gatech.edu']
+        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipient_list)
+        return redirect('/app/contact')
+    return HttpResponse('Invalid request method. Please use POST to send a message.', status=405)
