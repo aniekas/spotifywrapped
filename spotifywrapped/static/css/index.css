@@ -111,3 +111,19 @@ label {
     background-color: #1aa34a;
 }
 
+.share-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #1DB954; /* Spotify green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.share-button:hover {
+    background-color: #1aa34a;
+}
