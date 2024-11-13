@@ -1,8 +1,29 @@
 <html>
+<head>
 <title>Spotify Wrapped Home</title>
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/userauth.css' %}"> <!-- Link to your CSS file -->
+<link rel="stylesheet" href="{% static 'css/userauth.css' %}">
+<style>
+        /* Styles for the "Share My Wrapped" button */
+        .share-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #1DB954; /* Spotify green */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .share-button:hover {
+            background-color: #1aa34a;
+        }
+    </style>
 </head>
+<body>
 <form method="post" action="{% url 'index' %}">
     {% csrf_token %}
     <label for="timeframe">Select Timeframe:</label>
@@ -13,4 +34,14 @@
     </select>
     <button type="submit">Generate Wrap</button>
 </form>
+    <button id="shareWrappedBtn" onclick="shareWrapped()">Share My Wrapped</button>
+   <script>
+    function shareWrapped() {
+        const shareLink = "http://localhost:2340/app/wraps/";  // Directly specify the correct URL
+        navigator.clipboard.writeText(shareLink).then(() => {
+            alert("Link copied to clipboard! Share it on social media.");
+        });
+    }
+</script>
+</body>
 </html>
