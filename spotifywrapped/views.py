@@ -1,4 +1,10 @@
 import requests
+import secrets
+from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
@@ -8,10 +14,14 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime
 from django.shortcuts import get_object_or_404
-from urllib.parse import urlencode
-
+from django.http import HttpResponseForbidden
 from datetime import timedelta
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 def index(request):
     if request.method == 'POST':
@@ -189,7 +199,7 @@ def save_wrap(user_profile, token, time_range="medium_term"):
         return
 
     # Parse the responses
-    top_artists = top_artists_response.json()
+    top_artists = top_artists_response.json().get('items', [])
     wrap_data = wrap_data_response.json()
 
     # Set the wrap title based on the time range
@@ -200,10 +210,14 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     else:
         title = "All Time"
 
-    # Optionally, retrieve a preview URL for the top track
+    # Find the first track with an available preview URL
     top_track_preview_url = None
-    if wrap_data.get("items"):
-        top_track_preview_url = wrap_data["items"][0].get("preview_url")
+    for track in wrap_data.get("items", []):
+        print(f"Track: {track['name']} - Preview URL: {track.get('preview_url')}")
+        preview_url = track.get("preview_url")
+        if preview_url:
+            top_track_preview_url = preview_url
+            break  # Exit the loop once a valid preview URL is found
 
     # Save the wrap data in the SpotifyWrap model
     SpotifyWrap.objects.create(
@@ -234,3 +248,22 @@ def spotify_logout(request):
 def logout_complete(request):
     return render(request, 'logout.html')  # Or redirect to another page
     # return render(request, 'accounts/logout.html') <---- same thing, ignore
+
+@login_required
+def delete_wrap(request, wrap_id):
+    """Delete a user's wrap."""
+    # Get the SpotifyUserProfile associated with the current user
+    user_profile = get_object_or_404(SpotifyUserProfile, user=request.user)
+
+    # Fetch the wrap using the user_profile instance instead of request.user
+    wrap = get_object_or_404(SpotifyWrap, id=wrap_id, user=user_profile)
+
+    # Check if the wrap truly belongs to the user
+    if wrap.user != user_profile:
+        return HttpResponseForbidden("You are not allowed to delete this wrap.")
+
+    # Delete the wrap and redirect
+    wrap.delete()
+    return redirect("wrap_list")
+def contact_developers(request):
+    return render(request, 'spotify/contact.html')

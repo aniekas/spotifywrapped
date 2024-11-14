@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from .views import contact_developers
 
 urlpatterns = [
     path("login/", views.authorize, name="login"),  # URL to initiate Spotify authorization
@@ -10,6 +11,6 @@ urlpatterns = [
 
     path('logout/', views.spotify_logout, name='spotify_logout'),
     path('logout_complete/', views.logout_complete, name='logout_complete'),
-
-    # path('authorize/', views.authorize, name='authorize'),
+    path("wrap/delete/<int:wrap_id>/", views.delete_wrap, name="delete_wrap"),
+    path('contact/', contact_developers, name='contact_developers'),
 ]
