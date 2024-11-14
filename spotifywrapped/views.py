@@ -1,4 +1,5 @@
 import requests
+from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
@@ -15,6 +16,8 @@ from django.http import HttpResponse
 def home(request):
     """Render the home screen/welcome page."""
     return render(request, 'spotify/home.html')
+
+from django.urls import reverse
 
 def index(request):
     if request.method == 'POST':
@@ -44,7 +47,7 @@ def index(request):
             title = timeframe_titles.get(timeframe)
 
             # Save the wrap with the generated title
-            SpotifyWrap.objects.create(
+            wrap = SpotifyWrap.objects.create(
                 user=user_profile,
                 year=timezone.now().year,
                 top_artists=wrap_data.get('items', []),
@@ -52,7 +55,8 @@ def index(request):
                 title=f"{title} - {timezone.now().date()}"
             )
 
-            return redirect('wrap_list')
+            # Redirect to the wrap_detail view for the new wrap
+            return redirect(reverse('wrap_detail', args=[wrap.id]))
         else:
             # Handle error with Spotify API request
             return render(request, "accounts/error.html", {"message": "Failed to fetch data from Spotify"})
