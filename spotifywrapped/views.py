@@ -224,10 +224,13 @@ def spotify_logout(request):
     request.session.pop('spotify_access_token', None)
     request.session.pop('spotify_refresh_token', None)
     logout(request)
+
     # Redirect to Spotify's logout URL, then back to logout.html
-#     redirect_url = request.build_absolute_uri('/logout_complete/')
-#     spotify_logout_url = f'https://accounts.spotify.com/logout?{urlencode({'continue': redirect_url})}'
-#     return HttpResponseRedirect(spotify_logout_url)
-#
-# def logout_complete(request):
-#     return render(request, 'logout.html')  # Or redirect to another page
+    redirect_url = request.build_absolute_uri('/logout_complete/')
+    spotify_logout_url = f'https://accounts.spotify.com/logout?{urlencode({'continue': redirect_url})}'
+    return HttpResponseRedirect(spotify_logout_url)
+    # return redirect('logout_complete') <--- attempt at different method, ignore
+
+def logout_complete(request):
+    return render(request, 'logout.html')  # Or redirect to another page
+    # return render(request, 'accounts/logout.html') <---- same thing, ignore

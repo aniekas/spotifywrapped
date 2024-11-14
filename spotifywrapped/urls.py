@@ -7,7 +7,9 @@ urlpatterns = [
     path("wraps/", views.wrap_list, name="wrap_list"),
     path("index/", views.index, name="index"),
     path('wraps/<int:wrap_id>/', views.wrap_detail, name='wrap_detail'),
-    # path('logout/', views.spotify_logout, name="logout"),
-    # path('logout/', views.spotify_logout, name='spotify_logout'),
-    #     path('logout_complete/', views.logout_complete, name='logout_complete'),
+
+    path('logout/', views.spotify_logout, name='spotify_logout'),
+    path('logout_complete/', views.logout_complete, name='logout_complete'),
+
+    # path('authorize/', views.authorize, name='authorize'),
 ]

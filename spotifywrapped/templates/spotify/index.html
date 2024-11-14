@@ -17,7 +17,7 @@
     </form>
 
     <!-- Logout button -->
-    <form method="post" action="{% url 'index' %}">
+    <form method="post" action="{% url 'spotify_logout' %}">
         {% csrf_token %}
         <button type="submit">Log Out</button>
     </form>
