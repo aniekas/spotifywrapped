@@ -7,6 +7,7 @@
     {% csrf_token %}
     <label for="timeframe">Select Timeframe:</label>
     <select name="timeframe" id="timeframe" required>
+        <option value=null>Select</option>
         <option value="long_term">All-time</option>
         <option value="medium_term">Last year</option>
         <option value="short_term">Last month</option>

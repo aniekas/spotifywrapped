@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from .models import SpotifyWrap, SpotifyUserProfile
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime
@@ -11,6 +11,10 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from datetime import timedelta
 from django.http import HttpResponse
+
+def home(request):
+    """Render the home screen/welcome page."""
+    return render(request, 'spotify/home.html')
 
 def index(request):
     if request.method == 'POST':
@@ -218,10 +222,53 @@ def save_wrap(user_profile, token, time_range="medium_term"):
         top_track_preview_url=top_track_preview_url  # Add a field for preview URL in your model
     )
 
+
+def logout_view(request):
+    """Log the user out and reset Spotify access token, then redirect to the home page."""
+    # Optional: reset the user's Spotify access token upon logout
+    if request.user.is_authenticated:
+        spotify_profile = request.user.spotifyuserprofile
+        spotify_profile.access_token = ""  # Clear the access token
+        spotify_profile.save()
+
+    logout(request)  # Log the user out
+    print("User logged out")
+
+    # Redirect to the home page (ensure this URL path exists in your urls.py)
+    return redirect('home')
+
+
 def wrap_detail(request, wrap_id):
     """Display detailed information for a specific Spotify wrap."""
     wrap = get_object_or_404(SpotifyWrap, id=wrap_id)
-    return render(request, 'spotify/wrap_detail.html', {'wrap': wrap})
+    top_track_preview_url = None
+    top_track_title = None
+    top_track_cover_url = None
+    tracks_with_cover = []
+
+    # Loop through the tracks and find the album cover for each one
+    for track in wrap.wrap_data.get('items', []):
+        if track.get('preview_url'):
+            top_track_preview_url = track['preview_url']
+            top_track_title = track['name']
+            top_track_cover_url = track['album'].get('images', [{}])[0].get('url')
+
+        # Add track and its album cover to the list
+        album_cover_url = track['album'].get('images', [{}])[0].get('url')
+        tracks_with_cover.append({
+            'name': track['name'],
+            'preview_url': track.get('preview_url'),
+            'album_cover_url': album_cover_url
+        })
+
+    # Pass the tracks and cover URLs to the template
+    return render(request, 'spotify/wrap_detail.html', {
+        'wrap': wrap,
+        'top_track_preview_url': top_track_preview_url,
+        'top_track_title': top_track_title,
+        'tracks_with_cover': tracks_with_cover,  # Pass the list of tracks with their cover images
+    })
+
 
 @login_required
 def delete_wrap(request, wrap_id):
