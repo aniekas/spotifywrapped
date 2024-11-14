@@ -114,7 +114,7 @@ def callback(request):
     if user_info_response.status_code != 200:
         error_message = user_info_response.json().get("error", {}).get("message", "Failed to fetch user information.")
         return render(request, "accounts/error.html", {
-            "message": f"Spotify user info request failed: {error_message}"
+            "message": f"Spotify user info request failed 200: {error_message}"
         }, status=user_info_response.status_code)
 
     user_data = user_info_response.json()
