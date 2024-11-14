@@ -13,4 +13,8 @@ urlpatterns = [
     path('logout_complete/', views.logout_complete, name='logout_complete'),
     path("wrap/delete/<int:wrap_id>/", views.delete_wrap, name="delete_wrap"),
     path('contact/', contact_developers, name='contact_developers'),
+
+    # path('confirm_delete_account/', views.confirm_delete_account, name='confirm_delete_account'),
+    # path('delete_account/', views.delete_account, name='delete_account'),
+    # path('account_deleted/', views.account_deleted, name='account_deleted'),  # Redirected page after deletion
 ]

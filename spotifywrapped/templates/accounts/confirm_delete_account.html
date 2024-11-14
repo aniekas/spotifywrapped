@@ -7,7 +7,7 @@
   <form method="POST">
     {% csrf_token %}
     <input type="hidden" name="confirm_delete" value="true">
-    <button type="submit">Confirm Delete</button>
-    <a href="{% url 'profile' %}">Cancel</a>  <!-- Link to go back to profile or another page -->
+    <button type="submit">Yes, delete my account</button>
+    <a href="{% url 'index' %}">Cancel</a>  <!-- Link to go back to profile or another page -->
   </form>
 {% endblock %}

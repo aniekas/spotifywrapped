@@ -269,3 +269,21 @@ def delete_wrap(request, wrap_id):
     return redirect("wrap_list")
 def contact_developers(request):
     return render(request, 'spotify/contact.html')
+
+# @login_required
+# def confirm_delete_account(request):
+#     return render(request, 'accounts/confirm_delete_account.html')
+#
+# @login_required
+# def delete_account(request):
+#     user = request.user
+#     # Log the user out before deleting
+#     logout(request)
+#     # Delete the user
+#     user.delete()
+#     # Redirect to a confirmation page
+#     return redirect('account_deleted')
+#
+#
+# def account_deleted(request):
+#     return render(request, 'account_deleted.html')
