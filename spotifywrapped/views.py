@@ -3,13 +3,15 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from .models import SpotifyWrap, SpotifyUserProfile
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime
 from django.shortcuts import get_object_or_404
+from urllib.parse import urlencode
+
 from datetime import timedelta
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 
 def index(request):
     if request.method == 'POST':
@@ -217,3 +219,15 @@ def wrap_detail(request, wrap_id):
     """Display detailed information for a specific Spotify wrap."""
     wrap = get_object_or_404(SpotifyWrap, id=wrap_id)
     return render(request, 'spotify/wrap_detail.html', {'wrap': wrap})
+
+def spotify_logout(request):
+    request.session.pop('spotify_access_token', None)
+    request.session.pop('spotify_refresh_token', None)
+    logout(request)
+    # Redirect to Spotify's logout URL, then back to logout.html
+#     redirect_url = request.build_absolute_uri('/logout_complete/')
+#     spotify_logout_url = f'https://accounts.spotify.com/logout?{urlencode({'continue': redirect_url})}'
+#     return HttpResponseRedirect(spotify_logout_url)
+#
+# def logout_complete(request):
+#     return render(request, 'logout.html')  # Or redirect to another page
