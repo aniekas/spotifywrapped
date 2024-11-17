@@ -5,10 +5,12 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from .models import SpotifyWrap, SpotifyUserProfile
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime
@@ -20,6 +22,12 @@ from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
 
+
+def home(request):
+    """Render the home screen/welcome page."""
+    return render(request, 'spotify/home.html')
+
+from django.urls import reverse
 
 def index(request):
     if request.method == 'POST':
@@ -49,7 +57,7 @@ def index(request):
             title = timeframe_titles.get(timeframe)
 
             # Save the wrap with the generated title
-            SpotifyWrap.objects.create(
+            wrap = SpotifyWrap.objects.create(
                 user=user_profile,
                 year=timezone.now().year,
                 top_artists=wrap_data.get('items', []),
@@ -57,7 +65,8 @@ def index(request):
                 title=f"{title} - {timezone.now().date()}"
             )
 
-            return redirect('wrap_list')
+            # Redirect to the wrap_detail view for the new wrap
+            return redirect(reverse('wrap_detail', args=[wrap.id]))
         else:
             # Handle error with Spotify API request
             return render(request, "accounts/error.html", {"message": "Failed to fetch data from Spotify"})
@@ -124,7 +133,7 @@ def callback(request):
     if user_info_response.status_code != 200:
         error_message = user_info_response.json().get("error", {}).get("message", "Failed to fetch user information.")
         return render(request, "accounts/error.html", {
-            "message": f"Spotify user info request failed: {error_message}"
+            "message": f"Spotify user info request failed 200: {error_message}"
         }, status=user_info_response.status_code)
 
     user_data = user_info_response.json()
@@ -244,6 +253,22 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     print("Top Album Images:", top_albums_images)
     print("Top Track Images:", top_tracks_images)
 
+
+def logout_view(request):
+    """Log the user out and reset Spotify access token, then redirect to the home page."""
+    # Optional: reset the user's Spotify access token upon logout
+    if request.user.is_authenticated:
+        spotify_profile = request.user.spotifyuserprofile
+        spotify_profile.access_token = ""  # Clear the access token
+        spotify_profile.save()
+
+    logout(request)  # Log the user out
+    print("User logged out")
+
+    # Redirect to the home page (ensure this URL path exists in your urls.py)
+    return redirect('home')
+
+
 def wrap_detail(request, wrap_id):
     """Display detailed information for a specific Spotify wrap."""
     wrap = get_object_or_404(SpotifyWrap, id=wrap_id)
@@ -254,6 +279,34 @@ def wrap_detail(request, wrap_id):
         'track_images': wrap.track_images,  # Pass the track image URLs
     }
     return render(request, 'spotify/wrap_detail.html', context)
+    top_track_preview_url = None
+    top_track_title = None
+    top_track_cover_url = None
+    tracks_with_cover = []
+
+    # Loop through the tracks and find the album cover for each one
+    for track in wrap.wrap_data.get('items', []):
+        if track.get('preview_url'):
+            top_track_preview_url = track['preview_url']
+            top_track_title = track['name']
+            top_track_cover_url = track['album'].get('images', [{}])[0].get('url')
+
+        # Add track and its album cover to the list
+        album_cover_url = track['album'].get('images', [{}])[0].get('url')
+        tracks_with_cover.append({
+            'name': track['name'],
+            'preview_url': track.get('preview_url'),
+            'album_cover_url': album_cover_url
+        })
+
+    # Pass the tracks and cover URLs to the template
+    return render(request, 'spotify/wrap_detail.html', {
+        'wrap': wrap,
+        'top_track_preview_url': top_track_preview_url,
+        'top_track_title': top_track_title,
+        'tracks_with_cover': tracks_with_cover,  # Pass the list of tracks with their cover images
+    })
+
 
 @login_required
 def delete_wrap(request, wrap_id):

@@ -22,6 +22,6 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("app/", include("spotifywrapped.urls")),  # Include the app's URLs under a base path
-    path("", RedirectView.as_view(url='/app/login/', permanent=False)),  # Redirect root URL to login
+    path('', views.home, name='home'),
     path('spotify/callback/', views.callback, name='callback'),
 ]

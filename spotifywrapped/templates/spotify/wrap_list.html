@@ -1,6 +1,8 @@
 
 {% block content %}
     <h2>Your Spotify Wraps</h2>
+    <a href="{% url 'logout' %}">Logout</a>
+
     <ul>
         {% for wrap in wraps %}
             <li>

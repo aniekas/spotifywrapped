@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Wrapped Home</title>
+    <link rel="stylesheet" href="{% static 'spotifywrapped/css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Spotify Wrapped</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'login' %}">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Discover Your Spotify Wrapped</h2>
+            <p>Find out your top artists, tracks, and more!</p>
+            <a href="{% url 'login' %}" class="btn">Login to Get Started</a>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Spotify Wrapped</p>
+    </footer>
+</body>
+</html>
