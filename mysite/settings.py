@@ -17,7 +17,7 @@ SPOTIFY_REDIRECT_URI = os.getenv('SPOTIFY_REDIRECT_URI', 'http://localhost:2340/
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Session engine configuration
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
