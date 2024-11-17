@@ -91,15 +91,12 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: #d9d9d9;
-    border-radius: 50px;
-}
-.timeframe .generateBtnText {
-    display: flex;
+    background-color: #28a745; /* Green color */
+    border-radius: 45px; /* Rounded edges */
     justify-content: center;
     margin: 31px auto 30px;
     font: 400 40px/1.2 Georama, Helvetica, Arial, serif;
-    color: rgba(0, 0, 0, 0.627);
+    color: white; /* White text color */
     text-align: center;
 }
 
