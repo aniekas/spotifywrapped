@@ -62,7 +62,8 @@ def index(request):
             # Handle error with Spotify API request
             return render(request, "accounts/error.html", {"message": "Failed to fetch data from Spotify"})
 
-    return render(request, 'spotify/index.html')
+    latest_wrap = SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile).last()
+    return render(request, 'spotify/index.html', {'latest_wrap': latest_wrap})
 
 
 def authorize(request):
@@ -199,6 +200,18 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     # Parse the responses
     top_artists = top_artists_response.json().get('items', [])
     wrap_data = wrap_data_response.json()
+    top_albums_images = []
+    top_tracks_images = []
+
+    for track in wrap_data.get("items", [])[:5]:  # Top 5 tracks
+        # Get track image
+        album_images = track.get("album", {}).get("images", [])
+        if album_images:
+            top_tracks_images.append(album_images[0].get("url"))  # Usually the first image is the largest
+
+        # Get album image
+        if len(top_albums_images) < 5:  # Limit to top 5 albums
+            top_albums_images.append(album_images[0].get("url") if album_images else None)
 
     # Set the wrap title based on the time range
     if time_range == "short_term":
@@ -224,13 +237,23 @@ def save_wrap(user_profile, token, time_range="medium_term"):
         title=title,
         top_artists=top_artists,
         wrap_data=wrap_data,
-        top_track_preview_url=top_track_preview_url  # Add a field for preview URL in your model
+        top_track_preview_url=top_track_preview_url,  # Add a field for preview URL in your model
+        album_images=top_albums_images,
+        track_images=top_tracks_images
     )
+    print("Top Album Images:", top_albums_images)
+    print("Top Track Images:", top_tracks_images)
 
 def wrap_detail(request, wrap_id):
     """Display detailed information for a specific Spotify wrap."""
     wrap = get_object_or_404(SpotifyWrap, id=wrap_id)
-    return render(request, 'spotify/wrap_detail.html', {'wrap': wrap})
+
+    context = {
+        'wrap': wrap,
+        'album_images': wrap.album_images,  # Pass the album image URLs
+        'track_images': wrap.track_images,  # Pass the track image URLs
+    }
+    return render(request, 'spotify/wrap_detail.html', context)
 
 @login_required
 def delete_wrap(request, wrap_id):
