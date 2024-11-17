@@ -1,4 +1,3 @@
-<!-- spotify/wrap_detail.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,10 +14,25 @@
             <li>{{ artist.name }}</li>
         {% endfor %}
     </ul>
+
     <h3>Top Tracks:</h3>
     <ul>
         {% for track in wrap.wrap_data.items %}
-            <li>{{ track.name }}</li>
+            <li>
+                <!-- Display the track title -->
+                <p>{{ track.name }}</p>
+                <!-- Display the album cover next to the song title -->
+                <img src="{{ track.album.images.0.url }}" alt="{{ track.name }} album cover" style="width: 100px; height: 100px;">
+                <!-- Audio preview (if available) -->
+                {% if track.preview_url %}
+                    <audio controls>
+                        <source src="{{ track.preview_url }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                {% else %}
+                    <p>No preview available.</p>
+                {% endif %}
+            </li>
         {% endfor %}
     </ul>
 
@@ -30,23 +44,22 @@
 
     <a href="{% url 'wrap_list' %}">Back to Wrap List</a>
 
-    {% if wrap.top_track_preview_url %}
+    {% if top_track_preview_url %}
         <audio id="topTrackPreview" autoplay muted>
-    <source src="{{ wrap.top_track_preview_url }}" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
-
-<script>
-    window.addEventListener('DOMContentLoaded', (event) => {
-        const audio = document.getElementById('topTrackPreview');
-        if (audio) {
-            audio.play().then(() => {
-                audio.muted = false;  // Unmute after starting to play
-            }).catch(error => console.error("Error playing audio:", error));
-        }
-    });
-</script>
-
+            <source src="{{ top_track_preview_url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <p id="previewTrackTitle">Playing: {{ top_track_title }}</p>
+        <script>
+            window.addEventListener('DOMContentLoaded', (event) => {
+                const audio = document.getElementById('topTrackPreview');
+                if (audio) {
+                    audio.play().then(() => {
+                        audio.muted = false;  // Unmute after starting to play
+                    }).catch(error => console.error("Error playing audio:", error));
+                }
+            });
+        </script>
     {% else %}
         <p>No preview available for the top track.</p>
     {% endif %}

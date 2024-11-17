@@ -7,6 +7,7 @@ urlpatterns = [
     path("wraps/", views.wrap_list, name="wrap_list"),
     path("index/", views.index, name="index"),
     path('wraps/<int:wrap_id>/', views.wrap_detail, name='wrap_detail'),
+    path("logout/", views.logout_view, name="logout"),
     path("wrap/delete/<int:wrap_id>/", views.delete_wrap, name="delete_wrap"),
     path('contact/', views.contact, name='contact'),
     path('send_message/', views.send_message, name='send_message'),

@@ -27,5 +27,14 @@
 </div>
 </div>
 </section>
+    <button id="shareWrappedBtn" onclick="shareWrapped()">Share My Wrapped</button>
+   <script>
+    function shareWrapped() {
+        const shareLink = "http://localhost:2340/app/wraps/";  // Directly specify the correct URL
+        navigator.clipboard.writeText(shareLink).then(() => {
+            alert("Link copied to clipboard! Share it on social media.");
+        });
+    }
+</script>
 </body>
 </html>
