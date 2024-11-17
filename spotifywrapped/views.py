@@ -1,10 +1,4 @@
 import requests
-import secrets
-from django.shortcuts import render, redirect
-from django.contrib.auth import update_session_auth_hash
-from django.contrib import messages
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -18,10 +12,6 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from datetime import timedelta
 from django.http import HttpResponse
-from django.shortcuts import render
-from django.core.mail import send_mail
-from django.conf import settings
-
 
 def home(request):
     """Render the home screen/welcome page."""
@@ -71,8 +61,7 @@ def index(request):
             # Handle error with Spotify API request
             return render(request, "accounts/error.html", {"message": "Failed to fetch data from Spotify"})
 
-    latest_wrap = SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile).last()
-    return render(request, 'spotify/index.html', {'latest_wrap': latest_wrap})
+    return render(request, 'spotify/index.html')
 
 
 def authorize(request):
@@ -209,18 +198,6 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     # Parse the responses
     top_artists = top_artists_response.json().get('items', [])
     wrap_data = wrap_data_response.json()
-    top_albums_images = []
-    top_tracks_images = []
-
-    for track in wrap_data.get("items", [])[:5]:  # Top 5 tracks
-        # Get track image
-        album_images = track.get("album", {}).get("images", [])
-        if album_images:
-            top_tracks_images.append(album_images[0].get("url"))  # Usually the first image is the largest
-
-        # Get album image
-        if len(top_albums_images) < 5:  # Limit to top 5 albums
-            top_albums_images.append(album_images[0].get("url") if album_images else None)
 
     # Set the wrap title based on the time range
     if time_range == "short_term":
@@ -246,12 +223,8 @@ def save_wrap(user_profile, token, time_range="medium_term"):
         title=title,
         top_artists=top_artists,
         wrap_data=wrap_data,
-        top_track_preview_url=top_track_preview_url,  # Add a field for preview URL in your model
-        album_images=top_albums_images,
-        track_images=top_tracks_images
+        top_track_preview_url=top_track_preview_url  # Add a field for preview URL in your model
     )
-    print("Top Album Images:", top_albums_images)
-    print("Top Track Images:", top_tracks_images)
 
 
 def logout_view(request):
@@ -272,13 +245,6 @@ def logout_view(request):
 def wrap_detail(request, wrap_id):
     """Display detailed information for a specific Spotify wrap."""
     wrap = get_object_or_404(SpotifyWrap, id=wrap_id)
-
-    context = {
-        'wrap': wrap,
-        'album_images': wrap.album_images,  # Pass the album image URLs
-        'track_images': wrap.track_images,  # Pass the track image URLs
-    }
-    return render(request, 'spotify/wrap_detail.html', context)
     top_track_preview_url = None
     top_track_title = None
     top_track_cover_url = None
@@ -324,17 +290,6 @@ def delete_wrap(request, wrap_id):
     # Delete the wrap and redirect
     wrap.delete()
     return redirect("wrap_list")
+
 def contact(request):
     return render(request, 'spotify/contact.html')
-
-def send_message(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        message = request.POST.get('message')
-        subject=f"Message from {name} ({email})"
-        body = f"Message from {name} ({email}):\n\n{message}"
-        recipient_list = ['arhea9@gatech.edu']
-        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipient_list)
-        return redirect('/app/contact')
-    return HttpResponse('Invalid request method. Please use POST to send a message.', status=405)

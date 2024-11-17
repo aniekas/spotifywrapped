@@ -24,4 +24,5 @@ urlpatterns = [
     path("app/", include("spotifywrapped.urls")),  # Include the app's URLs under a base path
     path('', views.home, name='home'),
     path('spotify/callback/', views.callback, name='callback'),
+    path('spotify/login/', views.authorize, name='authorize'),
 ]
