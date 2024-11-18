@@ -101,7 +101,7 @@ label {
     color: white;
     background-color: #1db954;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
     text-transform: uppercase;

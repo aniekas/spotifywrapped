@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from datetime import timedelta
 from django.http import HttpResponse
+from django.core.mail import send_mail
 
 def home(request):
     """Render the home screen/welcome page."""
@@ -298,9 +299,16 @@ def send_message(request):
         name = request.POST.get('name')
         email = request.POST.get('email')
         message = request.POST.get('message')
-        subject=f"Message from {name} ({email})"
+
+        subject = f"Message from {name} ({email})"
         body = f"Message from {name} ({email}):\n\n{message}"
-        recipient_list = ['arhea9@gatech.edu']
-        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipient_list)
+        recipient_list = ['arhea9@gatech.edu']  # Your email
+        
+        try:
+            send_mail(subject, body, settings.EMAIL_HOST_USER, recipient_list, fail_silently=False)
+        except Exception as e:
+            return HttpResponse(f"Error sending email: {e}", status=500)
+
         return redirect('/app/contact')
+    
     return HttpResponse('Invalid request method. Please use POST to send a message.', status=405)
