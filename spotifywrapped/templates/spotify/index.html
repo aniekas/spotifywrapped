@@ -11,6 +11,9 @@
         <img class="logo" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
         <a class="home" href="{% url 'index' %}">Home</a>
         <a class="contact" href="{% url 'contact' %}">Contact the Developers</a>
+        <a class="profile" href="{% url 'wrap_list' %}">
+          <img src="{% static 'images/defaultpfp.png' %}" alt="Spotify Wrapped Logo" width="50"/>
+        </a> 
       </nav>
       <div class="actionContainer">
         <p class="welcomeText">Welcome to Spotify Wrapped!</p>
