@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>Confirm Account Deletion</h2>
-  <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-
-  <form method="POST">
-    {% csrf_token %}
-    <input type="hidden" name="confirm_delete" value="true">
-    <button type="submit">Yes, delete my account</button>
-    <a href="{% url 'index' %}">Cancel</a>  <!-- Link to go back to profile or another page -->
-  </form>
+<div class="confirmation-container">
+    <h1>Are you sure you want to delete your account?</h1>
+    <p>All your data, including Spotify Wraps, will be permanently deleted. This action cannot be undone.</p>
+    <form method="post" action="{% url 'delete_account' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete my account</button>
+    </form>
+    <a href="{% url 'index' %}" class="btn btn-secondary">Cancel</a>
+</div>
 {% endblock %}

@@ -270,20 +270,30 @@ def delete_wrap(request, wrap_id):
 def contact_developers(request):
     return render(request, 'spotify/contact.html')
 
-# @login_required
-# def confirm_delete_account(request):
-#     return render(request, 'accounts/confirm_delete_account.html')
-#
-# @login_required
-# def delete_account(request):
-#     user = request.user
-#     # Log the user out before deleting
-#     logout(request)
-#     # Delete the user
-#     user.delete()
-#     # Redirect to a confirmation page
-#     return redirect('account_deleted')
-#
-#
-# def account_deleted(request):
-#     return render(request, 'account_deleted.html')
+@login_required
+def confirm_delete_account(request):
+    return render(request, 'accounts/confirm_delete_account.html')
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        print("POST")
+        if request.user.is_authenticated:
+            print("authenticated")
+            # Delete Spotify wrap data
+            SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile).delete()
+            print("deleted wrap")
+            # Delete the user account
+            request.user.delete()
+            print("deleted user")
+            # Log out the user
+            logout(request)
+            print("logged out")
+            # Redirect to the account_deleted page
+            return redirect('account_deleted')
+        # Redirect back to index for non-POST requests
+    return redirect('index')
+
+
+def account_deleted(request):
+    return render(request, 'accounts/account_deleted.html')
