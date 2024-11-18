@@ -8,11 +8,20 @@
   <title>Contact the Developers</title>
   <link rel="stylesheet" href="{% static 'css/contact.css' %}">
 </head>
-<body>
+<body class="flex-column">
+  <section class="welcome welcomeSection">
+    <div class="contentWrapper">
+      <nav class="navbar">
+        <img class="logo" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
+        <a class="home" href="{% url 'index' %}">Home</a>
+        <a class="contact" href="{% url 'contact' %}">Contact the Developers</a>
+      </nav>
+      </div>
+  </section>
   <header>
     <h1>Contact the Developers</h1>
   </header>
-  
+
   <section class="developer-info">
     <h2>Developers</h2>
     <ul>
