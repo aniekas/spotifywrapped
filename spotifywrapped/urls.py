@@ -11,4 +11,6 @@ urlpatterns = [
     path("wrap/delete/<int:wrap_id>/", views.delete_wrap, name="delete_wrap"),
     path('contact/', views.contact, name='contact'),
     path('send_message/', views.send_message, name='send_message'),
+    path('wrap/<int:wrap_id>/', views.wrap_detail, name='wrap_detail'),
+    path('delete-all-wraps/', views.delete_all_wraps, name='delete_all_wraps'),
 ]

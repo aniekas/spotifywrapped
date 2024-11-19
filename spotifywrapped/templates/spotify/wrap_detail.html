@@ -5,13 +5,28 @@
     <title>{{ wrap.year }} Wrap</title>
 </head>
 <body>
+    <nav class="navbar">
+        <img class="logo" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
+        <a class="home" href="{% url 'index' %}">Home</a>
+        <a class="contact" href="{% url 'contact' %}">Contact the Developers</a>
+        <a class="profile" href="{% url 'wrap_list' %}">
+          <img src="{% static 'images/defaultpfp.png' %}" alt="Spotify Wrapped Logo" width="50"/>
+        </a> 
+      </nav>
     <h2>{{ wrap.title }}</h2>
     <p>Year: {{ wrap.year }}</p>
 
     <h3>Top Artists:</h3>
     <ul>
-        {% for artist in wrap.top_artists %}
-            <li>{{ artist.name }}</li>
+        {% for artist_data in wrap.top_artists %}
+            <li>
+                {% if artist_data.album.artists %}
+                    <!-- Extract and display the artist's name -->
+                    {{ artist_data.album.artists.0.name }}
+                {% else %}
+                    No artist name available.
+                {% endif %}
+            </li>
         {% endfor %}
     </ul>
 
@@ -63,5 +78,15 @@
     {% else %}
         <p>No preview available for the top track.</p>
     {% endif %}
+
+    <button id="shareWrappedBtn" onclick="shareWrapped()">Share My Wrapped</button>
+    <script>
+     function shareWrapped() {
+         const shareLink = "http://localhost:2340/app/wraps/";  // Directly specify the correct URL
+         navigator.clipboard.writeText(shareLink).then(() => {
+             alert("Link copied to clipboard! Share it on social media.");
+         });
+     }
+ </script>
 </body>
 </html>

@@ -250,6 +250,8 @@ def wrap_detail(request, wrap_id):
     top_track_title = None
     top_track_cover_url = None
     tracks_with_cover = []
+    print("Top Artists Data:", wrap.top_artists)  # Inspect top_artists
+    print("Wrap Data:", wrap.wrap_data)   
 
     # Loop through the tracks and find the album cover for each one
     for track in wrap.wrap_data.get('items', []):
@@ -312,3 +314,8 @@ def send_message(request):
         return redirect('/app/contact')
     
     return HttpResponse('Invalid request method. Please use POST to send a message.', status=405)
+
+def delete_all_wraps(request):
+    """Delete all wraps associated with the current user."""
+    SpotifyWrap.objects.all().delete()
+    return render(request, 'spotify/index.html', {'message': 'All wraps have been deleted.'})
