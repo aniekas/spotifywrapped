@@ -1,4 +1,111 @@
+<<<<<<< HEAD
     body {
+=======
+.timeframe .mainContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    overflow: hidden;
+}
+.timeframe .contentWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 110px 0;
+    margin: 13px 36px 191px 28px;
+}
+.timeframe .headerRow {
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 0 10px;
+    width: 100%;
+}
+.timeframe .logoImg {
+    margin: 12px 0 13px;
+    width: 87px;
+    min-width: 0;
+}
+.timeframe .homeLink {
+    z-index: 1;
+    margin: 34px 0 26px;
+    width: 130px;
+    min-width: 0;
+    font: 700 36px/1.19 Georama, Helvetica, Arial, serif;
+    color: black;
+}
+.timeframe .contactLink {
+    z-index: 1;
+    margin: 38px 0 27px;
+    min-width: 0;
+    font: 400 32px/1.18 Georama, Helvetica, Arial, serif;
+    color: black;
+}
+.timeframe .colorAccent {
+    width: 103px;
+    min-width: 0;
+    min-height: 103px;
+    background-color: #d9d9d9;
+    border-radius: 52px;
+}
+.timeframe .heroContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 108px 0;
+    width: 54.03%;
+}
+.timeframe .welcomeMsg {
+    font: 400 96px/1.19 Georama, Helvetica, Arial, serif;
+    color: black;
+}
+.timeframe .actionArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px 0;
+    width: 80.37%;
+}
+.timeframe .timeFrameSelector {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    background-color: #d9d9d9;
+}
+.timeframe .selectorRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 0 10px;
+    margin: 6px 8px 11px;
+    padding: 0 9px 0 0;
+}
+.timeframe .selectorLabel {
+    min-width: 0;
+    font: 400 32px/1.18 Georama, Helvetica, Arial, serif;
+    color: rgba(0, 0, 0, 0.537);
+}
+.timeframe .selectorIcon {
+    margin: 14px 0 7px;
+    width: 39px;
+    min-width: 0;
+}
+.timeframe .generateBtn {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #28a745; /* Green color */
+    border-radius: 45px; /* Rounded edges */
+    justify-content: center;
+    margin: 31px auto 30px;
+    font: 400 40px/1.2 Georama, Helvetica, Arial, serif;
+    color: white; /* White text color */
+    text-align: center;
+}
+
+/* styling for swiper */
+body {
+>>>>>>> e27ee47c93d4766d3fbea9443c922ef8e502a3c2
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -25,4 +132,14 @@
     background: #fff;
     border-radius: 8px;
     overflow: hidden;
+<<<<<<< HEAD
+=======
+}
+
+.header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 20px 0;
+>>>>>>> e27ee47c93d4766d3fbea9443c922ef8e502a3c2
 }
