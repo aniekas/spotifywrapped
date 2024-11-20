@@ -8,12 +8,26 @@
     <h2>{{ wrap.title }}</h2>
     <p>Year: {{ wrap.year }}</p>
 
+    <h3>Total Listening Time</h3>
+    <p>You listened to {{ total_minutes }} minutes. That's approximately {{ total_days }} days!</p>
+
+    <h3>Top Genres</h3>
+    <ul>
+        {% for genre in top_genres %}
+            <li>{{ genre }}</li>
+        {% endfor %}
+    </ul>
+
     <h3>Top Artists:</h3>
     <ul>
-        {% for artist in wrap.top_artists %}
+        {% for artist in top_artists %}
             <li>{{ artist.name }}</li>
         {% endfor %}
     </ul>
+
+    <h3>Minutes Listened to Top Artist</h3>
+    <p>You listened to {{ top_artists.0.name }} for {{ top_artist_minutes }} minutes.</p>
+
 
     <h3>Top Tracks:</h3>
     <ul>
