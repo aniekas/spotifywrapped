@@ -2,34 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE-edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'spotifywrapped/css/spotify.css' %}"> <!-- Link to external CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
-    <title>Top Tracks</title>
     <title>{{ wrap.year }} Wrap</title>
 </head>
 <body>
     <h2>{{ wrap.title }}</h2>
     <p>Year: {{ wrap.year }}</p>
-<section>
-    <div class="header">YOUR SPOTIFY WRAPPED</div>
-    <div class="swiper mySwiper container">
-    <div class="swiper-wrapper">
-    <!--slide 1-->
-    <div class="swiper-slide">
+
+    <h3>Total Listening Time</h3>
+    <p>You listened to {{ total_minutes }} minutes. That's approximately {{ total_days }} days!</p>
+
+    <h3>Top Genres</h3>
+    <ul>
+        {% for genre in top_genres %}
+            <li>{{ genre }}</li>
+        {% endfor %}
+    </ul>
+
     <h3>Top Artists:</h3>
     <ul>
-        {% for artist in wrap.top_artists %}
+        {% for artist in top_artists %}
             <li>{{ artist.name }}</li>
         {% endfor %}
     </ul>
-    </div>
 
-    <!--slide 2-->
-    <div class="swiper-slide">
+    <h3>Minutes Listened to Top Artist</h3>
+    <p>You listened to {{ top_artists.0.name }} for {{ top_artist_minutes }} minutes.</p>
+
+
     <h3>Top Tracks:</h3>
     <ul>
         {% for track in wrap.wrap_data.items %}
@@ -50,7 +49,6 @@
             </li>
         {% endfor %}
     </ul>
-    </div>
 
     <a href="{% url 'wrap_list' %}">Back to Wrap List</a>
 
@@ -73,27 +71,5 @@
     {% else %}
         <p>No preview available for the top track.</p>
     {% endif %}
-    </div>
-        <!-- Swiper Controls -->
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-pagination"></div>
-    </div>
-</section>
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<script>
-    const swiper = new Swiper('.mySwiper', {
-        // Swiper configuration options
-        loop: true,
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-        },
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-    });
-</script>
 </body>
 </html>

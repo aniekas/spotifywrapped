@@ -250,6 +250,28 @@ def wrap_detail(request, wrap_id):
     top_track_cover_url = None
     tracks_with_cover = []
 
+    #total minutes listened
+    total_minutes = sum(track.get('duration_ms', 0) // 6000 for track in wrap.wrap_data.get('items', []))
+    total_days = total_minutes // 1440
+
+    #top 3 genres
+    genre_count = {}
+    for artist in wrap.top_artists:
+        for genre in artist.get('genres', []):
+            genre_count[genre] = genre_count.get(genre, 0) + 1
+    top_genres = sorted(genre_count, key=genre_count.get, reverse=True)[:3]
+
+    #top 3 artists
+    top_artists = wrap.top_artists[:3]
+
+    #minutes listened to top artist
+    top_artist_id = wrap.top_artists[0].get('id') if wrap.top_artists else None
+    top_artist_minutes = 0
+    if top_artist_id:
+        for track in wrap.wrap_data.get('items', []):
+            if any(artist['id'] == top_artist_id for artist in track.get('artists', [])):
+                top_artist_minutes += track.get('duration_ms', 0) // 6000
+
     # Loop through the tracks and find the album cover for each one
     for track in wrap.wrap_data.get('items', []):
         if track.get('preview_url'):
@@ -268,6 +290,11 @@ def wrap_detail(request, wrap_id):
     # Pass the tracks and cover URLs to the template
     return render(request, 'spotify/wrap_detail.html', {
         'wrap': wrap,
+        'total_minutes': total_minutes,
+        'total_days': total_days,
+        'top_genres': top_genres,
+        'top_artists': top_artists,
+        'top_artist_minutes': top_artist_minutes,
         'top_track_preview_url': top_track_preview_url,
         'top_track_title': top_track_title,
         'tracks_with_cover': tracks_with_cover,  # Pass the list of tracks with their cover images
