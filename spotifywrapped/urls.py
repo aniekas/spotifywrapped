@@ -9,7 +9,7 @@ urlpatterns = [
     path("wraps/", views.wrap_list, name="wrap_list"),
     path("index/", views.index, name="index"),
     path('wraps/<int:wrap_id>/', views.wrap_detail, name='wrap_detail'),
-    path("logout/", views.logout_view, name="logout"),
+    #path("logout/", views.logout_view, name="logout"),
     path("wrap/delete/<int:wrap_id>/", views.delete_wrap, name="delete_wrap"),
 
     path('logout/', views.spotify_logout, name='spotify_logout'),

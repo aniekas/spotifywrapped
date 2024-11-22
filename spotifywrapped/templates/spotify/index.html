@@ -169,31 +169,19 @@
             </select>
             <button type="submit" class="generateButton">Generate Wrap</button>
         </form>
+        <!-- Logout button -->
+        <form method="post" action="{% url 'spotify_logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log Out</button>
+        </form>
+
+         <!-- Delete account button -->
+        <form method="post" action="{% url 'confirm_delete_account' %}">
+            {% csrf_token %}
+            <button type="submit">Delete Account</button>
+        </form>
+
     </div>
 </body>
 <body>
-    <!-- Generates Spotify Wrap -->
-    <form method="post" action="{% url 'index' %}">
-        {% csrf_token %}
-        <label for="timeframe">Select Timeframe:</label>
-        <select name="timeframe" id="timeframe" required>
-            <option value="long_term">All-time</option>
-            <option value="medium_term">Last year</option>
-            <option value="short_term">Last month</option>
-        </select>
-        <button type="submit">Generate Wrap</button>
-    </form>
-
-    <!-- Logout button -->
-    <form method="post" action="{% url 'spotify_logout' %}">
-        {% csrf_token %}
-        <button type="submit">Log Out</button>
-    </form>
-
-    <!-- Delete account button -->
-    <form method="post" action="{% url 'confirm_delete_account' %}">
-        {% csrf_token %}
-        <button type="submit">Delete Account</button>
-    </form>
-</body>
 </html>
