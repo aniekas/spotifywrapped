@@ -1,4 +1,12 @@
+from urllib.parse import urlencode
+
 import requests
+import secrets
+from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -11,7 +19,12 @@ import datetime
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from datetime import timedelta
+from django.http import HttpResponseRedirect
 from django.http import HttpResponse
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 def home(request):
     """Render the home screen/welcome page."""
@@ -301,6 +314,21 @@ def wrap_detail(request, wrap_id):
     })
 
 
+def spotify_logout(request):
+    request.session.pop('spotify_access_token', None)
+    request.session.pop('spotify_refresh_token', None)
+    logout(request)
+
+    # Redirect to Spotify's logout URL, then back to logout.html
+    redirect_url = request.build_absolute_uri('/logout_complete/')
+    spotify_logout_url = f'https://accounts.spotify.com/logout?{urlencode({'continue': redirect_url})}'
+    return HttpResponseRedirect(spotify_logout_url)
+    # return redirect('logout_complete') <--- attempt at different method, ignore
+
+def logout_complete(request):
+    return render(request, 'logout.html')  # Or redirect to another page
+    # return render(request, 'accounts/logout.html') <---- same thing, ignore
+
 @login_required
 def delete_wrap(request, wrap_id):
     """Delete a user's wrap."""
@@ -317,3 +345,33 @@ def delete_wrap(request, wrap_id):
     # Delete the wrap and redirect
     wrap.delete()
     return redirect("wrap_list")
+def contact_developers(request):
+    return render(request, 'spotify/contact.html')
+
+@login_required
+def confirm_delete_account(request):
+    return render(request, 'accounts/confirm_delete_account.html')
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        print("POST")
+        if request.user.is_authenticated:
+            print("authenticated")
+            # Delete Spotify wrap data
+            SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile).delete()
+            print("deleted wrap")
+            # Delete the user account
+            request.user.delete()
+            print("deleted user")
+            # Log out the user
+            logout(request)
+            print("logged out")
+            # Redirect to the account_deleted page
+            return redirect('account_deleted')
+        # Redirect back to index for non-POST requests
+    return redirect('index')
+
+
+def account_deleted(request):
+    return render(request, 'accounts/account_deleted.html')

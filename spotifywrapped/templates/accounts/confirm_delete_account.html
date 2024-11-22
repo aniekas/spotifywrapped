@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="confirmation-container">
+    <h1>Are you sure you want to delete your account?</h1>
+    <p>All your data, including Spotify Wraps, will be permanently deleted. This action cannot be undone.</p>
+    <form method="post" action="{% url 'delete_account' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete my account</button>
+    </form>
+    <a href="{% url 'index' %}" class="btn btn-secondary">Cancel</a>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
+    <link rel="stylesheet" type="text/css" href="/spotify.css" />
+  </head>
+
+  <body class="flex-column">
+    <section class="timeframe mainContainer">
+      <div class="contentWrapper">
+        <!-- Main content area -->
+        <nav class="headerRow">
+          <img
+            class="logoImg"
+            src="/assets/7e1a0bd0f343a1b28ec6a7a45fa248b3.svg"
+            alt="alt text"
+          />
+          <a class="homeLink">home</a>
+          <a class="contact">contact the developers</a>
+          <div class="colorAccent"></div>
+        </nav>
+        <div class="heroContent">
+          <p class="welcomeMsg">welcome (user)!</p>
+          <div class="actionArea">
+            <div class="timeFrameSelector">
+              <div class="selectorRow">
+                <p class="selectorLabel">Select a time frame</p>
+                <img
+                  class="selectorIcon"
+                  src="/assets/98f8314f71281537a5104d06752a7099.svg"
+                  alt="alt text"
+                />
+              </div>
+
+              <!-- Dropdown for selecting time frame -->
+              <select id="timeframe" class="timeFrameDropdown">
+                <option value="short_term">Last 4 weeks</option>
+                <option value="medium_term">Last 6 months</option>
+                <option value="long_term">All time</option>
+              </select>
+            </div>
+            <button class="generateBtn">
+              <p class="generateBtnText">GENERATE WRAPPED</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
