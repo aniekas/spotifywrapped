@@ -251,7 +251,21 @@ def wrap_detail(request, wrap_id):
     top_track_cover_url = None
     tracks_with_cover = []
     print("Top Artists Data:", wrap.top_artists)  # Inspect top_artists
-    print("Wrap Data:", wrap.wrap_data)   
+    print("Wrap Data:", wrap.wrap_data)
+
+    # Calculate the popularity of the top song
+    top_tracks = wrap.wrap_data.get("items", [])
+    if top_tracks:
+        top_track = top_tracks[0]
+        top_track_name = top_track['name']
+        top_track_popularity = top_track['popularity']
+    else:
+        top_track_name = "No top track available"
+        top_track_popularity = "N/A"
+
+    # Calculate average track duration (example)
+    total_duration_ms = sum([track['duration_ms'] for track in top_tracks])
+    avg_duration_min = round((total_duration_ms / len(top_tracks)) / 60000, 2) if top_tracks else 0
 
     # Loop through the tracks and find the album cover for each one
     for track in wrap.wrap_data.get('items', []):
@@ -271,11 +285,28 @@ def wrap_detail(request, wrap_id):
     # Pass the tracks and cover URLs to the template
     return render(request, 'spotify/wrap_detail.html', {
         'wrap': wrap,
+        'top_track_name': top_track_name,  # Pass the top track name here
+        'top_track_popularity': top_track_popularity,  # Pass the popularity value here
+        'average_duration_min': avg_duration_min,
         'top_track_preview_url': top_track_preview_url,
         'top_track_title': top_track_title,
         'tracks_with_cover': tracks_with_cover,  # Pass the list of tracks with their cover images
     })
 
+
+def top_song_popularity(top_tracks):
+    if len(top_tracks) > 0:
+        # Assuming you want the first song in the list as your "top song"
+        top_song = top_tracks[0]
+
+        # Extract the track name and popularity
+        track_name = top_song['name']
+        popularity = top_song['popularity']
+
+        # Return both values as a tuple
+        return track_name, popularity
+    else:
+        return None, 0
 
 @login_required
 def delete_wrap(request, wrap_id):

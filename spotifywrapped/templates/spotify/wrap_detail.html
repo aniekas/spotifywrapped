@@ -30,6 +30,12 @@
         {% endfor %}
     </ul>
 
+    <h3>Top Track:</h3>
+    <p>{{ top_track_name }} (Popularity: {{ top_track_popularity }})</p>
+
+    <h3>Average Track Duration:</h3>
+    <p>{{ average_duration_min }} minutes</p>
+
     <h3>Top Tracks:</h3>
     <ul>
         {% for track in wrap.wrap_data.items %}
