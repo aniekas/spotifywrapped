@@ -2,53 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/spotify.css' %}"> <!-- Link to external CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
     <title>{{ wrap.year }} Wrap</title>
 </head>
 <body>
+<div class="wrapcontainer">
+    <div class="header">
     <h2>{{ wrap.title }}</h2>
     <p>Year: {{ wrap.year }}</p>
+    </div>
+    <!-- Swiper Container -->
+    <div class="swiper mySwiper container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-image: url('{% static 'images/purple.png' %}'); background-size: cover; background-position: center;">
+                <h3>Total Listening Time</h3>
+                <p>You listened to {{ total_minutes }} minutes. That's approximately {{ total_days }} days!</p>
+            </div>
+            <div class="swiper-slide" style="background-image: url('{% static 'images/purple.png' %}'); background-size: cover; background-position: center;">
+                <h3>Top Genres</h3>
+                <ul>
+                    {% for genre in top_genres %}
+                        <li>{{ genre }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="swiper-slide" style="background-image: url('{% static 'images/yellow.png' %}'); background-size: cover; background-position: center;">
+                <h3>Top Artists:</h3>
+                <ul>
+                    {% for artist in top_artists %}
+                        <li>{{ artist.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="swiper-slide" style="background-image: url('{% static 'images/pink.png' %}'); background-size: cover; background-position: center;">
+                <h3>Minutes Listened to Top Artist</h3>
+                <p>You listened to {{ top_artists.0.name }} for {{ top_artist_minutes }} minutes.</p>
+            </div>
+            <div class="swiper-slide" style="background-image: url('{% static 'images/red.png' %}'); background-size: cover; background-position: center;">
+                <h3>Top Tracks:</h3>
+                <div class="trackgrid">
 
-    <h3>Total Listening Time</h3>
-    <p>You listened to {{ total_minutes }} minutes. That's approximately {{ total_days }} days!</p>
+                    {% for track in wrap.wrap_data.items|slice:":5" %}
+                        <div class="trackitem">
+                            <img src="{{ track.album.images.0.url }}" alt="{{ track.name }} album cover">
+                            <div class="track-info"><p>{{ track.name }}</p>
+                            {% if track.preview_url %}
+                                <audio controls>
+                                    <source src="{{ track.preview_url }}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            {% else %}
+                                <p>No preview available.</p>
+                            {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+        <!-- Add Navigation -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
-    <h3>Top Genres</h3>
-    <ul>
-        {% for genre in top_genres %}
-            <li>{{ genre }}</li>
-        {% endfor %}
-    </ul>
-
-    <h3>Top Artists:</h3>
-    <ul>
-        {% for artist in top_artists %}
-            <li>{{ artist.name }}</li>
-        {% endfor %}
-    </ul>
-
-    <h3>Minutes Listened to Top Artist</h3>
-    <p>You listened to {{ top_artists.0.name }} for {{ top_artist_minutes }} minutes.</p>
-
-
-    <h3>Top Tracks:</h3>
-    <ul>
-        {% for track in wrap.wrap_data.items %}
-            <li>
-                <!-- Display the track title -->
-                <p>{{ track.name }}</p>
-                <!-- Display the album cover next to the song title -->
-                <img src="{{ track.album.images.0.url }}" alt="{{ track.name }} album cover" style="width: 100px; height: 100px;">
-                <!-- Audio preview (if available) -->
-                {% if track.preview_url %}
-                    <audio controls>
-                        <source src="{{ track.preview_url }}" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                {% else %}
-                    <p>No preview available.</p>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
 
     <a href="{% url 'wrap_list' %}">Back to Wrap List</a>
 
@@ -71,5 +95,28 @@
     {% else %}
         <p>No preview available for the top track.</p>
     {% endif %}
+<!--</section>-->
+
+<!-- Include Swiper JS -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const swiper = new Swiper('.mySwiper', {
+            loop: true, // Enables continuous loop mode
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            autoplay: false,
+            spaceBetween: 30,
+            slidesPerView: 1,
+        });
+    });
+</script>
+</div>
 </body>
 </html>

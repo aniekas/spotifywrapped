@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-    body {
-=======
+
 .timeframe .mainContainer {
     display: flex;
     flex-direction: column;
@@ -105,41 +103,111 @@
 
 /* styling for swiper */
 body {
->>>>>>> e27ee47c93d4766d3fbea9443c922ef8e502a3c2
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
     background-color: #f4f4f4;
+    overflow-x: hidden;
+}
+
+.swiper {
+    width: 100%;
+    height: auto;
 }
 
 .mySwiper {
-    width: 80%;
-    height: 60vh;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
+}
+
+.swiper-wrapper {
+    display: flex;
+    height: auto;
+    transition: transform 0.5s ease;
 }
 
 .swiper-slide {
     display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
     align-items: center;
     justify-content: center;
+    text-align: center;
     font-size: 24px;
     background: #fff;
     border-radius: 8px;
     overflow: hidden;
-<<<<<<< HEAD
-=======
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .header {
     text-align: center;
     font-size: 24px;
     font-weight: bold;
-    margin: 20px 0;
->>>>>>> e27ee47c93d4766d3fbea9443c922ef8e502a3c2
+    margin: 10px 0;
+}
+
+.swiper-pagination-bullet {
+    background-color: #000; /* Customize bullet colors */
+}
+.swiper-button-next, .swiper-button-prev {
+    color: #000; /* Set the arrow color (black in this case) */
+    font-size: 24px; /* Adjust the size as needed */
+    z-index: 10; /* Ensure they appear above the slides */
+}
+
+.swiper-button-next:after, .swiper-button-prev:after {
+    font-size: 24px; /* Ensure arrow icons are visible */
+}
+
+.wrapcontainer {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;    /* Center-align the content */
+    gap: 20px;              /* Add some spacing between header and slider */
+    padding: 20px;          /* Optional: Add padding around the container */
+}
+.trackgrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 30px; /* Space between items */
+    width: 80%;
+    padding: 20px;
+}
+
+.trackitem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2); /* Optional background for better readability */
+    border-radius: 10px; /* Optional rounded corners */
+    padding: 20px;
+    text-align: left;
+    gap: 20px;
+}
+
+.trackitem img {
+    width: 125px; /* Smaller album cover */
+    height: 125px;
+    margin-bottom: 5px; /* Space below the image */
+}
+
+.trackitem audio {
+    height: 40px;
+}
+
+.track-info {
+    display: flex;                      /* Use Flexbox for song name and play button */
+    flex-direction: column;             /* Stack song name and button in a column */
+    align-items: flex-start;                /* Align vertically centered */
+    gap: 5px;                          /* Space between the song name and play button */
+    font-size: 1em;
 }
