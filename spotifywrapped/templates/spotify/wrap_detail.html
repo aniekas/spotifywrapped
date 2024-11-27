@@ -22,9 +22,12 @@
     <ul>
         {% for artist_data in wrap.top_artists %}
             <li>
+                {% if artist_data.album.artists %}
                     <!-- Extract and display the artist's name -->
                     {{ artist_data.album.artists.0.name }}
-
+                {% else %}
+                    No artist name available.
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

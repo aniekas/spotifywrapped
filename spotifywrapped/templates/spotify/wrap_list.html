@@ -8,14 +8,15 @@
 </head>
 <body class="flex-column">
     <div class="contentWrapper">
-        <nav class="navbar">
+
+        <!-- <nav class="navbar">
             <img class="logo" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
             <a class="home" href="{% url 'index' %}">Home</a>
             <a class="contact" href="{% url 'contact' %}">Contact the Developers</a>
             <a class="profile" href="{% url 'wrap_list' %}">
               <img src="{% static 'images/defaultpfp.png' %}" alt="Spotify Wrapped Logo" width="50"/>
             </a> 
-          </nav>
+          </nav> -->
     </div>
     <div class="carousel">
         <div class="carousel-inner">
@@ -25,7 +26,7 @@
                     <div class="carousel-caption {% if forloop.first %}show{% endif %}">
                         <h1>YOUR SPOTIFY WRAPPED</h1>
                         <h3>
-                            {{wrap.title}}
+                            
                         </h3>
     
                         <!-- Display Top Artists (Only top 5) -->
@@ -33,16 +34,11 @@
                             <p><strong>Top Artists:</strong></p>
                             <ul>
                                 {% for artist_data in wrap.top_artists|slice:":5" %}
-                                    {% if artist_data.album and artist_data.album.artists %}
                                         {% for artist in artist_data.album.artists %}
                                             <ul>{{ artist.name }}</ul>
                                         {% endfor %}
-                                    {% else %}
-                                        <ul>No artist data available.</ul>
-                                    {% endif %}
                                 {% endfor %}
                             </ul>
-                            
                         <p><strong>Top Songs:</strong></p>
                         <ul>
                             {% for track in wrap.wrap_data.items|slice:":5" %}
