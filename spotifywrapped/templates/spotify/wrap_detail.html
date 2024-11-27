@@ -1,33 +1,42 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{{ wrap.year }} Wrap</title>
+    <link rel="stylesheet" href="{% static 'css/wrapdetail.css' %}">
 </head>
 <body>
+    <nav class="navbar">
+        <img class="logo" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
+        <a class="home" href="{% url 'index' %}">Home</a>
+        <a class="contact" href="{% url 'contact' %}">Contact the Developers</a>
+        <a class="profile" href="{% url 'wrap_list' %}">
+          <img src="{% static 'images/defaultpfp.png' %}" alt="Spotify Wrapped Logo" width="50"/>
+        </a> 
+      </nav>
     <h2>{{ wrap.title }}</h2>
     <p>Year: {{ wrap.year }}</p>
 
-    <h3>Total Listening Time</h3>
-    <p>You listened to {{ total_minutes }} minutes. That's approximately {{ total_days }} days!</p>
-
-    <h3>Top Genres</h3>
-    <ul>
-        {% for genre in top_genres %}
-            <li>{{ genre }}</li>
-        {% endfor %}
-    </ul>
-
     <h3>Top Artists:</h3>
     <ul>
-        {% for artist in top_artists %}
-            <li>{{ artist.name }}</li>
+        {% for artist_data in wrap.top_artists %}
+            <li>
+                {% if artist_data.album.artists %}
+                    <!-- Extract and display the artist's name -->
+                    {{ artist_data.album.artists.0.name }}
+                {% else %}
+                    No artist name available.
+                {% endif %}
+            </li>
         {% endfor %}
     </ul>
 
-    <h3>Minutes Listened to Top Artist</h3>
-    <p>You listened to {{ top_artists.0.name }} for {{ top_artist_minutes }} minutes.</p>
+    <h3>Top Track:</h3>
+    <p>{{ top_track_name }} (Popularity: {{ top_track_popularity }})</p>
 
+    <h3>Average Track Duration:</h3>
+    <p>{{ average_duration_min }} minutes</p>
 
     <h3>Top Tracks:</h3>
     <ul>
@@ -37,18 +46,15 @@
                 <p>{{ track.name }}</p>
                 <!-- Display the album cover next to the song title -->
                 <img src="{{ track.album.images.0.url }}" alt="{{ track.name }} album cover" style="width: 100px; height: 100px;">
-                <!-- Audio preview (if available) -->
-                {% if track.preview_url %}
-                    <audio controls>
-                        <source src="{{ track.preview_url }}" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                {% else %}
-                    <p>No preview available.</p>
-                {% endif %}
             </li>
         {% endfor %}
     </ul>
+
+    <div>
+        {% for track_image in wrap.track_images %}
+            <img src="{{ track_image }}" alt="Track Image" width="100" height="100">
+        {% endfor %}
+    </div>
 
     <a href="{% url 'wrap_list' %}">Back to Wrap List</a>
 
@@ -71,5 +77,15 @@
     {% else %}
         <p>No preview available for the top track.</p>
     {% endif %}
+
+    <button id="shareWrappedBtn" onclick="shareWrapped()">Share My Wrapped</button>
+    <script>
+     function shareWrapped() {
+         const shareLink = "http://localhost:2340/app/wraps/";  // Directly specify the correct URL
+         navigator.clipboard.writeText(shareLink).then(() => {
+             alert("Link copied to clipboard! Share it on social media.");
+         });
+     }
+ </script>
 </body>
 </html>

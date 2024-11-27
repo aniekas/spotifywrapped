@@ -1,12 +1,4 @@
-from urllib.parse import urlencode
-
 import requests
-import secrets
-from django.shortcuts import render, redirect
-from django.contrib.auth import update_session_auth_hash
-from django.contrib import messages
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -19,18 +11,17 @@ import datetime
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from datetime import timedelta
-from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from django.shortcuts import render
 from django.core.mail import send_mail
-from django.conf import settings
 
 
 def home(request):
     """Render the home screen/welcome page."""
     return render(request, 'spotify/home.html')
 
+
 from django.urls import reverse
+
 
 def index(request):
     if request.method == 'POST':
@@ -65,7 +56,7 @@ def index(request):
                 year=timezone.now().year,
                 top_artists=wrap_data.get('items', []),
                 wrap_data=wrap_data,
-                title=f"{title} - {timezone.now().date()}"
+                title=f"{title}"
             )
 
             # Redirect to the wrap_detail view for the new wrap
@@ -140,7 +131,8 @@ def callback(request):
 
     user_data = user_info_response.json()
     spotify_user_id = user_data["id"]
-    username = user_data.get("display_name") or spotify_user_id  # Fallback to Spotify ID if no display name is available
+    username = user_data.get(
+        "display_name") or spotify_user_id  # Fallback to Spotify ID if no display name is available
 
     # Step 3: Get or create the user in Django
     user, created = User.objects.get_or_create(username=username, defaults={"first_name": username})
@@ -174,7 +166,6 @@ def callback(request):
     return redirect("index")
 
 
-
 @login_required
 def wrap_list(request):
     """Display the user's saved Spotify wraps."""
@@ -189,52 +180,42 @@ def save_wrap(user_profile, token, time_range="medium_term"):
 
     if time_range not in valid_ranges:
         time_range = "medium_term"  # Default to medium term if invalid time range is passed
-
-    # Fetch top artists with specified time range
-    top_artists_response = requests.get(
-        f"https://api.spotify.com/v1/me/top/artists?time_range={time_range}",
-        headers=headers
+    try:
+        # Fetch top artists
+        top_artists_response = requests.get(
+            f"https://api.spotify.com/v1/me/top/artists?time_range={time_range}",
+            headers=headers
+        )
+        top_artists_response.raise_for_status()
+        top_artists = top_artists_response.json().get("items", [])  # Access the 'items' list for artists
+        # Fetch top tracks
+        wrap_data_response = requests.get(
+            f"https://api.spotify.com/v1/me/top/tracks?time_range={time_range}",
+            headers=headers
+        )
+        wrap_data_response.raise_for_status()
+        wrap_data = wrap_data_response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Spotify API error: {e}")
+        return  # Exit on API error
+    # Determine wrap title
+    title = {
+        "short_term": "Last Month",
+        "medium_term": "Last 6 Months",
+        "long_term": "All Time"
+    }.get(time_range, "Custom Wrap")
+    # Extract a preview URL if available
+    top_track_preview_url = next(
+        (track.get("preview_url") for track in wrap_data.get("items", []) if track.get("preview_url")),
+        None
     )
-    if top_artists_response.status_code != 200:
-        print("Error fetching top artists from Spotify:", top_artists_response.json())
-        return
 
-    # Fetch top tracks with specified time range
-    wrap_data_response = requests.get(
-        f"https://api.spotify.com/v1/me/top/tracks?time_range={time_range}",
-        headers=headers
-    )
-    if wrap_data_response.status_code != 200:
-        print("Error fetching wrap data from Spotify:", wrap_data_response.json())
-        return
-
-    # Parse the responses
-    top_artists = top_artists_response.json().get('items', [])
-    wrap_data = wrap_data_response.json()
-
-    # Set the wrap title based on the time range
-    if time_range == "short_term":
-        title = "Last Month"
-    elif time_range == "medium_term":
-        title = "Last 6 Months"
-    else:
-        title = "All Time"
-
-    # Find the first track with an available preview URL
-    top_track_preview_url = None
-    for track in wrap_data.get("items", []):
-        print(f"Track: {track['name']} - Preview URL: {track.get('preview_url')}")
-        preview_url = track.get("preview_url")
-        if preview_url:
-            top_track_preview_url = preview_url
-            break  # Exit the loop once a valid preview URL is found
-
-    # Save the wrap data in the SpotifyWrap model
+    # Save the wrap with the correct data
     SpotifyWrap.objects.create(
         user=user_profile,
         year=datetime.datetime.now().year,
         title=title,
-        top_artists=top_artists,
+        top_artists=top_artists,  # Store the list of top artists
         wrap_data=wrap_data,
         top_track_preview_url=top_track_preview_url  # Add a field for preview URL in your model
     )
@@ -263,27 +244,19 @@ def wrap_detail(request, wrap_id):
     top_track_cover_url = None
     tracks_with_cover = []
 
-    #total minutes listened
-    total_minutes = sum(track.get('duration_ms', 0) // 6000 for track in wrap.wrap_data.get('items', []))
-    total_days = total_minutes // 1440
+    # Calculate the popularity of the top song
+    top_tracks = wrap.wrap_data.get("items", [])
+    if top_tracks:
+        top_track = top_tracks[0]
+        top_track_name = top_track['name']
+        top_track_popularity = top_track['popularity']
+    else:
+        top_track_name = "No top track available"
+        top_track_popularity = "N/A"
 
-    #top 3 genres
-    genre_count = {}
-    for artist in wrap.top_artists:
-        for genre in artist.get('genres', []):
-            genre_count[genre] = genre_count.get(genre, 0) + 1
-    top_genres = sorted(genre_count, key=genre_count.get, reverse=True)[:3]
-
-    #top 3 artists
-    top_artists = wrap.top_artists[:3]
-
-    #minutes listened to top artist
-    top_artist_id = wrap.top_artists[0].get('id') if wrap.top_artists else None
-    top_artist_minutes = 0
-    if top_artist_id:
-        for track in wrap.wrap_data.get('items', []):
-            if any(artist['id'] == top_artist_id for artist in track.get('artists', [])):
-                top_artist_minutes += track.get('duration_ms', 0) // 6000
+    # Calculate average track duration (example)
+    total_duration_ms = sum([track['duration_ms'] for track in top_tracks])
+    avg_duration_min = round((total_duration_ms / len(top_tracks)) / 60000, 2) if top_tracks else 0
 
     # Loop through the tracks and find the album cover for each one
     for track in wrap.wrap_data.get('items', []):
@@ -303,31 +276,29 @@ def wrap_detail(request, wrap_id):
     # Pass the tracks and cover URLs to the template
     return render(request, 'spotify/wrap_detail.html', {
         'wrap': wrap,
-        'total_minutes': total_minutes,
-        'total_days': total_days,
-        'top_genres': top_genres,
-        'top_artists': top_artists,
-        'top_artist_minutes': top_artist_minutes,
+        'top_track_name': top_track_name,  # Pass the top track name here
+        'top_track_popularity': top_track_popularity,  # Pass the popularity value here
+        'average_duration_min': avg_duration_min,
         'top_track_preview_url': top_track_preview_url,
         'top_track_title': top_track_title,
         'tracks_with_cover': tracks_with_cover,  # Pass the list of tracks with their cover images
     })
 
 
-def spotify_logout(request):
-    request.session.pop('spotify_access_token', None)
-    request.session.pop('spotify_refresh_token', None)
-    logout(request)
+def top_song_popularity(top_tracks):
+    if len(top_tracks) > 0:
+        # Assuming you want the first song in the list as your "top song"
+        top_song = top_tracks[0]
 
-    # Redirect to Spotify's logout URL, then back to logout.html
-    redirect_url = request.build_absolute_uri('/logout_complete/')
-    spotify_logout_url = f'https://accounts.spotify.com/logout?{urlencode({'continue': redirect_url})}'
-    return HttpResponseRedirect(spotify_logout_url)
-    # return redirect('logout_complete') <--- attempt at different method, ignore
+        # Extract the track name and popularity
+        track_name = top_song['name']
+        popularity = top_song['popularity']
 
-def logout_complete(request):
-    return render(request, 'logout.html')  # Or redirect to another page
-    # return render(request, 'accounts/logout.html') <---- same thing, ignore
+        # Return both values as a tuple
+        return track_name, popularity
+    else:
+        return None, 0
+
 
 @login_required
 def delete_wrap(request, wrap_id):
@@ -345,33 +316,33 @@ def delete_wrap(request, wrap_id):
     # Delete the wrap and redirect
     wrap.delete()
     return redirect("wrap_list")
-def contact_developers(request):
+
+
+def contact(request):
     return render(request, 'spotify/contact.html')
 
-@login_required
-def confirm_delete_account(request):
-    return render(request, 'accounts/confirm_delete_account.html')
 
-@login_required
-def delete_account(request):
+def send_message(request):
     if request.method == 'POST':
-        print("POST")
-        if request.user.is_authenticated:
-            print("authenticated")
-            # Delete Spotify wrap data
-            SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile).delete()
-            print("deleted wrap")
-            # Delete the user account
-            request.user.delete()
-            print("deleted user")
-            # Log out the user
-            logout(request)
-            print("logged out")
-            # Redirect to the account_deleted page
-            return redirect('account_deleted')
-        # Redirect back to index for non-POST requests
-    return redirect('index')
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        subject = f"Message from {name} ({email})"
+        body = f"Message from {name} ({email}):\n\n{message}"
+        recipient_list = ['arhea9@gatech.edu']  # Your email
+
+        try:
+            send_mail(subject, body, settings.EMAIL_HOST_USER, recipient_list, fail_silently=False)
+        except Exception as e:
+            return HttpResponse(f"Error sending email: {e}", status=500)
+
+        return redirect('/app/contact')
+
+    return HttpResponse('Invalid request method. Please use POST to send a message.', status=405)
 
 
-def account_deleted(request):
-    return render(request, 'accounts/account_deleted.html')
+def delete_all_wraps(request):
+    """Delete all wraps associated with the current user."""
+    SpotifyWrap.objects.all().delete()
+    return render(request, 'spotify/index.html', {'message': 'All wraps have been deleted.'})

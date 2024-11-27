@@ -5,17 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd32aa0f-08c1-4d25-ad8c-263f35a6f3b0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_3_2024_5_38_PM_[Changes]/db.sqlite3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_3_2024_5_38_PM_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spotifywrapped/images/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/spotify.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/css/contact.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/css/home.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/css/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/css/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/css/profile.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/css/wrapdetail.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/css/wrappedframe.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/images/defaultpfp.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/images/whitelogo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/images/wrappedframe.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spotifywrapped/templates/accounts/loggedout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/spotifywrapped.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/spotifywrapped.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mysite/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/mysite/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spotifywrapped/static/css/spotify.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/static/css/spotify.css" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/static/css/spotify.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/static/css/userauth.css" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/static/css/userauth.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/accounts/account_deleted.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/accounts/confirm_delete_account.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/accounts/confirm_delete_account.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/accounts/logout.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/accounts/password_reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/accounts/password_reset.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/contact.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/generate_time_frame.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/generate_time_frame.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/top_tracks.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/top_tracks.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/wrap_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/wrap_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/wrap_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/wrap_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spotifywrapped/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spotifywrapped/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/views.py" afterDir="false" />
     </list>
@@ -38,6 +56,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "aniekas"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/aniekas/spotifywrapped.git",
+    "accountId": "b41863ff-ae1d-42e9-bba7-41f57debce7e"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -54,7 +84,7 @@
     "JavaScript Debug.top_tracks.html.executor": "Run",
     "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "dbfix2__wraps",
     "last_opened_file_path": "C:/Users/Lindsey/OneDrive - Georgia State University/2340/spotifywrapped",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
@@ -68,8 +98,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Lindsey\OneDrive - Georgia State University\2340\spotifywrapped\spotifywrapped\static" />
-      <recent name="C:\Users\Lindsey\OneDrive - Georgia State University\2340\spotifywrapped\spotifywrapped" />
+      <recent name="C:\Users\as532\LMC 2700\spotifywrapped\spotifywrapped\static\images" />
+      <recent name="C:\Users\as532\LMC 2700\spotifywrapped\spotifywrapped\static\css" />
+      <recent name="C:\Users\as532\LMC 2700\spotifywrapped\spotifywrapped\templates2\spotify" />
+      <recent name="C:\Users\as532\LMC 2700\spotifywrapped\spotifywrapped\templates2\accounts" />
+      <recent name="C:\Users\as532\LMC 2700\spotifywrapped\spotifywrapped\static" />
     </key>
   </component>
   <component name="RunManager">
@@ -237,10 +270,22 @@
       <workItem from="1730226619461" duration="6800000" />
       <workItem from="1730763953748" duration="11265000" />
       <workItem from="1731006834644" duration="1473000" />
+      <workItem from="1732742212757" duration="3559000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
