@@ -175,58 +175,53 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     headers = {"Authorization": f"Bearer {token}"}
     valid_ranges = {"short_term", "medium_term", "long_term"}
 
+    # Default to medium_term if invalid time range is provided
     if time_range not in valid_ranges:
-        time_range = "medium_term"  # Default to medium term if invalid time range is passed
+        time_range = "medium_term"
 
-    # Fetch top artists with specified time range
-    top_artists_response = requests.get(
-        f"https://api.spotify.com/v1/me/top/artists?time_range={time_range}",
-        headers=headers
+    try:
+        # Fetch top artists
+        top_artists_response = requests.get(
+            f"https://api.spotify.com/v1/me/top/artists?time_range={time_range}",
+            headers=headers
+        )
+        top_artists_response.raise_for_status()
+        top_artists = top_artists_response.json()
+
+        # Fetch top tracks
+        wrap_data_response = requests.get(
+            f"https://api.spotify.com/v1/me/top/tracks?time_range={time_range}",
+            headers=headers
+        )
+        wrap_data_response.raise_for_status()
+        wrap_data = wrap_data_response.json()
+
+    except requests.exceptions.RequestException as e:
+        print(f"Spotify API error: {e}")
+        return  # Exit on API error
+
+    # Determine wrap title
+    title = {
+        "short_term": "Last Month",
+        "medium_term": "Last 6 Months",
+        "long_term": "All Time"
+    }.get(time_range, "Custom Wrap")
+
+    # Extract a preview URL if available
+    top_track_preview_url = next(
+        (track.get("preview_url") for track in wrap_data.get("items", []) if track.get("preview_url")),
+        None
     )
-    if top_artists_response.status_code != 200:
-        print("Error fetching top artists from Spotify:", top_artists_response.json())
-        return
 
-    # Fetch top tracks with specified time range
-    wrap_data_response = requests.get(
-        f"https://api.spotify.com/v1/me/top/tracks?time_range={time_range}",
-        headers=headers
-    )
-    if wrap_data_response.status_code != 200:
-        print("Error fetching wrap data from Spotify:", wrap_data_response.json())
-        return
-
-    # Parse the responses
-    top_artists = top_artists_response.json().get('items', [])
-    wrap_data = wrap_data_response.json()
-
-    # Set the wrap title based on the time range
-    if time_range == "short_term":
-        title = "Last Month"
-    elif time_range == "medium_term":
-        title = "Last 6 Months"
-    else:
-        title = "All Time"
-
-    # Find the first track with an available preview URL
-    top_track_preview_url = None
-    for track in wrap_data.get("items", []):
-        print(f"Track: {track['name']} - Preview URL: {track.get('preview_url')}")
-        preview_url = track.get("preview_url")
-        if preview_url:
-            top_track_preview_url = preview_url
-            break  # Exit the loop once a valid preview URL is found
-
-    # Save the wrap data in the SpotifyWrap model
+    # Save the wrap to the database
     SpotifyWrap.objects.create(
         user=user_profile,
         year=datetime.datetime.now().year,
         title=title,
         top_artists=top_artists,
         wrap_data=wrap_data,
-        top_track_preview_url=top_track_preview_url  # Add a field for preview URL in your model
+        top_track_preview_url=top_track_preview_url
     )
-
 
 def logout_view(request):
     """Log the user out and reset Spotify access token, then redirect to the home page."""
@@ -250,8 +245,6 @@ def wrap_detail(request, wrap_id):
     top_track_title = None
     top_track_cover_url = None
     tracks_with_cover = []
-    print("Top Artists Data:", wrap.top_artists)  # Inspect top_artists
-    print("Wrap Data:", wrap.wrap_data)
 
     # Calculate the popularity of the top song
     top_tracks = wrap.wrap_data.get("items", [])
