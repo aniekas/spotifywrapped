@@ -17,8 +17,6 @@
             </a> 
           </nav>
     </div>
-    <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger">Delete All Wraps</a>
-    <a href="{% url 'logout' %}">Logout</a>
     <div class="carousel">
         <div class="carousel-inner">
             {% for wrap in wraps %}
@@ -34,10 +32,8 @@
                         <div class="wrap-details">
                             <p><strong>Top Artists:</strong></p>
                             <ul>
-                                {% for artist_data in wrap.top_artists|slice:":5" %}
-                                    {% for artist in artist_data.album.artists %}
+                                {% for artist in wrap.top_artists %}
                                     <ul>{{ artist.name }}</ul>
-                                    {% endfor %}
                                 {% endfor %}
                             </ul>
                         <p><strong>Top Songs:</strong></p>
@@ -51,8 +47,6 @@
                     </div>
                     <p>Generated on: {{ wrap.created_at }}</p>
                 </div>
-                    
-    
 
                 </div>
             {% endfor %}
@@ -61,7 +55,8 @@
         <button class="carousel-control prev" onclick="prevSlide()">❮</button>
         <button class="carousel-control next" onclick="nextSlide()">❯</button>
     </div>
-    
+    <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger">Delete All Wraps</a>
+    <a href="{% url 'logout' %}">Logout</a>
     
     
 
