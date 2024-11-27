@@ -53,7 +53,7 @@ def index(request):
                 year=timezone.now().year,
                 top_artists=wrap_data.get('items', []),
                 wrap_data=wrap_data,
-                title=f"{title} - {timezone.now().date()}"
+                title=f"{title}"
             )
 
             # Redirect to the wrap_detail view for the new wrap
@@ -167,14 +167,6 @@ def callback(request):
 def wrap_list(request):
     """Display the user's saved Spotify wraps."""
     wraps = SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile)  # Access through the profile
-
-    for wrap in wraps:
-        unique_artists = {}
-        for artist_data in wrap.top_artists:
-            for artist in artist_data['artists']:
-                unique_artists[artist['name']] = artist
-        
-        wrap.top_artists = list(unique_artists.values())[:5]
     return render(request, "spotify/wrap_list.html", {"wraps": wraps})
 
 
@@ -211,7 +203,7 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     # Determine wrap title
     title = {
         "short_term": "Last Month",
-        "medium_term": "Last 6 Months",
+        "medium_term": "Last Year",
         "long_term": "All Time"
     }.get(time_range, "Custom Wrap")
 

@@ -32,10 +32,17 @@
                         <div class="wrap-details">
                             <p><strong>Top Artists:</strong></p>
                             <ul>
-                                {% for artist in wrap.top_artists %}
-                                    <ul>{{ artist.name }}</ul>
+                                {% for artist_data in wrap.top_artists|slice:":5" %}
+                                    {% if artist_data.album and artist_data.album.artists %}
+                                        {% for artist in artist_data.album.artists %}
+                                            <ul>{{ artist.name }}</ul>
+                                        {% endfor %}
+                                    {% else %}
+                                        <ul>No artist data available.</ul>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
+                            
                         <p><strong>Top Songs:</strong></p>
                         <ul>
                             {% for track in wrap.wrap_data.items|slice:":5" %}
