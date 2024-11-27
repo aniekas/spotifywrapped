@@ -9,14 +9,14 @@
 <body class="flex-column">
     <div class="contentWrapper">
 
-        <!-- <nav class="navbar">
+        <nav class="navbar">
             <img class="logo" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
             <a class="home" href="{% url 'index' %}">Home</a>
             <a class="contact" href="{% url 'contact' %}">Contact the Developers</a>
             <a class="profile" href="{% url 'wrap_list' %}">
               <img src="{% static 'images/defaultpfp.png' %}" alt="Spotify Wrapped Logo" width="50"/>
             </a> 
-          </nav> -->
+          </nav>
     </div>
     <div class="carousel">
         <div class="carousel-inner">
@@ -32,6 +32,7 @@
                         <!-- Display Top Artists (Only top 5) -->
                         <div class="wrap-details">
                             <p><strong>Top Artists:</strong></p>
+                            
                             <ul>
                                 {% for artist_data in wrap.top_artists|slice:":5" %}
                                         {% for artist in artist_data.album.artists %}

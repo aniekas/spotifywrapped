@@ -167,8 +167,11 @@ def callback(request):
 def wrap_list(request):
     """Display the user's saved Spotify wraps."""
     wraps = SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile)  # Access through the profile
-    for wrap in wraps:
-        print(wrap.top_artists)
+    # for wrap in wraps:
+    #     for item in wrap.wrap_data.get('items', []):
+    #         for artist in item.get('album', {}).get('artists', [{}])[0].get('name'):
+    #             artist_name = artist.get('name')
+    #             print(f"Artist Name: {artist_name}")
     return render(request, "spotify/wrap_list.html", {"wraps": wraps})
 
 
@@ -208,7 +211,7 @@ def save_wrap(user_profile, token, time_range="medium_term"):
         (track.get("preview_url") for track in wrap_data.get("items", []) if track.get("preview_url")),
         None
     )
-   
+
     # Save the wrap with the correct data
     SpotifyWrap.objects.create(
         user=user_profile,
@@ -218,6 +221,7 @@ def save_wrap(user_profile, token, time_range="medium_term"):
         wrap_data=wrap_data,
         top_track_preview_url=top_track_preview_url  # Add a field for preview URL in your model
     )
+
 
 
 def logout_view(request):
@@ -242,8 +246,7 @@ def wrap_detail(request, wrap_id):
     top_track_title = None
     top_track_cover_url = None
     tracks_with_cover = []
-    print("Top Artists Data:", wrap.top_artists)  # Inspect top_artists
-    print("Wrap Data:", wrap.wrap_data)
+
 
     # Calculate the popularity of the top song
     top_tracks = wrap.wrap_data.get("items", [])
