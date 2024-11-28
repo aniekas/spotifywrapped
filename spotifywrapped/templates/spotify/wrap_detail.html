@@ -46,15 +46,6 @@
                 <p>{{ track.name }}</p>
                 <!-- Display the album cover next to the song title -->
                 <img src="{{ track.album.images.0.url }}" alt="{{ track.name }} album cover" style="width: 100px; height: 100px;">
-                <!-- Audio preview (if available) -->
-                {% if track.preview_url %}
-                    <audio controls>
-                        <source src="{{ track.preview_url }}" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                {% else %}
-                    <p>No preview available.</p>
-                {% endif %}
             </li>
         {% endfor %}
     </ul>

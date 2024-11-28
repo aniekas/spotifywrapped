@@ -18,10 +18,12 @@ def home(request):
     """Render the home screen/welcome page."""
     return render(request, 'spotify/home.html')
 
+
 from django.urls import reverse
 
+
 def index(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and 'create_wrap' in request.POST:
         timeframe = request.POST.get('timeframe')
         user_profile = SpotifyUserProfile.objects.get(user=request.user)
 
@@ -128,7 +130,8 @@ def callback(request):
 
     user_data = user_info_response.json()
     spotify_user_id = user_data["id"]
-    username = user_data.get("display_name") or spotify_user_id  # Fallback to Spotify ID if no display name is available
+    username = user_data.get(
+        "display_name") or spotify_user_id  # Fallback to Spotify ID if no display name is available
 
     # Step 3: Get or create the user in Django
     user, created = User.objects.get_or_create(username=username, defaults={"first_name": username})
@@ -150,28 +153,22 @@ def callback(request):
         spotify_profile.save()
 
     # Pass the SpotifyUserProfile instance to save_wrap
-    try:
-        save_wrap(spotify_profile, access_token)
-    except Exception as e:
-        return render(request, "accounts/error.html", {
-            "message": f"Failed to save wrap data: {str(e)}"
-        }, status=500)
+    # try:
+    #     save_wrap(spotify_profile, access_token)
+    # except Exception as e:
+    #     return render(request, "accounts/error.html", {
+    #         "message": f"Failed to save wrap data: {str(e)}"
+    #     }, status=500)
 
     # Log the user in and redirect to wrap list page
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     return redirect("index")
 
 
-
 @login_required
 def wrap_list(request):
     """Display the user's saved Spotify wraps."""
     wraps = SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile)  # Access through the profile
-    # for wrap in wraps:
-    #     for item in wrap.wrap_data.get('items', []):
-    #         for artist in item.get('album', {}).get('artists', [{}])[0].get('name'):
-    #             artist_name = artist.get('name')
-    #             print(f"Artist Name: {artist_name}")
     return render(request, "spotify/wrap_list.html", {"wraps": wraps})
 
 
@@ -203,7 +200,7 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     # Determine wrap title
     title = {
         "short_term": "Last Month",
-        "medium_term": "Last 6 Months",
+        "medium_term": "Last Year",
         "long_term": "All Time"
     }.get(time_range, "Custom Wrap")
     # Extract a preview URL if available
@@ -246,7 +243,6 @@ def wrap_detail(request, wrap_id):
     top_track_title = None
     top_track_cover_url = None
     tracks_with_cover = []
-
 
     # Calculate the popularity of the top song
     top_tracks = wrap.wrap_data.get("items", [])

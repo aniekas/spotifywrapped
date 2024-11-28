@@ -29,8 +29,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('year', models.IntegerField()),
+                ('title', models.CharField(default='Spotify Wrap', max_length=255)),
                 ('top_artists', models.JSONField()),
                 ('wrap_data', models.JSONField()),
+                ('top_track_preview_url', models.URLField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='wraps', to='spotifywrapped.spotifyuserprofile')),
