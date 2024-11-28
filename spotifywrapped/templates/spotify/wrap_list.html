@@ -20,49 +20,71 @@
     </div>
     <div class="carousel">
         <div class="carousel-inner">
-            {% for wrap in wraps %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <!-- Caption (Visible for active item only) -->
-                    <div class="carousel-caption {% if forloop.first %}show{% endif %}">
-                        <h1>YOUR SPOTIFY WRAPPED</h1>
-                        <h3>
-                            
-                        </h3>
-    
-                        <!-- Display Top Artists (Only top 5) -->
-                        <div class="wrap-details">
+            {% for wrap_detail in wrap_details %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="carousel-caption {% if forloop.first %}show{% endif %}">
+                    <h1>YOUR SPOTIFY WRAPPED</h1>
+                    <h3>{{ wrap_detail.wrap.title }}</h3>
+                    
+            
+                    <!-- Display Top Artists and Songs side by side -->
+                    <div class="wrap-details">
+                        <div class="wrap-artists">
                             <p><strong>Top Artists:</strong></p>
-                            
                             <ul>
-                                {% for artist_data in wrap.top_artists|slice:":5" %}
-                                        {% for artist in artist_data.album.artists %}
-                                            <ul>{{ artist.name }}</ul>
-                                        {% endfor %}
+                                {% for artist_data in wrap_detail.wrap.top_artists|slice:":5" %}
+                                    {% for artist in artist_data.album.artists %}
+                                        <ul>{{ artist.name }}</ul>
+                                    {% endfor %}
                                 {% endfor %}
                             </ul>
-                        <p><strong>Top Songs:</strong></p>
-                        <ul>
-                            {% for track in wrap.wrap_data.items|slice:":5" %}
-                                <ul>{{ track.name }}</ul>
-                            {% empty %}
-                                <ul>No top songs available.</ul>
-                            {% endfor %}
-                        </ul>
+                        </div>
+                    
+                        <div class="wrap-songs">
+                            <p><strong>Top Songs:</strong></p>
+                            <ul>
+                                {% for track in wrap_detail.wrap.wrap_data.items|slice:":5" %}
+                                    <ul>{{ track.name }}</ul>
+                                {% empty %}
+                                    <ul>No top songs available.</ul>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    
+                        <!-- New third column with Top Track Popularity and Average Track Length -->
+                        <div class="wrap-stats">
+                            <p><strong>Top Track Popularity:</strong></p>
+                            <ul>
+                            {{ wrap_detail.top_track_popularity }}
+                            </ul>
+                    
+                            <p><strong>Average Track Length:</strong></p>
+                            <ul>
+                                <li>{{ wrap_detail.avg_duration_min }} minutes</li>
+                            </ul>
+                        </div>
+                    </div>                    
                     </div>
-                    <p>Generated on: {{ wrap.created_at }}</p>
+                    <p>Generated on: {{ wrap_detail.wrap.created_at }}</p>
+                    <div class="button-container">
+                    <a href="{% url 'wrap_detail' wrap_detail.wrap.id %}" class="wrap-link">
+                        <button class="btn btn-primary">View Full Wrap Details</button>
+                    </a>
+                    <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger">
+                        <button class="btn btn-primary">Delete All Wraps</button>
+                    </a>
+                    <a href="{% url 'logout' %}" class="btn btn-danger">
+                        <button class="btn btn-primary">Logout</button>
+                    </a>
                 </div>
-
                 </div>
+            </div>
             {% endfor %}
         </div>
         <!-- Carousel Navigation Buttons -->
         <button class="carousel-control prev" onclick="prevSlide()">❮</button>
         <button class="carousel-control next" onclick="nextSlide()">❯</button>
     </div>
-    <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger">Delete All Wraps</a>
-    <a href="{% url 'logout' %}">Logout</a>
-    
-    
 
     <script>
         let currentIndex = 0;

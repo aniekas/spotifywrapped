@@ -5,10 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
+            "name": "Python Debugger: Django",
+            "type": "debugpy",
             "request": "launch",
-            "name": "Open wrap_list.html",
-            "file": "c:\\Users\\ABBYR\\Documents\\fall 24\\cs2340\\spotifywrapped\\spotifywrapped\\templates\\spotify\\wrap_list.html"
-        }
+            "args": [
+                "runserver",
+                "2340"
+            ],
+            "django": true,
+            "autoStartBrowser": false,
+            "program": "${workspaceFolder}\\manage.py",
+            "justMyCode": false,
+        },
     ]
 }

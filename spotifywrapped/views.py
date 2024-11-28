@@ -43,7 +43,7 @@ def index(request):
 
             # Create a title for the wrap based on timeframe
             timeframe_titles = {
-                'long_term': 'All-time',
+                'long_term': 'All-Time',
                 'medium_term': 'Last Year',
                 'short_term': 'Last Month'
             }
@@ -169,7 +169,36 @@ def callback(request):
 def wrap_list(request):
     """Display the user's saved Spotify wraps."""
     wraps = SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile)  # Access through the profile
-    return render(request, "spotify/wrap_list.html", {"wraps": wraps})
+
+    wrap_details = []  # This will store the calculated top track popularity and duration for each wrap
+
+    for wrap in wraps:
+        top_tracks = wrap.wrap_data.get("items", [])
+        if top_tracks:
+            top_track = top_tracks[0]
+            top_track_name = top_track['name']
+            top_track_popularity = top_track['popularity']
+
+            # Calculate average track duration
+            total_duration_ms = sum([track['duration_ms'] for track in top_tracks])
+            avg_duration_min = round((total_duration_ms / len(top_tracks)) / 60000, 2) if top_tracks else 0
+        else:
+            top_track_name = "No top track available"
+            top_track_popularity = "N/A"
+            avg_duration_min = 0
+
+        # Append wrap details including the calculated popularity and duration
+        wrap_details.append({
+            'wrap': wrap,
+            'top_track_name': top_track_name,
+            'top_track_popularity': top_track_popularity,
+            'avg_duration_min': avg_duration_min
+        })
+
+    return render(request, "spotify/wrap_list.html", {
+        "wraps": wraps,
+        "wrap_details": wrap_details
+        })
 
 
 def save_wrap(user_profile, token, time_range="medium_term"):
@@ -201,7 +230,7 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     title = {
         "short_term": "Last Month",
         "medium_term": "Last Year",
-        "long_term": "All Time"
+        "long_term": "All-Time"
     }.get(time_range, "Custom Wrap")
     # Extract a preview URL if available
     top_track_preview_url = next(
@@ -246,6 +275,7 @@ def wrap_detail(request, wrap_id):
 
     # Calculate the popularity of the top song
     top_tracks = wrap.wrap_data.get("items", [])
+    print(f"Top Tracks: {top_tracks}")
     if top_tracks:
         top_track = top_tracks[0]
         top_track_name = top_track['name']
@@ -253,6 +283,8 @@ def wrap_detail(request, wrap_id):
     else:
         top_track_name = "No top track available"
         top_track_popularity = "N/A"
+    
+    print(f"Top Track Popularity: {top_track_popularity}")  # Add this to debug
 
     # Calculate average track duration (example)
     total_duration_ms = sum([track['duration_ms'] for track in top_tracks])
