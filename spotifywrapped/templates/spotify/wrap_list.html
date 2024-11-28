@@ -70,7 +70,10 @@
                     <a href="{% url 'wrap_detail' wrap_detail.wrap.id %}" class="wrap-link">
                         <button class="btn btn-primary">View Full Wrap Details</button>
                     </a>
-                    <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger">
+                    <a href="{% url 'delete_wrap' wrap_detail.wrap.id %}" onclick="return confirm('Are you sure you want to delete this wrap?')">
+                        <button class="btn btn-primary">Delete This Wrap</button>
+                    </a>
+                    <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete ALL of your wraps?')">
                         <button class="btn btn-primary">Delete All Wraps</button>
                     </a>
                     <a href="{% url 'logout' %}" class="btn btn-danger">
