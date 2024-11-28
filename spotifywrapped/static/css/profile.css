@@ -23,6 +23,7 @@ body {
 /* Slides container */
 .carousel-inner {
     display: flex;
+    flex-wrap: nowrap;
     transition: transform 0.5s ease-in-out;
 }
 
@@ -140,7 +141,7 @@ a img {
     max-width: 100%;
     display: flex; /* Use flexbox to arrange items horizontally */
     align-items: flex-start; /* Align them to the top */
-    gap: 55px;
+    gap: 45px;
     margin-left: 30px;
 }
 
@@ -163,6 +164,8 @@ a img {
 }
 
 .carousel-item {
+    max-width: 100%;
+    overflow: hidden;
     display: none; /* Hide all items by default */
 }
 
@@ -223,4 +226,9 @@ h1 {
     width: 100%;
     padding: 10px 0;
     text-align: center;
+}
+
+.carousel-inner > .carousel-item {
+    flex: 0 0 100%; /* Ensures all items are the same width */
+    box-sizing: border-box;
 }

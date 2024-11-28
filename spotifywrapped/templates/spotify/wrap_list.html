@@ -22,7 +22,7 @@
         <div class="carousel-inner">
             {% for wrap_detail in wrap_details %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <div class="carousel-caption {% if forloop.first %}show{% endif %}">
+                <div class="carousel-caption">
                     <h1>YOUR SPOTIFY WRAPPED</h1>
                     <h3>{{ wrap_detail.wrap.title }}</h3>
                     
@@ -32,10 +32,8 @@
                         <div class="wrap-artists">
                             <p><strong>Top Artists:</strong></p>
                             <ul>
-                                {% for artist_data in wrap_detail.wrap.top_artists|slice:":5" %}
-                                    {% for artist in artist_data.album.artists %}
-                                        <ul>{{ artist.name }}</ul>
-                                    {% endfor %}
+                                {% for artist_data in wrap_detail.wrap.top_artists %}
+                                        <ul>{{ artist_data.name }}</ul>
                                 {% endfor %}
                             </ul>
                         </div>
