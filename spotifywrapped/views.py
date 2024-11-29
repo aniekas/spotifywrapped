@@ -37,33 +37,8 @@ def index(request):
         url = url_map.get(timeframe)
 
         headers = {"Authorization": f"Bearer {user_profile.access_token}"}
-        response = requests.get(url, headers=headers)
-
-        if response.status_code == 200:
-            wrap_data = response.json()
-
-            # Create a title for the wrap based on timeframe
-            timeframe_titles = {
-                'long_term': 'All-time',
-                'medium_term': 'Last Year',
-                'short_term': 'Last Month'
-            }
-            title = timeframe_titles.get(timeframe)
-
-            # Save the wrap with the generated title
-            wrap = SpotifyWrap.objects.create(
-                user=user_profile,
-                year=timezone.now().year,
-                top_artists=wrap_data.get('items', []),
-                wrap_data=wrap_data,
-                title=f"{title}"
-            )
-
-            # Redirect to the wrap_detail view for the new wrap
-            return redirect(reverse('wrap_detail', args=[wrap.id]))
-        else:
-            # Handle error with Spotify API request
-            return render(request, "accounts/error.html", {"message": "Failed to fetch data from Spotify"})
+        wrap = save_wrap(user_profile, user_profile.access_token, timeframe)
+        return redirect(reverse('wrap_detail", args=[wrap.id]))
 
     return render(request, 'spotify/index.html')
 
@@ -153,14 +128,6 @@ def callback(request):
         spotify_profile.refresh_token = tokens.get("refresh_token", "")
         spotify_profile.save()
 
-    # Pass the SpotifyUserProfile instance to save_wrap
-    try:
-        save_wrap(spotify_profile, access_token)
-    except Exception as e:
-        return render(request, "accounts/error.html", {
-            "message": f"Failed to save wrap data: {str(e)}"
-        }, status=500)
-
     # Log the user in and redirect to wrap list page
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     return redirect("index")
@@ -170,7 +137,36 @@ def callback(request):
 def wrap_list(request):
     """Display the user's saved Spotify wraps."""
     wraps = SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile)  # Access through the profile
-    return render(request, "spotify/wrap_list.html", {"wraps": wraps})
+
+    wrap_details = []  # This will store the calculated top track popularity and duration for each wrap
+
+    for wrap in wraps:
+        top_tracks = wrap.wrap_data.get("items", [])
+        if top_tracks:
+            top_track = top_tracks[0]
+            top_track_name = top_track['name']
+            top_track_popularity = top_track['popularity']
+
+            # Calculate average track duration
+            total_duration_ms = sum([track['duration_ms'] for track in top_tracks])
+            avg_duration_min = round((total_duration_ms / len(top_tracks)) / 60000, 2) if top_tracks else 0
+        else:
+            top_track_name = "No top track available"
+            top_track_popularity = "N/A"
+            avg_duration_min = 0
+
+        # Append wrap details including the calculated popularity and duration
+        wrap_details.append({
+            'wrap': wrap,
+            'top_track_name': top_track_name,
+            'top_track_popularity': top_track_popularity,
+            'avg_duration_min': avg_duration_min
+        })
+
+    return render(request, "spotify/wrap_list.html", {
+        "wraps": wraps,
+        "wrap_details": wrap_details
+        })
 
 
 def save_wrap(user_profile, token, time_range="medium_term"):
@@ -188,6 +184,17 @@ def save_wrap(user_profile, token, time_range="medium_term"):
         )
         top_artists_response.raise_for_status()
         top_artists = top_artists_response.json().get("items", [])  # Access the 'items' list for artists
+
+        seen_artists = set()
+        unique_top_artists = []
+        for artist in top_artists:
+            artist_name = artist.get("name")
+            if artist_name not in seen_artists:
+                unique_top_artists.append(artist)
+                seen_artists.add(artist_name)
+            if len(unique_top_artists) == 5:
+                break
+        
         # Fetch top tracks
         wrap_data_response = requests.get(
             f"https://api.spotify.com/v1/me/top/tracks?time_range={time_range}",
@@ -201,8 +208,8 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     # Determine wrap title
     title = {
         "short_term": "Last Month",
-        "medium_term": "Last 6 Months",
-        "long_term": "All Time"
+        "medium_term": "Last Year",
+        "long_term": "All-Time"
     }.get(time_range, "Custom Wrap")
     # Extract a preview URL if available
     top_track_preview_url = next(
@@ -211,14 +218,16 @@ def save_wrap(user_profile, token, time_range="medium_term"):
     )
 
     # Save the wrap with the correct data
-    SpotifyWrap.objects.create(
+    return SpotifyWrap.objects.create(
         user=user_profile,
         year=datetime.datetime.now().year,
         title=title,
-        top_artists=top_artists,  # Store the list of top artists
+        top_artists=unique_top_artists,  # Store the list of top artists
         wrap_data=wrap_data,
         top_track_preview_url=top_track_preview_url  # Add a field for preview URL in your model
     )
+
+
 
 
 def logout_view(request):
