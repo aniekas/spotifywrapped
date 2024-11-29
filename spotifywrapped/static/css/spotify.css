@@ -1,138 +1,363 @@
-.timeframe .mainContainer {
-    display: flex;
-    flex-direction: column;
+.headerBar {
+    width: 100%;
     background-color: white;
-    overflow: hidden;
-}
-.timeframe .contentWrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 110px 0;
-    margin: 13px 36px 191px 28px;
-}
-.timeframe .headerRow {
-    z-index: 1;
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
-    gap: 0 10px;
-    width: 100%;
-}
-.timeframe .logoImg {
-    margin: 12px 0 13px;
-    width: 87px;
-    min-width: 0;
-}
-.timeframe .homeLink {
-    z-index: 1;
-    margin: 34px 0 26px;
-    width: 130px;
-    min-width: 0;
-    font: 700 36px/1.19 Georama, Helvetica, Arial, serif;
-    color: black;
-}
-.timeframe .contactLink {
-    z-index: 1;
-    margin: 38px 0 27px;
-    min-width: 0;
-    font: 400 32px/1.18 Georama, Helvetica, Arial, serif;
-    color: black;
-}
-.timeframe .colorAccent {
-    width: 103px;
-    min-width: 0;
-    min-height: 103px;
-    background-color: #d9d9d9;
-    border-radius: 52px;
-}
-.timeframe .heroContent {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 108px 0;
-    width: 54.03%;
+    border-bottom: 1px solid #ddd;
 }
-.timeframe .welcomeMsg {
-    font: 400 96px/1.19 Georama, Helvetica, Arial, serif;
-    color: black;
-}
-.timeframe .actionArea {
+.headerLeft, .headerRight {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 28px 0;
-    width: 80.37%;
 }
-.timeframe .timeFrameSelector {
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    width: 75%;
-    background-color: #d9d9d9;
+.headerBar img.logoImg {
+    width: 40px;
+    height: auto;
+    margin-right: 15px;
 }
-.timeframe .selectorRow {
-    display: flex;
-    justify-content: space-between;
-    gap: 0 10px;
-    margin: 6px 8px 11px;
-    padding: 0 9px 0 0;
-}
-.timeframe .selectorLabel {
-    min-width: 0;
-    font: 400 32px/1.18 Georama, Helvetica, Arial, serif;
-    color: rgba(0, 0, 0, 0.537);
-}
-.timeframe .selectorIcon {
-    margin: 14px 0 7px;
-    width: 39px;
-    min-width: 0;
-}
-.timeframe .generateBtn {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    background-color: #28a745; /* Green color */
-    border-radius: 45px; /* Rounded edges */
-    justify-content: center;
-    margin: 31px auto 30px;
-    font: 400 40px/1.2 Georama, Helvetica, Arial, serif;
-    color: white; /* White text color */
-    text-align: center;
+.headerLink {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 20px;
 }
 
-/* styling for swiper */
+.headerLink:hover {
+    color: #1db954; /* Spotify green */
+}
+.profileIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+}
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Gotham', sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
     background-color: #f4f4f4;
+    overflow-x: hidden;
 }
 
-.mySwiper {
-    width: 80%;
-    height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.swiper-slide {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
+.text-container {
+    position: relative;
+    z-index: 0;
+    color: white;
 }
 
 .header {
     text-align: center;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
-    margin: 20px 0;
+    margin: 10px 0;
+}
+
+h1, h2, h3, p {
+    z-index: 4;
+}
+h1 {
+    font-size: 115px;
+}
+
+.swiper {
+    width: 100%;
+    height: auto;
+}
+
+.mySwiper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.swiper-wrapper {
+    display: flex;
+    height: auto;
+    transition: transform 0.5s ease;
+}
+
+.swiper-slide {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 30px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.swiper-pagination-bullet {
+    background-color: #000; /* Customize bullet colors */
+    z-index: 10;
+}
+.swiper-button-next, .swiper-button-prev {
+    color: #000; /* Set the arrow color (black in this case) */
+    font-size: 54px; /* Adjust the size as needed */
+    z-index: 10; /* Ensure they appear above the slides */
+}
+
+.swiper-button-next:after, .swiper-button-prev:after {
+    font-size: 54px; /* Ensure arrow icons are visible */
+    z-index: 10;
+}
+
+.wrapcontainer {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;    /* Center-align the content */
+    gap: 20px;              /* Add some spacing between header and slider */
+    padding: 20px;          /* Optional: Add padding around the container */
+}
+
+
+/*spin animation*/
+.spin {
+    display: inline-block;
+    vertical-align: middle;
+    top: 50%;
+    left: 50%;
+    width: 90px;
+    height: 90px;
+    margin: -60px 0 0 -60px;
+    -webkit-animation: spin 4s linear infinite;
+    -moz-animation: spin 4s linear infinite;
+    animation: spin 4s linear infinite;
+    margin-left: -30px;
+    margin-top: -10px;
+    z-index: 0;
+}
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+/*big small animation*/
+.scale {
+    display: inline-block;
+    position: fixed;
+    transform: translateX(-50%);
+    animation: scale 2s ease-in-out infinite;
+    z-index: 0;
+}
+@keyframes scale {
+    0% {
+        transform: scale(1); /* Original size */
+    }
+    50% {
+        transform: scale(1.5); /* Make it 1.5x bigger */
+    }
+    100% {
+        transform: scale(1); /* Back to original size */
+    }
+}
+
+/*wavy animation*/
+.wavy {
+    z-index: 0;
+    position: absolute;
+}
+.wavy::before {
+    content: '~~~~~~~~~~~~~~~~~~';
+    color:transparent;
+    font-size: 8em;
+    white-space: nowrap;
+    position: relative;
+    left: 0;
+    top: 80px;
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: deeppink;
+    -webkit-animation: wavy .7s linear infinite;
+}
+@-webkit-keyframes wavy {
+  0% { left: -0px; }
+  100% { left: -93px;}
+}
+
+/*up and down animtaion*/
+.up {
+    animation: moveup 2s infinite alternate;
+}
+.down {
+    animation: movedown 2s infinite alternate;
+}
+@keyframes moveup {
+    0% {transform:translateY(0);}
+    100% {transform:translateY(-227.792px);}
+}
+@keyframes movedown {
+    0% {transform:translateY(0);}
+    100% {transform:translateY(227.792px);}
+}
+
+/*pulse animation*/
+.pulse {
+    animation: pulseanimation 2s infinite;
+}
+@keyframes pulseanimation {
+    0% {
+        opacity: 1; /* Fully visible */
+    }
+    50% {
+        opacity: 0.5; /* Partially transparent */
+    }
+    100% {
+        opacity: 1; /* Fully visible again */
+    }
+}
+
+/* slide transition fade out */
+.slide-fade-out {
+    position: relative;
+    opacity: 1;
+    transform: translateX(0); /* Start at the normal position */
+    animation: slideFadeOut 1s ease-in forwards; /* Trigger animation */
+}
+@keyframes slideFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100%); /* Move outside the viewport */
+    }
+}
+
+/* Element that slides in and fades in */
+.slide-fade-in {
+    position: relative;
+    opacity: 0;
+    transform: translateX(-100%); /* Start outside the viewport */
+    animation: slideFadeIn 1s ease-out forwards; /* Trigger animation */
+}
+@keyframes slideFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0); /* Final position */
+    }
+}
+
+
+.vector-line {
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.image {
+    position: absolute;
+    z-index: 0;
+}
+
+/*for the last slide*/
+.trackgrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 15px; /* Space between items */
+    width: 80%;
+    padding: 15px;
+}
+
+.trackitem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: rgba(223, 112, 170, 0.56); /* Optional background for better readability */
+    border-radius: 10px; /* Optional rounded corners */
+    padding: 15px;
+    text-align: left;
+    gap: 15px;
+    z-index: 2;
+}
+
+.trackitem img {
+    width: 115px; /* Smaller album cover */
+    height: 115px;
+    margin-bottom: 5px; /* Space below the image */
+    z-index: 3;
+}
+
+.trackitem audio {
+    height: 35px;
+}
+
+.track-info {
+    display: flex;                      /* Use Flexbox for song name and play button */
+    flex-direction: column;             /* Stack song name and button in a column */
+    align-items: flex-start;                /* Align vertically centered */
+    font-size: .8em;
+}
+
+.ranking {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 80%;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@keyframes riseUp {
+    from {
+        transform: translateY(100px); /* Start 100px below its final position */
+        color: red;
+    }
+    to {
+        transform: translateY(0); /* End at its normal position */
+        color:blue;
+    }
+}
+
+.column1 {
+    background-color: rebeccapurple;
+    align-self: end;
+    animation-delay: 0s;
+    animation: riseUp 7s ease-out forwards;
+}
+
+.column2 {
+    background-color: rebeccapurple;
+    align-self: end;
+    animation-delay: 15s;
+    animation: riseUp 8s ease-out forwards;
+}
+
+.column3 {
+    background-color: rebeccapurple;
+    align-self: end;
+    animation-delay: 5s;
+    animation: riseUp 10s ease-out forwards;
 }
