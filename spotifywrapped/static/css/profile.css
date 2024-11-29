@@ -23,6 +23,7 @@ body {
 /* Slides container */
 .carousel-inner {
     display: flex;
+    flex-wrap: nowrap;
     transition: transform 0.5s ease-in-out;
 }
 
@@ -43,14 +44,24 @@ body {
     outline: none;
 }
 
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); /* Vertically center the controls */
+    z-index: 1; /* Ensure the buttons are above the carousel */
+    background-color: rgba(0, 0, 0, 0.5); /* Optional: Adds a semi-transparent background to the buttons */
+    border: none;
+    padding: 10px;
+    color: white;
+}
+
 .carousel-control.prev {
-    left: -50px;
-    width: 40px;
+    left: 40px;
 }
 
 .carousel-control.next {
-    right: -50px;
-    width: 40px;
+    right: 40px;
 }
 
 .carousel-control:hover {
@@ -81,7 +92,6 @@ body {
     top: 0;
     left: 0;
     z-index: 1000;
-    margin-bottom: 80px;
 }
 
 .logo {
@@ -126,40 +136,99 @@ a img {
 }
 
 .wrap-details {
-    display: none; /* Hide by default */
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 100%;
+    display: flex; /* Use flexbox to arrange items horizontally */
+    align-items: flex-start; /* Align them to the top */
+    gap: 45px;
+    margin-left: 30px;
 }
 
-.wrap-details.show {
-    display: block; /* Show for active item */
+.wrap-details ul {
+    font-size: 30px; /* Increase font size */
+    list-style-type: none; /* Remove bullet points */
+    padding: 0;
     text-align: left;
-    margin-right: 10px;
+}
+
+.wrap-details p {
+    text-align: left;
+    font-size: 35px; /* Make section headers larger */
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.wrap-stats {
+    gap: 20px;
 }
 
 .carousel-item {
+    max-width: 100%;
+    overflow: hidden;
     display: none; /* Hide all items by default */
 }
 
 .carousel-item.active {
-    display: block; /* Show only the active item */
+    display: flex; /* Use flexbox for active item */
     min-width: 100%;
     box-sizing: border-box;
     background-image: url('wrappedframe.png');
     background-repeat: repeat;
     background-size: cover;
     color: white;
-    font-size: 24px;
+    flex-direction: column; /* Align elements vertically */
+    text-align: center;
+    font-size: 35px;
 }
 
 ul {
-    margin-left: -30px;
-}
-
-p {
-    margin-left: 10px;
+    margin-left: 0; /* Remove left margin from lists */
 }
 
 h1 {
     text-align: center;
     font-family: 'Montserrat', 'Arial', sans-serif;
     margin-bottom: -10px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    background-color: #1db954;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #1aa34a;
+}
+
+.button-container{
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin: 0 20px;
+}
+
+.button-container a {
+   width: 100%;
+}
+
+.button-container button {
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.carousel-inner > .carousel-item {
+    flex: 0 0 100%; /* Ensures all items are the same width */
+    box-sizing: border-box;
 }
