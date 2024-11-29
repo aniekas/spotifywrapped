@@ -1,3 +1,38 @@
+.headerBar {
+    width: 100%;
+    background-color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+.headerLeft, .headerRight {
+    display: flex;
+    align-items: center;
+}
+.headerBar img.logoImg {
+    width: 40px;
+    height: auto;
+    margin-right: 15px;
+}
+.headerLink {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.headerLink:hover {
+    color: #1db954; /* Spotify green */
+}
+.profileIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+}
 body {
     font-family: 'Gotham', sans-serif;
     margin: 0;
@@ -17,7 +52,7 @@ body {
 
 .header {
     text-align: center;
-    font-size: 40px;
+    font-size: 30px;
     font-weight: bold;
     margin: 10px 0;
 }
@@ -197,6 +232,43 @@ h1 {
     }
 }
 
+/* slide transition fade out */
+.slide-fade-out {
+    position: relative;
+    opacity: 1;
+    transform: translateX(0); /* Start at the normal position */
+    animation: slideFadeOut 1s ease-in forwards; /* Trigger animation */
+}
+@keyframes slideFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100%); /* Move outside the viewport */
+    }
+}
+
+/* Element that slides in and fades in */
+.slide-fade-in {
+    position: relative;
+    opacity: 0;
+    transform: translateX(-100%); /* Start outside the viewport */
+    animation: slideFadeIn 1s ease-out forwards; /* Trigger animation */
+}
+@keyframes slideFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0); /* Final position */
+    }
+}
+
+
 .vector-line {
     position: absolute;
     z-index: 0;
@@ -222,17 +294,19 @@ h1 {
     display: flex;
     flex-direction: row;
     align-items: center;
-    background: rgba(255, 255, 255, 0.2); /* Optional background for better readability */
+    background: rgba(223, 112, 170, 0.56); /* Optional background for better readability */
     border-radius: 10px; /* Optional rounded corners */
     padding: 15px;
     text-align: left;
     gap: 15px;
+    z-index: 2;
 }
 
 .trackitem img {
     width: 115px; /* Smaller album cover */
     height: 115px;
     margin-bottom: 5px; /* Space below the image */
+    z-index: 3;
 }
 
 .trackitem audio {

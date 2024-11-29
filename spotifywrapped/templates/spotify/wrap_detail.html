@@ -12,6 +12,22 @@
 </head>
 <body>
 <div class="wrapcontainer">
+    <header class="headerBar">
+        <div class="headerLeft">
+            <!-- Logo Image -->
+            <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
+            <!-- Navigation Links -->
+            <a href="{% url 'home' %}" class="headerLink">Home</a>
+            <a href="mailto:developers@spotify.com" class="headerLink">Contact the Developers</a>
+        </div>
+
+        <div class="headerRight">
+            <!-- Profile Icon (Link to Wrapped List) -->
+            <a href="{% url 'wrap_list' %}">
+                <img src="{{ user.profile_picture_url }}" alt="Profile Picture" class="profileIcon">
+            </a>
+        </div>
+    </header>
     <div class="header">
     <h2>{{ wrap.title }}</h2>
     <p>Year: {{ wrap.year }}</p>
@@ -86,25 +102,36 @@
             <!--SLIDE 7-->
             <div class="swiper-slide" style="background-image: url('{% static 'images/yellow.png' %}'); background-size: cover; background-position: center; color: black;">
                 <h3>Your Top 3 Artists:</h3>
-                <ul>
+                <ul style="z-index: 3">
                     {% for artist in top_artists %}
                         <li>{{ artist.name }}</li>
                     {% endfor %}
                 </ul>
                 <img src="/static/images/v7.png" class="vector-line" style="width: 50%; height: 35%; top: 0; right: 0;">
+                <img src="/static/images/rsp.png" class="image spin" style="width: 200px; height: auto; left: 25%; top:40%;">
+                <div class="ranking"><div class="column1" style="height: 125px; background-color: hotpink;"></div><div class="column2" style="height: 275px; background-color: hotpink;"></div><div class="column3" style="height: 175px; background-color: hotpink;"></div></div>
             </div>
             <!--SLIDE 8-->
             <div class="swiper-slide" style="background-image: url('{% static 'images/yellow.png' %}'); background-size: cover; background-position: center; color: black;">
                 <h3>You spent xxxx minutes with</h3>
-                <ul>
+                <ul style="z-index: 3">
                     {% for artist in top_artists|slice:":1" %}
                         <li>{{ artist.name }}</li>
                     {% endfor %}
                 </ul>
+                <div class="ranking"><div class="column1" style="background-color: transparent;"></div><div class="column2" style="height: 275px; background-color: hotpink;"></div></div>
+                <img src="/static/images/v7.png" class="vector-line" style="width: 50%; height: 35%; top: 0; right: 0;">
+                <img src="/static/images/rsp.png" class="image spin" style="width: 200px; height: auto; left: 30%; top:40%;">
             </div>
             <!--SLIDE 9-->
-            <div class="swiper-slide" style="background-image: url('{% static 'images/pink.png' %}'); background-size: cover; background-position: center; color: black;">
-                <h1>YOUR TOP 5 ALBUMS</h1>
+            <div class="swiper-slide" style="background-image: url('{% static 'images/pink.png' %}'); background-size: cover; background-position: center;">
+                <h1>YOUR TOP 5<br>ALBUMS</h1>
+                <img src="/static/images/v8.png" class="image" style="height: 60%; width: 100%; top: 0; left: 0;">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:0;bottom: 0">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:250px; bottom: 100px">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:0px; bottom: 200px">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:250px; bottom: 300px">
+                <img src="/static/images/bs.png" class="image scale" style="width: 100px; bottom: 10%; left: 20%;">
             </div>
             <!--SLIDE 10-->
             <div class="swiper-slide" style="background-image: url('{% static 'images/pink.png' %}'); background-size: cover; background-position: center;">
@@ -126,19 +153,49 @@
                         </div>
                     {% endfor %}
                 </div>
+                <img src="/static/images/v8.png" class="image" style="z-index: 0; height: 60%; width: 100%; top: 0; left: 0;">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:0;bottom: 0">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:250px; bottom: 100px">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:0px; bottom: 200px">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:250px; bottom: 300px">
+                <img src="/static/images/bs.png" class="image scale" style="width: 100px; bottom: 10%; left: 20%;">
             </div>
             <!--SLIDE 12-->
-            <div class="swiper-slide" style="background-image: url('{% static 'images/red.png' %}'); background-size: cover; background-position: center; color: black;">
-                <h1>YOUR TOP 5 SONGS</h1>
+            <div class="swiper-slide" style="background-image: url('{% static 'images/pink.png' %}'); background-size: cover; background-position: center;">
+                <h1>YOUR TOP 5<br>SONGS</h1>
+                <img src="/static/images/v8.png" class="image" style="height: 60%; width: 100%; top: 0; left: 0;">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:0;bottom: 0">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:250px; bottom: 100px">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:0px; bottom: 200px">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:250px; bottom: 300px">
+                <img src="/static/images/bs.png" class="image scale" style="width: 100px; bottom: 10%; left: 20%;">
             </div>
             <!--SLIDE 13-->
-            <div class="swiper-slide" style="background-image: url('{% static 'images/red.png' %}'); background-size: cover; background-position: center; color: black;">
+            <div class="swiper-slide" style="background-image: url('{% static 'images/pink.png' %}'); background-size: cover; background-position: center;">
                 <h3>Your Top 5 Songs:</h3>
-                <ul>
-                    {% for artist in top_artists %}
-                        <li>{{ artist.name }}</li>
+                <div class="trackgrid">
+                    {% for track in wrap.wrap_data.items|slice:":5" %}
+                        <div class="trackitem">
+                            <img src="{{ track.album.images.0.url }}" alt="{{ track.name }} album cover">
+                            <div class="track-info"><p>{{ track.name }}</p>
+                            {% if track.preview_url %}
+                                <audio controls>
+                                    <source src="{{ track.preview_url }}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            {% else %}
+                                <p>No preview available.</p>
+                            {% endif %}
+                            </div>
+                        </div>
                     {% endfor %}
-                </ul>
+                </div>
+                <img src="/static/images/v8.png" class="image" style="z-index: 0; height: 60%; width: 100%; top: 0; left: 0;">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:0;bottom: 0">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:250px; bottom: 100px">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:0px; bottom: 200px">
+                <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:250px; bottom: 300px">
+                <img src="/static/images/bs.png" class="image scale" style="width: 100px; bottom: 10%; left: 20%;">
             </div>
         </div>
         <!-- Add Pagination -->
