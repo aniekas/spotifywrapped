@@ -5,19 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd32aa0f-08c1-4d25-ad8c-263f35a6f3b0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_3_2024_5_38_PM_[Changes]/db.sqlite3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_3_2024_5_38_PM_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spotifywrapped/images/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spotifywrapped/static/spotify.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mysite/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/mysite/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spotifywrapped/static/css/spotify.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/accounts/confirm_delete_account.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/accounts/confirm_delete_account.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/generate_time_frame.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/generate_time_frame.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spotifywrapped/templates/spotify/top_tracks.html" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/templates/spotify/top_tracks.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spotifywrapped/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spotifywrapped/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/spotifywrapped/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +24,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
@@ -54,7 +47,7 @@
     "JavaScript Debug.top_tracks.html.executor": "Run",
     "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "dbfix2__wraps",
     "last_opened_file_path": "C:/Users/Lindsey/OneDrive - Georgia State University/2340/spotifywrapped",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
@@ -242,5 +235,8 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
   </component>
 </project>
