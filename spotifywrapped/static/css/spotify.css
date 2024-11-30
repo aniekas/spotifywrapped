@@ -283,7 +283,10 @@ h1 {
 
 /*for the last slide*/
 .trackgrid {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     grid-template-columns: repeat(2, 1fr); /* 2 columns */
     gap: 15px; /* Space between items */
     width: 80%;
@@ -292,7 +295,7 @@ h1 {
 
 .trackitem {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     background: rgba(223, 112, 170, 0.56); /* Optional background for better readability */
     border-radius: 10px; /* Optional rounded corners */
@@ -342,6 +345,7 @@ h1 {
 }
 
 .column1 {
+    position: relative;
     background-color: rebeccapurple;
     align-self: end;
     animation-delay: 0s;
@@ -349,6 +353,7 @@ h1 {
 }
 
 .column2 {
+    position: relative;
     background-color: rebeccapurple;
     align-self: end;
     animation-delay: 15s;
@@ -356,8 +361,21 @@ h1 {
 }
 
 .column3 {
+    position: relative;
     background-color: rebeccapurple;
     align-self: end;
     animation-delay: 5s;
     animation: riseUp 10s ease-out forwards;
+}
+
+.rank1, .rank2, .rank3 {
+    display: block;
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+    z-index: 3;
 }

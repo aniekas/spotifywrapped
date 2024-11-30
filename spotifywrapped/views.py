@@ -23,7 +23,7 @@ from django.urls import reverse
 
 
 def index(request):
-    if request.method == 'POST' and 'create_wrap' in request.POST:
+    if request.method == 'POST':
         timeframe = request.POST.get('timeframe')
         user_profile = SpotifyUserProfile.objects.get(user=request.user)
 
@@ -288,7 +288,6 @@ def wrap_detail(request, wrap_id):
 
     # Calculate the popularity of the top song
     top_tracks = wrap.wrap_data.get("items", [])
-    print(f"Top Tracks: {top_tracks}")
     if top_tracks:
         top_track = top_tracks[0]
         top_track_name = top_track['name']
@@ -297,8 +296,6 @@ def wrap_detail(request, wrap_id):
         top_track_name = "No top track available"
         top_track_popularity = "N/A"
     
-    print(f"Top Track Popularity: {top_track_popularity}")  # Add this to debug
-
     # Calculate average track duration (example)
     total_duration_ms = sum([track['duration_ms'] for track in top_tracks])
     avg_duration_min = round((total_duration_ms / len(top_tracks)) / 60000, 2) if top_tracks else 0
