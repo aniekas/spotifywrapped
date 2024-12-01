@@ -6,23 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact the Developers</title>
   <link rel="stylesheet" href="{% static 'css/contact.css' %}">
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const body = document.body;
-      const darkModeToggle = document.getElementById('dark-mode-toggle');
-
-      // Check localStorage for dark mode preference
-      if (localStorage.getItem('dark-mode') === 'true') {
-        body.classList.add('dark-mode');
-      }
-
-      // Add event listener for the toggle button
-      darkModeToggle.addEventListener('click', function () {
-        const isDarkMode = body.classList.toggle('dark-mode');
-        localStorage.setItem('dark-mode', isDarkMode); // Save preference
-      });
-    });
-  </script>
 </head>
 <body class="flex-column">
   <header class="headerBar">
@@ -72,5 +55,27 @@
       </form>
     </section>
   </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+  const body = document.body;
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+  // Check localStorage for dark mode preference
+  const darkModeStatus = localStorage.getItem('dark-mode') === 'true';
+  console.log('Dark Mode Status: ', darkModeStatus); // Check if the state is being correctly retrieved
+
+  if (darkModeStatus) {
+    body.classList.add('dark-mode');
+    console.log('Dark mode class added'); // Confirm that the class is being applied
+  }
+
+  // Add event listener for the toggle button
+  darkModeToggle.addEventListener('click', function () {
+    const isDarkMode = body.classList.toggle('dark-mode');
+    localStorage.setItem('dark-mode', isDarkMode); // Save preference
+  });
+});
+
+  </script>
 </body>
 </html>

@@ -194,7 +194,13 @@ h1 {
     text-decoration-style: wavy;
     text-decoration-color: deeppink;
     -webkit-animation: wavy .7s linear infinite;
+    animation: wavy .7s linear infinite;
 }
+@keyframes wavy {
+  0% { left: -0px; }
+  100% { left: -93px;}
+}
+
 @-webkit-keyframes wavy {
   0% { left: -0px; }
   100% { left: -93px;}
@@ -375,4 +381,49 @@ h1 {
 
 #topartists {
     margin-bottom: 200px;
+}
+
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode a {
+    color: #1db954;
+}
+
+body.dark-mode .headerBar {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    border-bottom: 1px solid #333;
+}
+
+body.dark-mode .headerLink {
+    color: #e0e0e0;
+}
+
+body.dark-mode .headerLink:hover {
+    color: #1db954;
+}
+
+body.dark-mode .profileIcon {
+    border: 2px solid #555;
+}
+
+
+.darkModeBtn {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 15px;
+    font-size: 14px;
+}
+
+.darkModeBtn:hover {
+    background-color: #1aa34a;
 }

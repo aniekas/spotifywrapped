@@ -1,181 +1,25 @@
-{#{% load static %}#}
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <title>Profile</title>#}
-{#    <link rel="stylesheet" href="{% static 'css/profile.css' %}">#}
-{#</head>#}
-{#<body class="flex-column">#}
-{#        <header class="headerBar">#}
-{#            <div class="headerLeft">#}
-{#            <img class="logoImg" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>#}
-{#            <a class="headerLink" href="{% url 'index' %}">Home</a>#}
-{#            <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>#}
-{#            </div>#}
-{#            <div class="headerRight">#}
-{#                <!-- Profile Icon (Link to Wrapped List) -->#}
-{#                <a href="{% url 'wrap_list' %}">#}
-{#                    <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">#}
-{#                </a>#}
-{#            </div>#}
-{#        </header>#}
-{#    <div class="carousel">#}
-{#        <div class="carousel-inner">#}
-{#            {% for wrap_detail in wrap_details %}#}
-{#            <div class="carousel-item {% if forloop.first %}active{% endif %}">#}
-{#                <div class="carousel-caption">#}
-{#                    <h1>YOUR SPOTIFY WRAPPED</h1>#}
-{#                    <h3>{{ wrap_detail.wrap.title }}</h3>#}
-{##}
-{##}
-{#                    <!-- Display Top Artists and Songs side by side -->#}
-{#                    <div class="wrap-details">#}
-{#                        <div class="wrap-artists">#}
-{#                            <p><strong>Top Artists:</strong></p>#}
-{#                            <ul>#}
-{#                                {% for artist_data in wrap_detail.wrap.top_artists %}#}
-{#                                        <ul>{{ artist_data.name }}</ul>#}
-{#                                {% endfor %}#}
-{#                            </ul>#}
-{#                        </div>#}
-{##}
-{#                        <div class="wrap-songs">#}
-{#                            <p><strong>Top Songs:</strong></p>#}
-{#                            <ul>#}
-{#                                {% for track in wrap_detail.wrap.wrap_data.items|slice:":5" %}#}
-{#                                    <ul>{{ track.name }}</ul>#}
-{#                                {% empty %}#}
-{#                                    <ul>No top songs available.</ul>#}
-{#                                {% endfor %}#}
-{#                            </ul>#}
-{#                        </div>#}
-{##}
-{#                        <!-- New third column with Top Track Popularity and Average Track Length -->#}
-{#                        <div class="wrap-stats">#}
-{#                            <p><strong>Top Track Popularity:</strong></p>#}
-{#                            <ul>#}
-{#                            {{ wrap_detail.top_track_popularity }}#}
-{#                            </ul>#}
-{##}
-{#                            <p><strong>Average Track Length:</strong></p>#}
-{#                            <ul>#}
-{#                                <li>{{ wrap_detail.avg_duration_min }} minutes</li>#}
-{#                            </ul>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    </div>#}
-{#                    <p>Generated on: {{ wrap_detail.wrap.created_at }}</p>#}
-{#                    <div class="button-container">#}
-{#                    <a href="{% url 'wrap_detail' wrap_detail.wrap.id %}" class="wrap-link">#}
-{#                        <button class="btn btn-primary">View Full Wrap Details</button>#}
-{#                    </a>#}
-{#                    <a href="{% url 'delete_wrap' wrap_detail.wrap.id %}" onclick="return confirm('Are you sure you want to delete this wrap?')">#}
-{#                        <button class="btn btn-primary">Delete This Wrap</button>#}
-{#                    </a>#}
-{#                    <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete ALL of your wraps?')">#}
-{#                        <button class="btn btn-primary">Delete All Wraps</button>#}
-{#                    </a>#}
-{#                    <a href="{% url 'logout' %}" class="btn btn-danger">#}
-{#                        <button class="btn btn-primary">Logout</button>#}
-{#                    </a>#}
-{#                </div>#}
-{#                </div>#}
-{#            </div>#}
-{#            {% endfor %}#}
-{#        </div>#}
-{#        <!-- Carousel Navigation Buttons -->#}
-{#        <button class="carousel-control prev" onclick="prevSlide()">❮</button>#}
-{#        <button class="carousel-control next" onclick="nextSlide()">❯</button>#}
-{#    </div>#}
-{##}
-{#    <script>#}
-{#        let currentIndex = 0;#}
-{##}
-{#    function showSlide(index) {#}
-{#    const slides = document.querySelectorAll('.carousel-item');#}
-{#    const captions = document.querySelectorAll('.carousel-caption');#}
-{#    const details = document.querySelectorAll('.wrap-details');#}
-{#    const totalSlides = slides.length;#}
-{##}
-{#    // Update currentIndex with bounds check#}
-{#    currentIndex = (index + totalSlides) % totalSlides;#}
-{##}
-{#    // Update slides#}
-{#    slides.forEach((slide, i) => {#}
-{#        slide.classList.toggle('active', i === currentIndex);#}
-{#    });#}
-{##}
-{#    // Update captions and top artists details#}
-{#    captions.forEach((caption, i) => {#}
-{#        caption.classList.toggle('show', i === currentIndex);#}
-{#    });#}
-{##}
-{#    details.forEach((detail, i) => {#}
-{#        detail.classList.toggle('show', i === currentIndex);  // Show wrap details (Top Artists) for active slide#}
-{#    });#}
-{#}#}
-{##}
-{#// Functions for navigation#}
-{#function prevSlide() {#}
-{#    showSlide(currentIndex - 1);#}
-{#}#}
-{##}
-{#function nextSlide() {#}
-{#    showSlide(currentIndex + 1);#}
-{#}#}
-{##}
-{#// Initialize the carousel#}
-{#function initCarousel() {#}
-{#    showSlide(currentIndex);  // Show the first slide#}
-{#}#}
-{##}
-{#// Initialize#}
-{#initCarousel();#}
-{##}
-{#</script>#}
-{#</body>#}
-{#</html>#}
-
 {% load static %}
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const body = document.body;
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-
-            // Check localStorage for dark mode preference
-            if (localStorage.getItem('dark-mode') === 'true') {
-                body.classList.add('dark-mode');
-            }
-
-            // Add event listener for the toggle button
-            darkModeToggle.addEventListener('click', function () {
-                const isDarkMode = body.classList.toggle('dark-mode');
-                localStorage.setItem('dark-mode', isDarkMode); // Save preference
-            });
-        });
-    </script>
 </head>
 <body class="flex-column">
     <header class="headerBar">
         <div class="headerLeft">
-            <img class="logoImg" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
-            <a class="headerLink" href="{% url 'index' %}">Home</a>
-            <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+          <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
+          <a href="{% url 'index' %}" class="headerLink">Home</a>
+          <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
         </div>
         <div class="headerRight">
-            <button id="dark-mode-toggle" class="darkModeBtn">Toggle Dark Mode</button>
-            <a href="{% url 'wrap_list' %}">
-                <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
-            </a>
+          <button id="dark-mode-toggle" class="darkModeBtn">Toggle Dark Mode</button>
+          <a href="{% url 'wrap_list' %}">
+            <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
+          </a>
         </div>
-    </header>
+      </header>
     <div class="carousel">
         <div class="carousel-inner">
             {% for wrap_detail in wrap_details %}
@@ -183,49 +27,60 @@
                 <div class="carousel-caption">
                     <h1>YOUR SPOTIFY WRAPPED</h1>
                     <h3>{{ wrap_detail.wrap.title }}</h3>
+                    
+            
+                    <!-- Display Top Artists and Songs side by side -->
                     <div class="wrap-details">
                         <div class="wrap-artists">
                             <p><strong>Top Artists:</strong></p>
                             <ul>
                                 {% for artist_data in wrap_detail.wrap.top_artists %}
-                                    <li>{{ artist_data.name }}</li>
+                                        <ul>{{ artist_data.name }}</ul>
                                 {% endfor %}
                             </ul>
                         </div>
+                    
                         <div class="wrap-songs">
                             <p><strong>Top Songs:</strong></p>
                             <ul>
                                 {% for track in wrap_detail.wrap.wrap_data.items|slice:":5" %}
-                                    <li>{{ track.name }}</li>
+                                    <ul>{{ track.name }}</ul>
                                 {% empty %}
-                                    <li>No top songs available.</li>
+                                    <ul>No top songs available.</ul>
                                 {% endfor %}
                             </ul>
                         </div>
+                    
+                        <!-- New third column with Top Track Popularity and Average Track Length -->
                         <div class="wrap-stats">
                             <p><strong>Top Track Popularity:</strong></p>
-                            <ul>{{ wrap_detail.top_track_popularity }}</ul>
+                            <ul>
+                            {{ wrap_detail.top_track_popularity }}
+                            </ul>
+                    
                             <p><strong>Average Track Length:</strong></p>
                             <ul>
                                 <li>{{ wrap_detail.avg_duration_min }} minutes</li>
                             </ul>
                         </div>
+                    </div>                    
                     </div>
                     <p>Generated on: {{ wrap_detail.wrap.created_at }}</p>
                     <div class="button-container">
-                        <a href="{% url 'wrap_detail' wrap_detail.wrap.id %}" class="wrap-link">
-                            <button class="btn btn-primary">View Full Wrap Details</button>
-                        </a>
-                        <a href="{% url 'delete_wrap' wrap_detail.wrap.id %}" onclick="return confirm('Are you sure you want to delete this wrap?')">
-                            <button class="btn btn-primary">Delete This Wrap</button>
-                        </a>
-                        <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete ALL of your wraps?')">
-                            <button class="btn btn-primary">Delete All Wraps</button>
-                        </a>
-                        <a href="{% url 'logout' %}" class="btn btn-danger">
-                            <button class="btn btn-primary">Logout</button>
-                        </a>
-                    </div>
+                    <a href="{% url 'wrap_detail' wrap_detail.wrap.id %}" class="wrap-link">
+                        <button class="btn btn-primary">View Full Wrap Details</button>
+                    </a>
+                    <a href="{% url 'delete_wrap' wrap_detail.wrap.id %}" onclick="return confirm('Are you sure you want to delete this wrap?')">
+                        <button class="btn btn-primary">Delete This Wrap</button>
+                    </a>
+                    <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete ALL of your wraps?')">
+                        <button class="btn btn-primary">Delete All Wraps</button>
+                    </a>
+                    <a href="{% url 'logout' %}" class="btn btn-danger">
+                        <button class="btn btn-primary">Logout</button>
+                    </a>
+                    
+                </div>
                 </div>
             </div>
             {% endfor %}
@@ -234,24 +89,71 @@
         <button class="carousel-control prev" onclick="prevSlide()">❮</button>
         <button class="carousel-control next" onclick="nextSlide()">❯</button>
     </div>
+
     <script>
         let currentIndex = 0;
 
-        function showSlide(index) {
-            const slides = document.querySelectorAll('.carousel-item');
-            currentIndex = (index + slides.length) % slides.length;
-            slides.forEach((slide, i) => slide.classList.toggle('active', i === currentIndex));
-        }
+    function showSlide(index) {
+    const slides = document.querySelectorAll('.carousel-item');
+    const captions = document.querySelectorAll('.carousel-caption');
+    const details = document.querySelectorAll('.wrap-details');
+    const totalSlides = slides.length;
 
-        function prevSlide() {
-            showSlide(currentIndex - 1);
-        }
+    // Update currentIndex with bounds check
+    currentIndex = (index + totalSlides) % totalSlides;
 
-        function nextSlide() {
-            showSlide(currentIndex + 1);
-        }
+    // Update slides
+    slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentIndex);
+    });
 
-        showSlide(currentIndex);
-    </script>
+    // Update captions and top artists details
+    captions.forEach((caption, i) => {
+        caption.classList.toggle('show', i === currentIndex);
+    });
+
+    details.forEach((detail, i) => {
+        detail.classList.toggle('show', i === currentIndex);  // Show wrap details (Top Artists) for active slide
+    });
+}
+
+// Functions for navigation
+function prevSlide() {
+    showSlide(currentIndex - 1);
+}
+
+function nextSlide() {
+    showSlide(currentIndex + 1);
+}
+
+// Initialize the carousel
+function initCarousel() {
+    showSlide(currentIndex);  // Show the first slide
+}
+
+// Initialize
+initCarousel();
+
+document.addEventListener('DOMContentLoaded', function () {
+  const body = document.body;
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+  // Check localStorage for dark mode preference
+  const darkModeStatus = localStorage.getItem('dark-mode') === 'true';
+  console.log('Dark Mode Status: ', darkModeStatus); // Check if the state is being correctly retrieved
+
+  if (darkModeStatus) {
+    body.classList.add('dark-mode');
+    console.log('Dark mode class added'); // Confirm that the class is being applied
+  }
+
+  // Add event listener for the toggle button
+  darkModeToggle.addEventListener('click', function () {
+    const isDarkMode = body.classList.toggle('dark-mode');
+    localStorage.setItem('dark-mode', isDarkMode); // Save preference
+  });
+});
+
+</script>
 </body>
 </html>

@@ -1,44 +1,3 @@
-{#<html>#}
-{#<head>#}
-{#<title>Spotify Wrapped Home</title>#}
-{#{% load static %}#}
-{#<link rel="stylesheet" href="{% static 'css/index.css' %}">#}
-{#</head>#}
-{#<body class="flex-column">#}
-{#  <div class="wrapcontainer">#}
-{#    <header class="headerBar">#}
-{#        <div class="headerLeft">#}
-{#            <!-- Logo Image -->#}
-{#            <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">#}
-{#            <!-- Navigation Links -->#}
-{#            <a href="{% url 'index' %}" class="headerLink">Home</a>#}
-{#            <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>#}
-{#        </div>#}
-{##}
-{#        <div class="headerRight">#}
-{#            <!-- Profile Icon (Link to Wrapped List) -->#}
-{#            <a href="{% url 'wrap_list' %}">#}
-{#                <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">#}
-{#            </a>#}
-{#        </div>#}
-{#    </header>#}
-{#      <div class="actionContainer">#}
-{#        <h1 class="welcomeText">Welcome to Spotify Wrapped!</h1>#}
-{#<form method="post" action="{% url 'index' %}">#}
-{#    {% csrf_token %}#}
-{#    <label for="timeframe">Select Timeframe:</label>#}
-{#    <select class="timeFrameBtn" name="timeframe" id="timeframe" required>#}
-{#        <option value="long_term">All-time</option>#}
-{#        <option value="medium_term">Last year</option>#}
-{#        <option value="short_term">Last month</option>#}
-{#    </select>#}
-{#    <button class="generateBtn" type="submit" name="create_wrap">Generate Wrapped</button>#}
-{#</form>#}
-{#</div>#}
-{#</div>#}
-{#</body>#}
-{#</html>#}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,10 +29,10 @@
                 <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
                 <a href="{% url 'index' %}" class="headerLink">Home</a>
                 <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+                <button id="dark-mode-toggle" class="darkModeBtn">Toggle Dark Mode</button>
             </div>
 
             <div class="headerRight">
-                <button id="dark-mode-toggle" class="darkModeBtn">Toggle Dark Mode</button>
                 <a href="{% url 'wrap_list' %}">
                     <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
                 </a>
