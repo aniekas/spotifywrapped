@@ -7,3 +7,6 @@
 /dataSources/
 /dataSources.local.xml
 /.env
+.env
+db.sqlite3
+.idea/

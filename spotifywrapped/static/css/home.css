@@ -1,0 +1,80 @@
+/* General Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    background-color: #1db954; /* White background */
+    text-align: center;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+section {
+    text-align: center;
+}
+
+h2 {
+    font-size: 50px;
+    color: #ffffff; /* Spotify green */
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 18px;
+    color: #ffffff; /* Neutral text color */
+    margin-bottom: 20px;
+}
+
+a.btn {
+    width: 300px;
+    display: inline-block;
+    background-color: #1db954; /* Spotify green */
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 5px solid #ffffff; /* Spotify green border */
+    border-radius: 50px; /* Rounded corners */
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: lowercase;
+    transition: all 0.3s ease;
+}
+
+a.btn:hover {
+    background-color: #1aa34a; /* Slightly darker green on hover */
+    transform: scale(1.05); /* Subtle zoom effect */
+}
+
+/* Spotify logo and wrapped text */
+footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    color: #555555;
+    font-size: 0.9rem;
+}
+
+footer p {
+    margin: 0;
+}
+
+.logo {
+    width: 300px;
+}
+
+.headerLink {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.headerLink:hover {
+    color: #1db954; /* Spotify green */
+}

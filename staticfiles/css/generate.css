@@ -1,0 +1,110 @@
+/* General layout */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+  }
+  
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  /* Header */
+  .headerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 20px;
+    border-bottom: 1px solid #d3d3d3;
+  }
+  
+  .logoImg {
+    height: 30px;
+  }
+  
+  .homeLink, .contact {
+    font-size: 14px;
+    color: #000;
+    text-decoration: none;
+    margin-right: 15px;
+  }
+  
+  .colorAccent {
+    flex-grow: 1;
+  }
+  
+  .profilepic {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #d3d3d3;
+  }
+  
+  /* Main content */
+  .heroContent {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .welcomeMsg {
+    font-size: 36px;
+    font-weight: bold;
+    color: #000;
+  }
+  
+  /* Dropdown and Button */
+  .actionArea {
+    margin-top: 20px;
+  }
+  
+  .timeFrameSelector {
+    margin-bottom: 20px;
+  }
+  
+  .selectorLabel {
+    font-size: 14px;
+    color: #000;
+    margin-bottom: 5px;
+  }
+  
+  .timeFrameDropdown {
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+    border-radius: 5px;
+    width: 200px;
+  }
+  
+  /* Generate Button */
+  .generateBtn {
+    background-color: #1db954;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+  }
+  
+  .generateBtnText {
+    margin: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+  
