@@ -283,19 +283,15 @@ h1 {
 
 /*for the last slide*/
 .trackgrid {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns */
     gap: 15px; /* Space between items */
     width: 80%;
     padding: 15px;
 }
-
 .trackitem {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     background: rgba(223, 112, 170, 0.56); /* Optional background for better readability */
     border-radius: 10px; /* Optional rounded corners */
@@ -304,18 +300,15 @@ h1 {
     gap: 15px;
     z-index: 2;
 }
-
 .trackitem img {
     width: 115px; /* Smaller album cover */
     height: 115px;
     margin-bottom: 5px; /* Space below the image */
     z-index: 3;
 }
-
 .trackitem audio {
     height: 35px;
 }
-
 .track-info {
     display: flex;                      /* Use Flexbox for song name and play button */
     flex-direction: column;             /* Stack song name and button in a column */
@@ -378,4 +371,8 @@ h1 {
     font-weight: bold;
     color: black;
     z-index: 3;
+}
+
+#topartists {
+    margin-bottom: 200px;
 }

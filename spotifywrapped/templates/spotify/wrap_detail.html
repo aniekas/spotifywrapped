@@ -17,14 +17,14 @@
             <!-- Logo Image -->
             <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
             <!-- Navigation Links -->
-            <a href="{% url 'home' %}" class="headerLink">Home</a>
-            <a href="mailto:developers@spotify.com" class="headerLink">Contact the Developers</a>
+            <a href="{% url 'index' %}" class="headerLink">Home</a>
+            <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
         </div>
 
         <div class="headerRight">
             <!-- Profile Icon (Link to Wrapped List) -->
             <a href="{% url 'wrap_list' %}">
-                <img src="{{ user.profile_picture_url }}" alt="Profile Picture" class="profileIcon">
+                <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
             </a>
         </div>
     </header>
@@ -98,7 +98,7 @@
             </div>
             <!--SLIDE 7-->
             <div class="swiper-slide" style="background-image: url('{% static 'images/yellow.png' %}'); background-size: cover; background-position: center; color: black;">
-                <h2>Your Top 3 Artists:</h2>
+                <h2 id="topartists">Your Top 3 Artists:</h2>
                 <img src="/static/images/v7.png" class="vector-line" style="width: 50%; height: 35%; top: 0; right: 0;">
                 <img src="/static/images/rsp.png" class="image spin" style="width: 200px; height: auto; left: 25%; top:40%;">
                 <div class="ranking"><div class="column1" style="height: 125px; background-color: hotpink;">
@@ -114,7 +114,7 @@
             </div>
             <!--SLIDE 8-->
             <div class="swiper-slide" style="background-image: url('{% static 'images/pink.png' %}'); background-size: cover; background-position: center;">
-                <h1>YOUR TOP 3<br>SONGS</h1>
+                <h1>YOUR TOP 5<br>SONGS</h1>
                 <img src="/static/images/v8.png" class="image" style="height: 60%; width: 100%; top: 0; left: 0;">
                 <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:0;bottom: 0">
                 <img src="/static/images/rr.png" class="image" style="height:100px;width: auto; right:250px; bottom: 100px">
@@ -124,9 +124,9 @@
             </div>
             <!--SLIDE 9-->
             <div class="swiper-slide" style="background-image: url('{% static 'images/pink.png' %}'); background-size: cover; background-position: center;">
-                <h3>Your Top 3 Songs:</h3>
-                <div class="tracklist">
-                    {% for track in wrap.wrap_data.items|slice:":3" %}
+                <h3>Your Top 5 Songs:</h3>
+                <div class="trackgrid">
+                    {% for track in wrap.wrap_data.items|slice:":5" %}
                         <div class="trackitem">
                             <img src="{{ track.album.images.0.url }}" alt="{{ track.name }} album cover">
                             <div class="track-info"><p>{{ track.name }}</p>
@@ -161,9 +161,7 @@
         <div class="swiper-button-prev"></div>
     </div>
 
-    <a href="{% url 'wrap_list' %}">Back to Wrap List</a>
-
-    {% if top_track_preview_url %}
+    <!-- {% if top_track_preview_url %}
         <audio id="topTrackPreview" autoplay muted>
             <source src="{{ top_track_preview_url }}" type="audio/mpeg">
             Your browser does not support the audio element.
@@ -181,7 +179,7 @@
         </script>
     {% else %}
         <p>No preview available for the top track.</p>
-    {% endif %}
+    {% endif %} -->
 <!--</section>-->
 
 <!-- Include Swiper JS -->

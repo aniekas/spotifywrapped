@@ -15,8 +15,7 @@ body {
     position: relative;
     width: 80%;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    margin-top: 80px;
+    padding-top: 200px;
 }
 
 
@@ -74,13 +73,12 @@ body {
     width: 100%
 }
 
-.contentWrapper {
-    max-width: 600px;
-    width: 100%;
-    padding: 20px;
+
+.logo {
+    height: 50px;
 }
 
-.navbar {
+.headerBar {
     width: 100%;
     display: flex;
     align-items: center;
@@ -91,18 +89,40 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    border-bottom: 1px solid #ddd;
 }
 
-.logo {
-    height: 50px;
+.headerLeft, .headerRight {
+    display: flex;
+    align-items: center;
 }
 
-a img {
-    margin-left: 1200px;
-    height: 50px;
-    float: right;
+
+.headerBar img.logoImg {
+    width: 40px;
+    height: auto;
+    margin-right: 15px;
 }
+.headerLink {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.headerLink:hover {
+    color: #1db954; /* Spotify green */
+}
+.profileIcon {
+    position: fixed; /* Fixes the position relative to the viewport */
+    top: 10px; /* Distance from the top of the screen */
+    right: 10px; /* Distance from the right edge of the screen */
+    width: 50px; /* Adjust size as needed */
+    height: 50px;
+    object-fit: cover; /* Maintain aspect ratio */
+    border-radius: 50%; /* Makes the image circular */
+}
+
 
 .navbar a {
     margin-left: 15px;
@@ -232,3 +252,6 @@ h1 {
     flex: 0 0 100%; /* Ensures all items are the same width */
     box-sizing: border-box;
 }
+
+
+

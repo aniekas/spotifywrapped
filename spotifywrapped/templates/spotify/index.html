@@ -5,18 +5,25 @@
 <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body class="flex-column">
-  <section class="welcome welcomeSection">
-    <div class="contentWrapper">
-      <nav class="navbar">
-        <img class="logo" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
-        <a class="home" href="{% url 'index' %}">Home</a>
-        <a class="contact" href="{% url 'contact' %}">Contact the Developers</a>
-        <a class="profile" href="{% url 'wrap_list' %}">
-          <img src="{% static 'images/defaultpfp.png' %}" alt="Spotify Wrapped Logo" width="50"/>
-        </a> 
-      </nav>
+  <div class="wrapcontainer">
+    <header class="headerBar">
+        <div class="headerLeft">
+            <!-- Logo Image -->
+            <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
+            <!-- Navigation Links -->
+            <a href="{% url 'index' %}" class="headerLink">Home</a>
+            <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+        </div>
+
+        <div class="headerRight">
+            <!-- Profile Icon (Link to Wrapped List) -->
+            <a href="{% url 'wrap_list' %}">
+                <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
+            </a>
+        </div>
+    </header>
       <div class="actionContainer">
-        <p class="welcomeText">Welcome to Spotify Wrapped!</p>
+        <h1 class="welcomeText">Welcome to Spotify Wrapped!</h1>
 <form method="post" action="{% url 'index' %}">
     {% csrf_token %}
     <label for="timeframe">Select Timeframe:</label>
@@ -29,6 +36,5 @@
 </form>
 </div>
 </div>
-</section>
 </body>
 </html>

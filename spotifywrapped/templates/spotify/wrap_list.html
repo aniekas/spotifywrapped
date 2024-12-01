@@ -7,17 +7,19 @@
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 </head>
 <body class="flex-column">
-    <div class="contentWrapper">
-
-        <nav class="navbar">
-            <img class="logo" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
-            <a class="home" href="{% url 'index' %}">Home</a>
-            <a class="contact" href="{% url 'contact' %}">Contact the Developers</a>
-            <a class="profile" href="{% url 'wrap_list' %}">
-              <img src="{% static 'images/defaultpfp.png' %}" alt="Spotify Wrapped Logo" width="50"/>
-            </a> 
-          </nav>
-    </div>
+        <header class="headerBar">
+            <div class="headerLeft">
+            <img class="logoImg" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
+            <a class="headerLink" href="{% url 'index' %}">Home</a>
+            <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+            </div>
+            <div class="headerRight">
+                <!-- Profile Icon (Link to Wrapped List) -->
+                <a href="{% url 'wrap_list' %}">
+                    <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
+                </a>
+            </div>
+        </header>
     <div class="carousel">
         <div class="carousel-inner">
             {% for wrap_detail in wrap_details %}

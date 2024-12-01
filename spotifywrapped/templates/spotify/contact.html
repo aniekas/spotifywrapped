@@ -9,18 +9,22 @@
   <link rel="stylesheet" href="{% static 'css/contact.css' %}">
 </head>
 <body class="flex-column">
-  <section class="welcome welcomeSection">
-    <div class="contentWrapper">
-      <nav class="navbar">
-        <img class="logo" src="{% static 'css/logo.png' %}" alt="Spotify Wrapped Logo"/>
-        <a class="home" href="{% url 'index' %}">Home</a>
-        <a class="contact" href="{% url 'contact' %}">Contact the Developers</a>
-        <a class="profile" href="{% url 'wrap_list' %}">
-          <img src="{% static 'images/defaultpfp.png' %}" alt="Spotify Wrapped Logo" width="50"/>
+  <header class="headerBar">
+    <div class="headerLeft">
+        <!-- Logo Image -->
+        <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
+        <!-- Navigation Links -->
+        <a href="{% url 'index' %}" class="headerLink">Home</a>
+        <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+    </div>
+
+    <div class="headerRight">
+        <!-- Profile Icon (Link to Wrapped List) -->
+        <a href="{% url 'wrap_list' %}">
+            <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
         </a>
-      </nav>
-      </div>
-  </section>
+    </div>
+</header>
   <header>
     <h1>Contact the Developers</h1>
   </header>
