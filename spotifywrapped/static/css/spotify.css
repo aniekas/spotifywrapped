@@ -136,3 +136,78 @@ body {
     font-weight: bold;
     margin: 20px 0;
 }
+
+/* Dark Mode */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Main container dark mode */
+.timeframe .mainContainer.dark-mode {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+/* Content Wrapper */
+.timeframe .contentWrapper.dark-mode {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+/* Header Row */
+.timeframe .headerRow.dark-mode {
+    background-color: #1e1e1e;
+}
+
+/* Links */
+.timeframe .homeLink.dark-mode,
+.timeframe .contactLink.dark-mode {
+    color: #90caf9; /* Softer link color */
+}
+
+/* Accent */
+.timeframe .colorAccent.dark-mode {
+    background-color: #333333; /* Darker accent color */
+}
+
+/* Hero Content */
+.timeframe .heroContent.dark-mode {
+    color: #ffffff;
+}
+
+/* Welcome Message */
+.timeframe .welcomeMsg.dark-mode {
+    color: #90caf9;
+}
+
+/* Action Area */
+.timeframe .actionArea.dark-mode {
+    color: #e0e0e0;
+}
+
+/* Time Frame Selector */
+.timeframe .timeFrameSelector.dark-mode {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+/* Generate Button */
+.timeframe .generateBtn.dark-mode {
+    background-color: #006d35; /* Darker green */
+    color: #ffffff;
+}
+
+/* Swiper Dark Mode */
+body.dark-mode .mySwiper {
+    background-color: #1e1e1e;
+}
+
+body.dark-mode .swiper-slide {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.header.dark-mode {
+    color: #ffffff;
+}
