@@ -1,3 +1,39 @@
+/*.navbar {*/
+/*    width: 100%;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    padding: 20px 40px; !* Larger padding for a taller navbar *!*/
+/*    background-color: #ffffff; !* Background color to span entire top *!*/
+/*    color: white;*/
+/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); !* Optional shadow for effect *!*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    z-index: 1000;*/
+/*}*/
+
+/*.logo {*/
+/*    height: 40px;*/
+/*}*/
+
+/*a img {*/
+/*  margin-left: 1200px;*/
+/*  height: 50px;*/
+/*  float: right;*/
+/*}*/
+
+/*.navbar a {*/
+/*    margin-left: 15px;*/
+/*    color: black;*/
+/*    text-decoration: none;*/
+/*    font-size: 16px;*/
+/*}*/
+
+/*.navbar a:hover {*/
+/*    text-decoration: underline;*/
+/*}*/
+
+/* Navbar Styles */
 .navbar {
     width: 100%;
     display: flex;
@@ -17,9 +53,9 @@
 }
 
 a img {
-  margin-left: 1200px;
-  height: 50px;
-  float: right;
+    margin-left: 1200px;
+    height: 50px;
+    float: right;
 }
 
 .navbar a {
@@ -33,3 +69,21 @@ a img {
     text-decoration: underline;
 }
 
+/* Dark Mode Styles */
+body.dark-mode .navbar {
+    background-color: #1f1f1f; /* Dark mode background for navbar */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Darker shadow effect */
+}
+
+body.dark-mode .navbar a {
+    color: #e0e0e0; /* Lighter text for dark mode */
+}
+
+body.dark-mode .navbar a:hover {
+    text-decoration: underline;
+    color: #1db954; /* Spotify green for hover in dark mode */
+}
+
+body.dark-mode a img {
+    border: 2px solid #555; /* Optional border for dark mode */
+}

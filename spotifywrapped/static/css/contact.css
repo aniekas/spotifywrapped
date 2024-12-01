@@ -1,8 +1,149 @@
-/* contact.css */
+/*!* contact.css *!*/
+/*a {*/
+/*    color: black;*/
+/*    text-decoration: underline;*/
+/*}*/
+/*body {*/
+/*    justify-content: center;*/
+/*    min-height: 100vh;*/
+/*    font-family: Georama, Helvetica, Arial, serif;*/
+/*    background-color: #f9f9f9;*/
+/*    color: #333;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*  }*/
+/*  */
+/*  h1 {*/
+/*    font-size: 2rem;*/
+/*    color: rgb(0, 0, 0);*/
+/*    margin-bottom: 0px;*/
+/*    margin-top: 50px;*/
+/*  }*/
+
+/*  .developer-info {*/
+/*    text-align: center;*/
+/*  }*/
+/*  */
+/*  .developer-info, .contact-form {*/
+/*    width: 90%;*/
+/*    margin: 20px 0;*/
+/*    padding: 20px;*/
+/*    background-color: #fff;*/
+/*    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+/*    border-radius: 8px;*/
+/*    */
+/*  }*/
+/*  */
+/*  .developer-info ul {*/
+/*    list-style-type: none;*/
+/*    padding: 0;*/
+/*  }*/
+/*  */
+/*  .developer-info li {*/
+/*    margin: 10px 0;*/
+/*  }*/
+/*  */
+/*  .contact-form form {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*  }*/
+/*  */
+/*  .contact-form label {*/
+/*    margin-top: 10px;*/
+/*    font-weight: bold;*/
+/*  }*/
+/*  */
+/*  .contact-form input, .contact-form textarea {*/
+/*    margin-top: 5px;*/
+/*    padding: 10px;*/
+/*    font-size: 1rem;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 5px;*/
+/*  }*/
+/*  */
+/*  .contact-form button {*/
+/*    margin-top: 15px;*/
+/*    padding: 10px;*/
+/*    font-size: 1rem;*/
+/*    color: #fff;*/
+/*    background-color: rgb(30, 215, 96);*/
+/*    border: none;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*  }*/
+/*  */
+/*  .contact-form button:hover {*/
+/*    background-color: rgb(30 215 96);*/
+/*  }*/
+/*  */
+
+/*.flex-column {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  width: 100%*/
+/*}*/
+
+/*.headerBar {*/
+/*  width: 100%;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  padding: 20px 40px; !* Larger padding for a taller navbar *!*/
+/*  background-color: #ffffff; !* Background color to span entire top *!*/
+/*  color: white;*/
+/*  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); !* Optional shadow for effect *!*/
+/*  position: fixed;*/
+/*  top: 0;*/
+/*  left: 0;*/
+/*  border-bottom: 1px solid #ddd;*/
+/*}*/
+
+/*.headerLeft, .headerRight {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*}*/
+
+
+/*.headerBar img.logoImg {*/
+/*  width: 40px;*/
+/*  height: auto;*/
+/*  margin-right: 15px;*/
+/*}*/
+/*.headerLink {*/
+/*  color: #333;*/
+/*  text-decoration: none;*/
+/*  font-weight: bold;*/
+/*  margin-right: 20px;*/
+/*}*/
+
+/*.headerLink:hover {*/
+/*  color: #1db954; !* Spotify green *!*/
+/*}*/
+/*.profileIcon {*/
+/*  position: fixed; !* Fixes the position relative to the viewport *!*/
+/*  top: 10px; !* Distance from the top of the screen *!*/
+/*  right: 10px; !* Distance from the right edge of the screen *!*/
+/*  width: 50px; !* Adjust size as needed *!*/
+/*  height: 50px;*/
+/*  object-fit: cover; !* Maintain aspect ratio *!*/
+/*  border-radius: 50%; !* Makes the image circular *!*/
+/*}*/
+
+/*.actionContainer {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    text-align: center;*/
+/*}*/
+
+/* Light Mode Styles */
 a {
     color: black;
     text-decoration: underline;
 }
+
 body {
     justify-content: center;
     min-height: 100vh;
@@ -14,57 +155,143 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  
-  h1 {
-    font-size: 2rem;
-    color: rgb(0, 0, 0);
-    margin-bottom: 0px;
-    margin-top: 50px;
-  }
+}
 
-  .developer-info {
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode a {
+    color: #1db954;
+}
+
+/* Header Bar */
+.headerBar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #ffffff;
+    color: black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+body.dark-mode .headerBar {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    border-bottom: 1px solid #333;
+}
+
+.headerLink {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+body.dark-mode .headerLink {
+    color: #e0e0e0;
+}
+
+.headerLink:hover {
+    color: #1db954;
+}
+
+body.dark-mode .headerLink:hover {
+    color: #1db954;
+}
+
+/* Profile Icon */
+.profileIcon {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+body.dark-mode .profileIcon {
+    border: 2px solid #555;
+}
+
+/* Developer Info Section */
+.developer-info {
     text-align: center;
-  }
-  
-  .developer-info, .contact-form {
     width: 90%;
     margin: 20px 0;
     padding: 20px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    
-  }
-  
-  .developer-info ul {
+}
+
+body.dark-mode .developer-info {
+    background-color: #1f1f1f;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.developer-info ul {
     list-style-type: none;
     padding: 0;
-  }
-  
-  .developer-info li {
+}
+
+.developer-info li {
     margin: 10px 0;
-  }
-  
-  .contact-form form {
+}
+
+body.dark-mode .developer-info li a {
+    color: #1db954;
+}
+
+/* Contact Form Section */
+.contact-form {
+    width: 90%;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+body.dark-mode .contact-form {
+    background-color: #1f1f1f;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.contact-form form {
     display: flex;
     flex-direction: column;
-  }
-  
-  .contact-form label {
+}
+
+.contact-form label {
     margin-top: 10px;
     font-weight: bold;
-  }
-  
-  .contact-form input, .contact-form textarea {
+}
+
+.contact-form input, .contact-form textarea {
     margin-top: 5px;
     padding: 10px;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
-  }
-  
-  .contact-form button {
+}
+
+body.dark-mode .contact-form input,
+body.dark-mode .contact-form textarea {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+.contact-form button {
     margin-top: 15px;
     padding: 10px;
     font-size: 1rem;
@@ -73,64 +300,21 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  .contact-form button:hover {
-    background-color: rgb(30 215 96);
-  }
-  
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-  width: 100%
 }
 
-.headerBar {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  padding: 20px 40px; /* Larger padding for a taller navbar */
-  background-color: #ffffff; /* Background color to span entire top */
-  color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for effect */
-  position: fixed;
-  top: 0;
-  left: 0;
-  border-bottom: 1px solid #ddd;
+.contact-form button:hover {
+    background-color: rgb(20, 180, 85);
 }
 
-.headerLeft, .headerRight {
-  display: flex;
-  align-items: center;
+body.dark-mode .contact-form button {
+    background-color: #333;
 }
 
-
-.headerBar img.logoImg {
-  width: 40px;
-  height: auto;
-  margin-right: 15px;
-}
-.headerLink {
-  color: #333;
-  text-decoration: none;
-  font-weight: bold;
-  margin-right: 20px;
+body.dark-mode .contact-form button:hover {
+    background-color: #555;
 }
 
-.headerLink:hover {
-  color: #1db954; /* Spotify green */
-}
-.profileIcon {
-  position: fixed; /* Fixes the position relative to the viewport */
-  top: 10px; /* Distance from the top of the screen */
-  right: 10px; /* Distance from the right edge of the screen */
-  width: 50px; /* Adjust size as needed */
-  height: 50px;
-  object-fit: cover; /* Maintain aspect ratio */
-  border-radius: 50%; /* Makes the image circular */
-}
-
+/* Action Container */
 .actionContainer {
     display: flex;
     flex-direction: column;
