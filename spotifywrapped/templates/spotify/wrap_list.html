@@ -79,7 +79,13 @@
                     <a href="{% url 'logout' %}" class="btn btn-danger">
                         <button class="btn btn-primary">Logout</button>
                     </a>
-                    
+
+                    <!-- Delete account button -->
+                     <form method="post" action="{% url 'confirm_delete_account' %}">
+                        {% csrf_token %}
+                        <button type="submit">Delete Account</button>
+                    </form>
+
                 </div>
                 </div>
             </div>

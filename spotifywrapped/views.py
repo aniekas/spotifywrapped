@@ -383,3 +383,30 @@ def delete_all_wraps(request):
     """Delete all wraps associated with the current user."""
     SpotifyWrap.objects.all().delete()
     return render(request, 'spotify/index.html', {'message': 'All wraps have been deleted.'})
+
+@login_required
+def confirm_delete_account(request):
+    return render(request, 'accounts/confirm_delete_account.html')
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        print("POST")
+        if request.user.is_authenticated:
+            print("authenticated")
+            # Delete Spotify wrap data
+            SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile).delete()
+            print("deleted wrap")
+            # Delete the user account
+            request.user.delete()
+            print("deleted user")
+            # Log out the user
+            logout(request)
+            print("logged out")
+            # Redirect to the account_deleted page
+            return redirect('account_deleted')
+        # Redirect back to index for non-POST requests
+    return redirect('index')
+
+def account_deleted(request):
+    return render(request, 'accounts/account_deleted.html')
