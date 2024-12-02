@@ -132,6 +132,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.office365.com'  # Outlook SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'arhea9@gatech.edu'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Replace with your email
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Replace with your email password
