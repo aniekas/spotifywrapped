@@ -442,11 +442,13 @@ body.dark-mode .profileIcon {
     background-color: #1aa34a;
 }
 
-.share-wrap-container {
-    position: relative;
+#share-wrap-container {
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+    padding-bottom: 15px;
 }
 
 /* Hamburger Menu (Mobile) */
