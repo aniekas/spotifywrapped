@@ -20,8 +20,7 @@
             <a href="{% url 'index' %}" class="headerLink">Home</a>
         <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
         <button id="dark-mode-toggle" class="darkModeBtn">Toggle Dark Mode</button>
-
-</div>
+        </div>
 
 <div class="headerRight">
 <!-- Profile Icon (Link to Wrapped List) -->
@@ -113,7 +112,7 @@
                     <span class="rank2">2. {{ wrap.top_artists.1.name }}</span>
                 </div>
             </div>
-            </div>
+</div>
             <!--SLIDE 8-->
             <div class="swiper-slide" style="background-image: url('{% static 'images/pink.png' %}'); background-size: cover; background-position: center;">
                 <h1>YOUR TOP 5<br>SONGS</h1>
@@ -155,13 +154,13 @@
             <div class="swiper-slide" style="background-image: url('{% static 'images/purple.png' %}'); background-size: cover; background-position: center;">
                 <img src="/static/images/v1.png" class="vector-line" style="height: 80%; top: 0;">
             </div> -->
-        </div>
+</div>
         <!-- Add Pagination -->
         <div class="swiper-pagination"></div>
         <!-- Add Navigation -->
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
-    </div>
+</div>
 
    <!-- {% if top_track_preview_url %}#}
 {#        <audio id="topTrackPreview" autoplay muted>#}
@@ -225,6 +224,34 @@
 });
 
 </script>
-</div>
+    <div id="share-wrap-container">
+        <button id="share-wrap-button">Share My Wrapped</button>
+        <div id="share-popup">
+            <p>Share this link:</p>
+            <input type="text" id="share-link" readonly value="https://yourwebsite.com/top-tracks">
+            <button id="copy-link-button">Copy Link</button>
+        </div>
+    </div>
+    <script>
+    document.getElementById('share-wrap-button').addEventListener('click', () => {
+        const popup = document.getElementById('share-popup');
+        popup.style.display = popup.style.display === 'none' || popup.style.display === '' ? 'block' : 'none';
+    });
+
+    document.getElementById('copy-link-button').addEventListener('click', () => {
+        const linkInput = document.getElementById('share-link');
+        linkInput.select();
+        document.execCommand('copy');
+        alert('Link copied to clipboard!');
+    });
+
+    // Optional: Close the popup when clicking outside
+    document.addEventListener('click', (event) => {
+        const popup = document.getElementById('share-popup');
+        if (!popup.contains(event.target) && event.target.id !== 'share-wrap-button') {
+            popup.style.display = 'none';
+        }
+    });
+    </script>
 </body>
 </html>

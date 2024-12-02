@@ -13,6 +13,7 @@ from django.http import HttpResponseForbidden
 from datetime import timedelta
 from django.http import HttpResponse
 from django.core.mail import send_mail
+from django.http import JsonResponse
 
 def home(request):
     """Render the home screen/welcome page."""
@@ -410,3 +411,19 @@ def delete_account(request):
 
 def account_deleted(request):
     return render(request, 'accounts/account_deleted.html')
+
+from django.http import JsonResponse
+
+@login_required
+def get_shareable_wrap_link(request, wrap_id):
+    """Generate a shareable link for a user's Spotify Wrapped."""
+    try:
+        # Fetch the wrap for the current user
+        wrap = SpotifyWrap.objects.get(id=wrap_id, user=request.user.spotifyuserprofile)
+
+        # Generate the link to the wrap detail page
+        shareable_link = request.build_absolute_uri(reverse('wrap_detail', args=[wrap_id]))
+
+        return JsonResponse({"link": shareable_link}, status=200)
+    except SpotifyWrap.DoesNotExist:
+        return JsonResponse({"error": "Wrap not found."}, status=404)
