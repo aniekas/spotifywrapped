@@ -2,25 +2,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 </head>
 <body class="flex-column">
     <header class="headerBar">
+        <div class="hamburger-menu" id="hamburger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <!-- Mobile links container -->
+    <div class="mobile-links" id="mobile-links">
+        <a href="{% url 'index' %}" class="headerLink">Home</a>
+        <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+    </div>
         <div class="headerLeft">
-          <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
-          <a href="{% url 'index' %}" class="headerLink">Home</a>
-          <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+            <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
+            <a href="{% url 'index' %}" class="headerLink">Home</a>
+            <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+            <button id="dark-mode-toggle" class="darkModeBtn">Toggle Dark Mode</button>
         </div>
         <div class="headerRight">
-          <button id="dark-mode-toggle" class="darkModeBtn">Toggle Dark Mode</button>
-          <a href="{% url 'wrap_list' %}">
-            <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
-          </a>
-        </div>
-      </header>
+            <a href="{% url 'wrap_list' %}">
+                <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
+            </a>
+    </header>
+    
     <div class="carousel">
+        <div class="logoutcontainer">
+        <a href="{% url 'logout' %}" class="btn btn-danger">
+            <button class="btn btn-primary">Logout</button>
+        </a>
+        <form method="post" action="{% url 'confirm_delete_account' %}">
+            {% csrf_token %}
+            <button class="btn btn-primary" type="submit">Delete Account</button>
+        </form>
+    </div>
         <div class="carousel-inner">
             {% for wrap_detail in wrap_details %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -76,10 +96,6 @@
                     <a href="{% url 'delete_all_wraps' %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete ALL of your wraps?')">
                         <button class="btn btn-primary">Delete All Wraps</button>
                     </a>
-                    <a href="{% url 'logout' %}" class="btn btn-danger">
-                        <button class="btn btn-primary">Logout</button>
-                    </a>
-                    
                 </div>
                 </div>
             </div>
@@ -153,6 +169,12 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem('dark-mode', isDarkMode); // Save preference
   });
 });
+
+document.getElementById("hamburger-menu").addEventListener("click", function() {
+  document.getElementById("mobile-links").classList.toggle("active");
+});
+
+
 
 </script>
 </body>

@@ -1,48 +1,63 @@
+{% load static %}  <!-- Load the static template tag library -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}My Site{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/confirmdelete.css' %}">
 </head>
 <body>
-    <header>
         <!-- Shared header content, e.g., site logo and navigation -->
-        <h1>My Site</h1>
-        <nav>
-            <a href="{% url 'index' %}">Home</a>
-        </nav>
-        <!-- Dark mode toggle button -->
-        <button id="dark-mode-toggle">Toggle Dark Mode</button>
-    </header>
+        <header class="headerBar">
+            <div class="hamburger-menu" id="hamburger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <!-- Mobile links container -->
+        <div class="mobile-links" id="mobile-links">
+            <a href="{% url 'index' %}" class="headerLink">Home</a>
+            <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+        </div>
+            <div class="headerLeft">
+                <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
+                <a href="{% url 'index' %}" class="headerLink">Home</a>
+                <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+                <button id="dark-mode-toggle" class="darkModeBtn">Toggle Dark Mode</button>
+            </div>
+            <div class="headerRight">
+                <a href="{% url 'wrap_list' %}">
+                    <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
+                </a>
+                <!-- Hamburger Icon for mobile -->
+        </header>
 
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
-        <p>&copy; 2024 My Site</p>
-    </footer>
-
     <!-- JavaScript to handle dark mode -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const toggleButton = document.getElementById("dark-mode-toggle");
-            const currentMode = localStorage.getItem("dark-mode");
+        document.addEventListener('DOMContentLoaded', function () {
+  const body = document.body;
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
 
-            if (currentMode === "enabled") {
-                document.body.classList.add("dark-mode");
-            }
+  // Check localStorage for dark mode preference
+  const darkModeStatus = localStorage.getItem('dark-mode') === 'true';
+  console.log('Dark Mode Status: ', darkModeStatus); // Check if the state is being correctly retrieved
 
-            toggleButton.addEventListener("click", function () {
-                document.body.classList.toggle("dark-mode");
+  if (darkModeStatus) {
+    body.classList.add('dark-mode');
+    console.log('Dark mode class added'); // Confirm that the class is being applied
+  }
 
-                if (document.body.classList.contains("dark-mode")) {
-                    localStorage.setItem("dark-mode", "enabled");
-                } else {
-                    localStorage.setItem("dark-mode", "disabled");
-                }
-            });
-        });
+  // Add event listener for the toggle button
+  darkModeToggle.addEventListener('click', function () {
+    const isDarkMode = body.classList.toggle('dark-mode');
+    localStorage.setItem('dark-mode', isDarkMode); // Save preference
+  });
+});
     </script>
 </body>
 </html>

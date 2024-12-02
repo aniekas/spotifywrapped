@@ -36,6 +36,18 @@
                 <a href="{% url 'wrap_list' %}">
                     <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
                 </a>
+                
+            </div>
+            <div class="hamburger-menu" id="hamburger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            </div>
+            <!-- Mobile links container -->
+            <div class="mobile-links" id="mobile-links">
+            <a href="{% url 'index' %}" class="headerLink">Home</a>
+            <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
             </div>
         </header>
         <div class="actionContainer">
@@ -52,6 +64,11 @@
             </form>
         </div>
     </div>
+    <script>
+         document.getElementById("hamburger-menu").addEventListener("click", function() {
+  document.getElementById("mobile-links").classList.toggle("active");
+});
+    </script>
 </body>
 </html>
 

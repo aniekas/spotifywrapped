@@ -13,6 +13,7 @@ from django.http import HttpResponseForbidden
 from datetime import timedelta
 from django.http import HttpResponse
 from django.core.mail import send_mail
+from django.http import JsonResponse
 
 def home(request):
     """Render the home screen/welcome page."""
@@ -37,35 +38,9 @@ def index(request):
 
         headers = {"Authorization": f"Bearer {user_profile.access_token}"}
         wrap = save_wrap(user_profile, user_profile.access_token, timeframe)
+        if wrap is None:
+            return render(request, 'spotify/index.html', {'error': 'Error saving wrap!'})
         return redirect(reverse('wrap_detail', args=[wrap.id]))
-        response = requests.get(url, headers=headers)
-
-        if response.status_code == 200:
-            wrap_data = response.json()
-
-            # Create a title for the wrap based on timeframe
-            timeframe_titles = {
-                'long_term': 'All-Time',
-                'medium_term': 'Last Year',
-                'short_term': 'Last Month'
-            }
-            title = timeframe_titles.get(timeframe)
-
-            # Save the wrap with the generated title
-            wrap = SpotifyWrap.objects.create(
-                user=user_profile,
-                year=timezone.now().year,
-                top_artists=wrap_data.get('items', []),
-                wrap_data=wrap_data,
-                title=f"{title}"
-            )
-
-            # Redirect to the wrap_detail view for the new wrap
-            return redirect(reverse('wrap_detail', args=[wrap.id]))
-        else:
-            # Handle error with Spotify API request
-            return render(request, "accounts/error.html", {"message": "Failed to fetch data from Spotify"})
-
     return render(request, 'spotify/index.html')
 
 
@@ -383,3 +358,42 @@ def delete_all_wraps(request):
     """Delete all wraps associated with the current user."""
     SpotifyWrap.objects.all().delete()
     return render(request, 'spotify/index.html', {'message': 'All wraps have been deleted.'})
+
+@login_required
+def confirm_delete_account(request):
+    return render(request, 'accounts/confirm_delete_account.html')
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        print("POST")
+        if request.user.is_authenticated:
+            print("authenticated")
+            # Delete Spotify wrap data
+            SpotifyWrap.objects.filter(user=request.user.spotifyuserprofile).delete()
+            print("deleted wrap")
+            # Delete the user account
+            request.user.delete()
+            print("deleted user")
+            # Log out the user
+            logout(request)
+            print("logged out")
+            # Redirect to the account_deleted page
+            return redirect('account_deleted')
+        # Redirect back to index for non-POST requests
+    return redirect('account_deleted')
+
+def account_deleted(request):
+    return render(request, 'accounts/account_deleted.html')
+
+@login_required
+def get_shareable_wrap_link(request, wrap_id):
+    """Generate a shareable link for a user's Spotify Wrapped."""
+    try:
+        # Fetch the wrap for the current user
+        wrap = SpotifyWrap.objects.get(id=wrap_id, user=request.user.spotifyuserprofile)
+        # Generate the link to the wrap detail page
+        shareable_link = request.build_absolute_uri(reverse('wrap_detail', args=[wrap_id]))
+        return JsonResponse({"link": shareable_link}, status=200)
+    except SpotifyWrap.DoesNotExist:
+        return JsonResponse({"error": "Wrap not found."}, status=404)

@@ -14,13 +14,13 @@
 <div class="wrapcontainer">
     <header class="headerBar">
         <div class="headerLeft">
+            
             <!-- Logo Image -->
             <img src="{% static 'images/logo.png' %}" alt="Spotify Logo" class="logoImg">
             <!-- Navigation Links -->
             <a href="{% url 'index' %}" class="headerLink">Home</a>
         <a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
         <button id="dark-mode-toggle" class="darkModeBtn">Toggle Dark Mode</button>
-
 </div>
 
 <div class="headerRight">
@@ -28,6 +28,17 @@
 <a href="{% url 'wrap_list' %}">
                <img src="{% static 'images/defaultpfp.png' %}" alt="Profile Picture" class="profileIcon">
 </a>
+<div class="hamburger-menu" id="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+</div>
+<!-- Mobile links container -->
+<div class="mobile-links" id="mobile-links">
+<a href="{% url 'index' %}" class="headerLink">Home</a>
+<a class="headerLink" href="{% url 'contact' %}">Contact the Developers</a>
+</div>
 </div>
 </header>
 <div class="header">
@@ -162,7 +173,14 @@
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
     </div>
-
+    <div id="share-wrap-container">
+        <button class="darkModeBtn" id="share-wrap-button">Share My Wrapped</button>
+        <div id="share-popup" style="display: none;">
+            <input type="text" id="share-link" readonly value="http://localhost:2340/app/wrap/{{wrap.id}}/">
+            <button class="darkModeBtn" id="copy-link-button">Copy Link</button>
+        </div>
+    </div>
+    
    <!-- {% if top_track_preview_url %}#}
 {#        <audio id="topTrackPreview" autoplay muted>#}
 {#            <source src="{{ top_track_preview_url }}" type="audio/mpeg">#}
@@ -222,6 +240,32 @@
     const isDarkMode = body.classList.toggle('dark-mode');
     localStorage.setItem('dark-mode', isDarkMode); // Save preference
   });
+});
+
+document.getElementById('share-wrap-button').addEventListener('click', () => {
+        const popup = document.getElementById('share-popup');
+        // Toggle visibility of the share popup
+        popup.style.display = popup.style.display === 'none' || popup.style.display === '' ? 'block' : 'none';
+    });
+
+    // Copy link functionality
+    document.getElementById('copy-link-button').addEventListener('click', () => {
+        const linkInput = document.getElementById('share-link');
+        linkInput.select();
+        document.execCommand('copy');
+        alert('Link copied to clipboard!');
+    });
+
+    // Close the popup when clicking outside
+    document.addEventListener('click', (event) => {
+        const popup = document.getElementById('share-popup');
+        if (!popup.contains(event.target) && event.target.id !== 'share-wrap-button') {
+            popup.style.display = 'none';
+        }
+    });
+
+    document.getElementById("hamburger-menu").addEventListener("click", function() {
+  document.getElementById("mobile-links").classList.toggle("active");
 });
 
 </script>

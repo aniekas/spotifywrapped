@@ -1,38 +1,52 @@
 .headerBar {
+    position: relative;
+    z-index: 10;
     width: 100%;
-    background-color: white;
-    padding: 15px 20px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    padding: 20px 40px; /* Larger padding for a taller navbar */
+    background-color: #ffffff; /* Background color to span entire top */
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for effect */
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-height: 30px;
     border-bottom: 1px solid #ddd;
-}
-.headerLeft, .headerRight {
+  }
+  
+  .headerLeft, .headerRight {
     display: flex;
     align-items: center;
-}
-.headerBar img.logoImg {
+  }
+  
+  .headerBar img.logoImg {
     width: 40px;
     height: auto;
     margin-right: 15px;
-}
-.headerLink {
+  }
+  
+  .headerLink {
     color: #333;
     text-decoration: none;
     font-weight: bold;
     margin-right: 20px;
-}
-
-.headerLink:hover {
+  }
+  
+  .headerLink:hover {
     color: #1db954; /* Spotify green */
-}
-.profileIcon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    cursor: pointer;
-}
+  }
+  
+  .profileIcon {
+    position: fixed; /* Fixes the position relative to the viewport */
+    top: 10px; /* Distance from the top of the screen */
+    right: 10px; /* Distance from the right edge of the screen */
+    width: 50px; /* Adjust size as needed */
+    height: 50px;
+    object-fit: cover; /* Maintain aspect ratio */
+    border-radius: 50%; /* Makes the image circular */
+  }
+
 body {
     font-family: 'Gotham', sans-serif;
     margin: 0;
@@ -426,4 +440,76 @@ body.dark-mode .profileIcon {
 
 .darkModeBtn:hover {
     background-color: #1aa34a;
+}
+
+.share-wrap-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Hamburger Menu (Mobile) */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    cursor: pointer;
+  }
+  
+  .hamburger-menu span {
+    display: block;
+    height: 4px;
+    background-color: #333;
+    border-radius: 2px;
+  }
+  
+  /* Mobile Links Container */
+  .mobile-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mobile-links a {
+    padding: 15px 20px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .mobile-links a:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Media Query for Mobile */
+@media (max-width: 768px) {
+
+.headerLeft {
+    display: none; /* Hide left side (logo and links) */
+}
+
+.headerRight {
+    width: 100%;
+    justify-content: space-between; /* Space out the hamburger and profile */
+}
+
+.hamburger-menu {
+    display: block; /* Show the hamburger icon */
+    position: absolute;
+    left: 15;
+}
+
+.hamburger-menu span {
+    margin-bottom: 6px;
+}
+
+.mobile-links.active {
+    display: flex; /* Show the mobile menu when 'active' is applied */
+}
 }
