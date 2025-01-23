@@ -13,7 +13,6 @@ class SpotifyUserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s Spotify Profile"
 
-
 class SpotifyWrap(models.Model):
     user = models.ForeignKey(SpotifyUserProfile, on_delete=models.CASCADE, related_name='wraps')
     year = models.IntegerField()
@@ -24,17 +23,19 @@ class SpotifyWrap(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
     def __str__(self):
         return f"{self.title} for {self.user.user.username} - {self.year}"
 
-
 # Signal to create a SpotifyUserProfile automatically when a User is created
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        SpotifyUserProfile.objects.create(user=instance)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    # Get or create the SpotifyUserProfile
+    profile, created = SpotifyUserProfile.objects.get_or_create(
+        user=instance,
+        defaults={"spotify_user_id": instance.username, "access_token": "", "refresh_token": ""}
+    )
+    if not created:
+        # Optional: Update profile fields if necessary
+        profile.spotify_user_id = profile.spotify_user_id or instance.username
+        profile.save()
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.spotifyuserprofile.save()

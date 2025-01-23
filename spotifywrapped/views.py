@@ -140,7 +140,7 @@ def callback(request):
     user, created = User.objects.get_or_create(username=username, defaults={"first_name": username})
 
     # Always create or update SpotifyUserProfile
-    spotify_profile, created = SpotifyUserProfile.objects.get_or_create(
+    spotify_profile, created = SpotifyUserProfile.objects.update_or_create(
         user=user,
         defaults={
             'spotify_user_id': spotify_user_id,
@@ -149,25 +149,9 @@ def callback(request):
         }
     )
 
-    # Update existing profile with new tokens
-    if not created:
-        spotify_profile.access_token = access_token
-        spotify_profile.refresh_token = tokens.get("refresh_token", "")
-        spotify_profile.save()
-
-    # Pass the SpotifyUserProfile instance to save_wrap
-    # try:
-    #     save_wrap(spotify_profile, access_token)
-    # except Exception as e:
-    #     return render(request, "accounts/error.html", {
-    #         "message": f"Failed to save wrap data: {str(e)}"
-    #     }, status=500)
-
     # Log the user in and redirect to wrap list page
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     return redirect("index")
-
-
 @login_required
 def wrap_list(request):
     """Display the user's saved Spotify wraps."""
@@ -427,3 +411,7 @@ def get_shareable_wrap_link(request, wrap_id):
         return JsonResponse({"link": shareable_link}, status=200)
     except SpotifyWrap.DoesNotExist:
         return JsonResponse({"error": "Wrap not found."}, status=404)
+
+
+
+
